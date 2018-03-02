@@ -1,0 +1,6 @@
+This repository is for development of the draft-ietf-lsvr-bgp-spf. The
+plan is to only include the xml draft versions beginning with 
+draft-ietf-lsvr-bgp-spf-00.xml since the .txt can be derived from it.
+
+Updates to the xml source should be validated using xml2rfc and have
+no warnings prior to being commited.
