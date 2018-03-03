@@ -148,8 +148,8 @@ ipr="pre5378Trust200902">
       </address>
     </author>
 
-    <author fullname="Gunter Van de Velde" initials="G"
-            surname="Van de Velde">
+    <author fullname="" initials="Wim"
+            surname="Henderickx">
 
       <organization>Nokia</organization>
 
@@ -166,7 +166,7 @@ ipr="pre5378Trust200902">
           <country>Belgium</country>
         </postal>
 
-        <email>gunter.van_de_velde@nokia.com</email>
+        <email>wim.henderickx@nokia.com</email>
 
       </address>
     </author>
@@ -724,6 +724,10 @@ co-authors have contributed to the document.
   Derek Yeung
   Arrcus, Inc.
   derek@arrcus.com
+
+  Gunter Van De Velde
+  Nokia
+  gunter.van_de_velde@nokia.com
 
   Abhay Roy
   Cisco Systems
