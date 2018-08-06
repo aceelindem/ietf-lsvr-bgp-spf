@@ -50,10 +50,10 @@
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7938.xml">
 <!ENTITY RFC8174 SYSTEM
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8174.xml">
+<!ENTITY RFC8402 SYSTEM
+  "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8402.xml">
 <!ENTITY I-D.ietf-idr-bgpls-segment-routing-epe SYSTEM
   "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-idr-bgpls-segment-routing-epe-14.xml">
-<!ENTITY I-D.ietf-ospf-segment-routing-extensions SYSTEM
-  "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-ospf-segment-routing-extensions-25.xml">
 ]>
 
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
@@ -82,7 +82,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-ietf-lsvr-bgp-spf-01.txt"
+<rfc category="std" docName="draft-ietf-lsvr-bgp-spf-02.txt"
  ipr="pre5378Trust200902">
   <!-- category values: std, bcp, info, exp, and historic
     ipr values: full3667, noModification3667, noDerivatives3667
@@ -415,7 +415,7 @@ The BGP protocol will be used in the Protocol-ID field specified in
 table 1 of <xref target="I-D.ietf-idr-bgpls-segment-routing-epe"/>. 
 The local and remote node descriptors for all NLRI will be the BGP Router-ID (TLV 516) 
 and either the AS Number (TLV 512) <xref target="RFC7752"/> or the BGP Confederation
-Member (TLV 517) <xref target="I-D.ietf-idr-bgpls-segment-routing-epe"/>. 
+Member (TLV 517) <xref target="RFC8402"/>. 
 However, if the BGP Router-ID is known to be unique within the BGP Routing domain,
 it can be used as the sole descriptor. 
 </t>
@@ -427,7 +427,7 @@ new attribute TLV will only be applicable when BGP is specified
 in the Node NLRI Protocol ID field. 
 The TBD TLV type will be defined by IANA. The new Node
 Attribute TLV will contain a single-octet SPF algorithm as defined 
-in <xref target="I-D.ietf-ospf-segment-routing-extensions"/>.
+in <xref target="RFC8402"/>.
 </t>
 <t>
 <figure align="center">
@@ -456,6 +456,10 @@ The SPF Algorithm may take the following values:
 ]]></artwork>
 </figure>
 </t>
+<t>Note that usage of Strict Shortest Path First (SPF) algorithm is
+defined in the IGP algorithm registry but usage is restricted to 
+<xref target="I-D.ietf-idr-bgpls-segment-routing-epe"/>. Hence, its 
+usage for BGP-LS SPF is out of scope.</t>
 <t> 
 When computing the SPF for a given BGP routing domain, only BGP nodes
 advertising the SPF capability attribute will be included the Shortest
@@ -484,6 +488,30 @@ Algorithms such as setting the metric inversely to the link speed as done in the
 OSPF MIB <xref target="RFC4750"/> MAY be supported. However, this is beyond the scope 
 of this document. 
 </t>
+<section title="BGP-LS Link NLRI Attribute Prefix-Length TLVs">
+<t>
+Two BGP-LS Attribute TLVs to BGP-LS Link NLRI are defined to advertise the prefix length
+associated with the IPv4 and IPv6 link prefixes. The prefix length is used for the
+optional installation of prefixes corresponding to Link NLRI as defined in 
+<xref target="BGP-SPF"/>.</t>
+<t>
+<figure align="center">
+<artwork align="left"><![CDATA[
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |      TBD IPv4 or IPv6 Type    |             Length            |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   | Prefix-Length |
+   +-+-+-+-+-+-+-+-+
+
+     Prefix-length - A one-octet length restricted to 1-32 for IPv4 
+                     Link NLIR endpoint prefixes and 1-128 for IPv6
+                     Link NLRI endpoint prefixes.
+]]></artwork>
+</figure>
+</t>
+</section>
 </section>
 <section title="Prefix NLRI Usage">
 <t>
@@ -539,8 +567,6 @@ is replaced or experiences a cold-start), the phase 1 decision function
 </t>
 </section>
 </section> 
-
-
 
 <section title="Decision Process with SPF Algorithm">
 <t>
@@ -630,6 +656,86 @@ for future study.
 </t>
 </section>
 
+<section anchor="BGP-SPF" title="SPF Calculation based on BGP-LS NLRI">
+<t>This section details the BGP-LS SPF local routing information base (RIB) calculation.
+The router will use BGP-LS Node, Link, and Prefix NLRI to populate the local RIB using the
+following algorithm. This calculation yields the set of intra-area routes associated
+with the BGP-LS domain.  A router calculates the  shortest-path tree using itself
+as the root. Variations and optimizations of the algorithm are valid as long as it
+yields the same set of routes. The algorithm below supports Equal Cost Multi-Path (ECMP)
+routes. Weighted Unequal Cost Multi-Path are out of scope. The organization of this section
+owes heavily to section 16 of <xref target="RFC2328"/>.</t>
+<t>The following abstract data structures are defined in order to specify the algorithm.
+<list style="symbols">
+<t>Local Route Information Base (RIB) - This is abstract contains reachability information 
+(i.e., next hops) for all prefixes (both IPv4 and IPv6) as well as the Node NLRI 
+reachability. Implementations may choose to implement this as separate RIBs for each
+address family and/or Node NLRI.</t>
+<t>Link State NLRI Database (LSNDB) - Database of BGP-LS NLRI that facilitates access to 
+all Node, Link, and Prefix NLRI as well as all the Link and Prefix NLRI corresponding to
+a given Node NLRI. Other optimization, such as, resolving bi-directional connectivity
+associations between Link NLRI are possible but of scope of this document.</t>
+<t>Candidate List - This is a list of candidate Node NLRI with the lowest cost Node NLRI
+at the front of the list. It is typically implemented as a heap but other concrete
+data structures have also been used.</t>
+</list></t>
+<t>The algorithm is comprised of the steps below:
+<list style="numbers">
+<t>The current local RIB is invalidated. The local RIB is
+built again from scratch.  The existing routing entries are preserved for comparision to
+determine changes that need to be installed in the global RIB.</t>
+<t>The computing router's Node NLRI is installed in the local RIB with a cost of 0 and as
+ as the sole entry in the candidate list.</t>
+<t>The Node NLRI with the lowest cost is removed from the candidate list for processing. The
+Node corresponding to this NLRI will be referred to as the Current Node. If the candidate
+list is empty, the SPF calculation has completed and the algorithm proceeds to step 6.</t>
+<t>All the Prefix NLRI with the same Node Identifiers as the Current Node will be considered
+for installation. The cost for each prefix is the metric advertised in the Prefix NLRI 
+added to the cost to reach the Current Node.
+<list style="symbols">
+<t>If the prefix is not in the local RIB, the prefix is installed and will inherit the
+Current Node's next hops.</t>
+<t>If the prefix is in the local RIB and the cost is greater than the Current route's metric,
+the Prefix NLRI does not contribute to the route and is ignored.</t>
+<t>If the prefix is in the local RIB and the cost is less than the current route's metric, 
+the Prefix is installed with the Current Node's next-hops replacing the local RIB route's 
+next-hops and the metric being updated.</t>
+<t>If the prefix is in the local RIB and the cost is same as the current route's metric, 
+the Prefix is installed with the Current Node's next-hops being merged with local 
+RIB route's next-hops.</t>
+</list> </t>
+<t>All the Link NLRI with the same Node Identifiers as the Current Node will be considered
+for installation. Each link will be examined and will be referred to in the following text
+as the Current Link. The cost of the Current Link is the advertised metric in the Link NLRI 
+added to the cost to reach the Current Node. 
+<list style="symbols">
+<t>Optionally, the prefix(es) associated with the Current Link are installed into the
+local RIB using the same rules as were used for Prefix NLRI in the previous steps.</t>
+<t>The Current Link's endpoint Node NLRI is accessed (i.e., the Node NLRI
+with the same Node identifiers as the Link endpoint). If it exists, it will be referred to 
+as the Endpoint Node NLRI and the algorithm will proceed as follows:
+<list style="symbols">
+<t>All the Link NLRI corresponding the Endpoint Node NLRI will be searched for a back-link 
+NLRI pointing to the current node. Both the Node identifiers and the 
+Link endpoint identifiers in the Endpoint Node's Link NLRI must match for a match. If there
+is no corresponding Link NLRI corresponding to the Endpoint Node NLRI, the Endpoint Node
+NLIR fails the bi-directional connectivity test and is not processed further.</t>
+<t>If the Endpoint Node NLRI is not on the candidate list, it is inserted based on the 
+link cost and BGP Identifier (the latter being used as a tie-breaker).</t>
+<t>If the Endpoint Node NLRI is already on the candidate list with a lower cost, it need
+not be inserted again.</t>
+<t>If the Endpoint Node NLRI is already on the candidate list with a higher cost, it must
+be removed and reinserted with a lower cost.</t>
+</list></t>
+<t>Return to step 3 to process the next lowest cost Node NLRI on the candidate list.</t>
+</list></t>
+<t>The local RIB is examined and changes (adds, deletes, modifications) are installed into
+the global RIB.</t>
+</list> 
+</t>
+
+</section> 
+
 <section title="NEXT_HOP Manipulation">
 <t>
 A BGP speaker that supports SPF extensions MAY interact with peers that don't support
@@ -660,7 +766,7 @@ of BGP-LS SPF route into the IPv6 address family applies only to IPv6 routes.
 <t> 
 Given the fact that SPF algorithms are based on the assumption that all routers in the
 routing domain calculate the precisely the same SPF tree and install the same set of
-routers, it is RECOMMENDED that BGP-LS SPF IPv4/IPv6 routes be given priority by default
+routes, it is RECOMMENDED that BGP-LS SPF IPv4/IPv6 routes be given priority by default
 when installed into their respective RIBs. In common implementations the prioritization
 is governed by route preference or administrative distance with lower being more preferred.
 </t>
@@ -698,10 +804,11 @@ further analysis.
   as described in <xref target="RFC4750"/>.
 </t>
 <t>
-  This document also defines two attribute TLV for BGP LS NLRI.
-  We request IANA to assign TLVs for the SPF capability and 
-  the Sequence Number from the "BGP-LS Node Descriptor, Link Descriptor, 
-  Prefix Descriptor, and   Attribute TLVs" Registry. 
+  This document also defines four attribute TLVs for BGP LS NLRI.
+  We request IANA to assign TLVs for the SPF capability, 
+  Sequence Number, IPv4 Link Prefix-Length, and IPv6 Link Prefix-Length
+  from the "BGP-LS Node Descriptor, Link Descriptor,  Prefix Descriptor, 
+  and  Attribute TLVs" Registry. 
 </t>
 </section>
 
@@ -714,8 +821,8 @@ target="RFC4271"/>.
 
 <section anchor="Acknowledgements" title="Acknowledgements">
 <t>
-The authors would like to thank Sue Hares, Jorge Rabadan, and Boris Hassanov
-for the review and comments.
+The authors would like to thank Sue Hares, Jorge Rabadan, Boris Hassanov, and
+Fred Baker for their review and comments.
 </t>
 </section>
 
@@ -786,9 +893,9 @@ co-authors have contributed to the document.
 
       &RFC8174;
 
-      &I-D.ietf-idr-bgpls-segment-routing-epe;
+      &RFC8402;
 
-      &I-D.ietf-ospf-segment-routing-extensions;
+      &I-D.ietf-idr-bgpls-segment-routing-epe;
 
     </references>
 
