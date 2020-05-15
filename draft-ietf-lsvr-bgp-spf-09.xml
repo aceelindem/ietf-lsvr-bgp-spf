@@ -971,7 +971,7 @@ further analysis.
 <t>
   This document defines an AFI/SAFI for BGP-LS SPF operation and
   requests IANA to assign the BGP-LS/BGP-LS-SPF (AFI 16388 / SAFI TBD1)
-  as described in <xref target="RFC4750"/>.
+  as described in <xref target="RFC4760"/>.
 </t>
 <t>
   This document also defines five attribute TLVs for BGP-LS NLRI.
