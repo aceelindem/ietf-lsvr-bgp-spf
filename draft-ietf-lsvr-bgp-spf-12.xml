@@ -294,7 +294,7 @@ is learned outside the BGP routing domain.
 </t>
 <t>
 Given that controllers are already consuming BGP-LS NLRI
-<xref target="RFC7752"/>, reusing for the BGP-LS SPF leverages the
+<xref target="RFC7752"/>, reusing for the BGP-LS-SPF leverages the
 existing controller implementations.
 </t>
 <t>
@@ -324,13 +324,20 @@ as next-hops can be deployed similar to  <xref target="RFC5549"/>.
 <section anchor="BGP-base" title="Base BGP Relationship">
   <t>
     With the exception of the decision process, the BGP SPF extension leverages the BGP
-    protocol <xref target="RFC4271"/>  without change. Due to the changes to the decision
-    process, there are mechanisms and encodings that are no longer applicable. The BGP
-    packet formats, NLRI encodings, path attribute encodings, and Finite State Machines (FSMs)
-    are unchanged. While not necessarily required for computation, the ORIGIN, AS_PATH, and
-    NEXT_HOP path attributes are mandatory and will be validated. The MULTI_EXIT_DISC, LOCAL_PREF,
-    ATOMIC_AGGEGATE, and AGGREGATOR are not applicable within the context of BGP SPF and
-    SHOULD not be advertised. However, if they are advertised, they will be accepted, validated,
+    protocol <xref target="RFC4271"/>  without change. This includes BGP protocol
+    Finite State Machine, BGP messages and the message formats, processing of BGP messages,
+    BGP attributes and path attributes, BGP NLRI encodings, and any error handling 
+    defined in the <xref target="RFC4271"/> and
+    <xref target="RFC7606"/>.
+  </t>
+  <t>
+    Due to the changes to the decision
+    process, there are mechanisms and encodings that are no longer applicable.
+    While not necessarily required for computation, the ORIGIN, AS_PATH,
+    MULTI_EXIT_DISC, LOCAL_PREF and NEXT_HOP path attributes are mandatory and will 
+    be validated. The ATOMIC_AGGEGATE, and AGGREGATOR are not applicable within the 
+    context of BGP SPF and SHOULD not be advertised. However, if they are advertised, 
+    they will be accepted, validated,
     and propagated consistent with the BGP protocol.
   </t>
   <t>
@@ -460,13 +467,22 @@ discussed in greater detail in <xref target="I-D.ietf-lsvr-applicability"/>.
   In order to replace the Phase 1 and 2 decision functions of the
   existing Decision Process with an SPF-based Decision Process and streamline
   the Phase 3 decision functions in a backward compatible manner, this draft
-  introduces the BGP-LS-SFP SAFI for BGP-LS SPF operation.
+  introduces the BGP-LS-SFP SAFI for BGP-LS-SPF operation.
   The BGP-LS-SPF (AFI 16388 / SAFI TBD1) <xref target="RFC4790"/> is allocated by IANA
   as specified in the <xref target="IANA"/>. A BGP speaker using the
-  BGP-LS SPF extensions described herein MUST exchange the AFI/SAFI using
+  BGP-LS-SPF extensions described herein MUST exchange the AFI/SAFI using
   Multiprotocol Extensions Capability Code <xref target="RFC4760"/> with
   other BGP speakers in the SPF routing domain.
 </t>
+
+<section title="BGP-LS-SPF NLRI TLVs">
+<t>
+  XXX Mention ordering of the TLV is must.
+</t>
+</section>
+
+<section title="BGP-LS-SPF Attributes">
+</section>
 </section>
 
 <section title="Extensions to BGP-LS">
@@ -535,7 +551,7 @@ The SPF Algorithm may take the following values:
 <t>Note that usage of Strict Shortest Path First (SPF) algorithm is
 defined in the IGP algorithm registry but usage is restricted to
 <xref target="I-D.ietf-idr-bgpls-segment-routing-epe"/>. Hence, its
-usage for BGP-LS SPF is out of scope.</t>
+usage for BGP-LS-SPF is out of scope.</t>
 <t>
 When computing the SPF for a given BGP routing domain, only BGP nodes
 advertising the SPF capability attribute will be included the Shortest
@@ -594,7 +610,7 @@ described in table 5 of <xref target="RFC7752"/>.
   Link attribute TLVs is beyond the scope of this document. 
   The metric value in this TLV is variable length dependent
   on specific protocol usage (refer to section 3.3.2.4 in <xref target="RFC7752"/>).
-  For simplicity, the BGP-LS SPF metric length will be 4 octets.
+  For simplicity, the BGP-LS-SPF metric length will be 4 octets.
   Algorithms such as setting the metric inversely to the link speed as done in the
   OSPF MIB <xref target="RFC4750"/> MAY be supported. However, this is beyond the scope
   of this document.
@@ -838,7 +854,7 @@ for future study.
 </section>
 
 <section anchor="BGP-SPF" title="SPF Calculation based on BGP-LS NLRI">
-<t>This section details the BGP-LS SPF local routing information base (RIB) calculation.
+<t>This section details the BGP-LS-SPF local routing information base (RIB) calculation.
 The router will use BGP-LS Node, Link, and Prefix NLRI to populate the local RIB using the
 following algorithm. This calculation yields the set of intra-area routes associated
 with the BGP-LS domain.  A router calculates the  shortest-path tree using itself
@@ -949,18 +965,18 @@ the Link-State address family routes to those peers.
 
 <section title="IPv4/IPv6 Unicast Address Family Interaction">
 <t>
-While the BGP-LS SPF address family and the IPv4/IPv6 unicast address families install routes
+While the BGP-LS-SPF address family and the IPv4/IPv6 unicast address families install routes
 into the same device routing tables, they will operate independently much the same as OSPF and
 IS-IS would operate today (i.e., "Ships-in-the-Night" mode). There will be no implicit
 route redistribution between the BGP address families. However, implementation specific
 redistribution mechanisms SHOULD be made available with the restriction that redistribution
-of BGP-LS SPF routes into the IPv4 address family applies only to IPv4 routes and redistribution
-of BGP-LS SPF route into the IPv6 address family applies only to IPv6 routes.
+of BGP-LS-SPF routes into the IPv4 address family applies only to IPv4 routes and redistribution
+of BGP-LS-SPF route into the IPv6 address family applies only to IPv6 routes.
 </t>
 <t>
 Given the fact that SPF algorithms are based on the assumption that all routers in the
 routing domain calculate the precisely the same SPF tree and install the same set of
-routes, it is RECOMMENDED that BGP-LS SPF IPv4/IPv6 routes be given priority by default
+routes, it is RECOMMENDED that BGP-LS-SPF IPv4/IPv6 routes be given priority by default
 when installed into their respective RIBs. In common implementations the prioritization
 is governed by route preference or administrative distance with lower being more preferred.
 </t>
@@ -1004,7 +1020,7 @@ by node are implicitly withdrawn when a session failure is detected. If fast fai
 detection such as BFD is utilized, and the node is on the fastest converging path, the most
 recent versions of BGP-LS NLRI may be withdrawn while these versions are in-flight on longer
 paths. This will result the older version of the NLRI being used until the new versions
-arrive and, potentially, unnecessary route flaps. Therefore, BGP-LS SPF NLRI SHOULD always
+arrive and, potentially, unnecessary route flaps. Therefore, BGP-LS-SPF NLRI SHOULD always
 be retained before being implicitly withdrawn for a brief configurable interval, e.g., 2-3
 seconds. This will not delay convergence since the adjacent nodes will detect the
 link failure and advertise a more recent NLRI indicating the link is down with respect to
@@ -1016,6 +1032,12 @@ bi-directional connectivity check.
 
 <section title="Error Handling">
 <t>
+This section describes the Error Handling actions, as described in
+<xref target="RFC7606"/> , that are to be performed for handling of BGP update
+messages for BGP-LS-SPF.
+</t>
+
+<t>
 When a BGP speaker receives a BGP Update containing a malformed SPF Capability TLV
 in the Node NLRI BGP-LS Attribute <xref target="RFC7752"/>,
 it MUST ignore the received TLV and the Node NLRI and not pass it to other BGP peers as
@@ -1024,12 +1046,127 @@ When discarding a Node NLRI with malformed TLV, a BGP speaker SHOULD log an erro
 further analysis.
 </t>
 
+<t>
+  A Link-State NLRI MUST NOT be considered as malformed or invalid
+  based on the inclusion/exclusion of TLVs or contents of the TLV
+  fields (i.e. semantic errors), as described in Section 4.1 and
+  Section 4.2.
+</t>
+
+<t>
+   A BGP-LS-SPF Speaker MUST perform the following syntactic validation of
+   the BGP-LS-SPF NLRI to determine if it is malformed.
+   <list style="numbers">
+     <t>
+       Does the sum of all TLVs found in the BGP MP_REACH_NLRI attribute
+      correspond to the BGP MP_REACH_NLRI length?
+     </t>
+
+   <t> 
+     Does the sum of all TLVs found in the BGP MP_UNREACH_NLRI
+     attribute correspond to the BGP MP_UNREACH_NLRI length?
+   </t>
+
+   <t>
+     Does the sum of all TLVs found in a BGP-LS-SPF NLRI correspond to
+      the Total NLRI Length field of all its Descriptors?
+   </t>
+
+   <t>
+     Is the length of the TLVs and, when the TLV is recognized then,
+     its sub-TLVs in the NLRI valid?
+   </t>
+
+   <t>  
+     Has the syntactic correctness of the NLRI fields been verified as
+     per <xref target="RFC7606"/>?
+   </t>
+   <t>
+     Has the rule regarding ordering of TLVs been followed as described
+     in Section 5.1?
+   </t>
+   </list>
+</t>
+<t>
+  When the error determined allows for the router to skip the malformed
+  NLRI(s) and continue processing of the rest of the update message
+  (e.g. when the TLV ordering rule is violated), then it MUST handle
+  such malformed NLRIs as 'Treat-as-withdraw'.  In other cases, where
+  the error in the NLRI encoding results in the inability to process
+  the BGP update message (e.g. length related encoding errors), then
+  the router SHOULD handle such malformed NLRIs as 'AFI/SAFI disable'
+  when other AFI/SAFI besides BGP-LS are being advertised over the same
+  session.  Alternately, the router MUST perform 'session reset' when
+  the session is only being used for BGP-LS-SPF or when it 'AFI/SAFI
+  disable' action is not possible.
+</t>
+
+<t>
+   A BGP-LS-SPF Attribute MUST NOT be considered as malformed or invalid
+   based on the inclusion/exclusion of TLVs or contents of the TLV
+   fields (i.e. semantic errors), as described in Section 4.1 and
+   Section 5.2.
+</t>
+
+<t>
+   A BGP-LS-SPF Speaker MUST perform the following syntactic validation of
+   the BGP-LS-SPF Attribute to determine if it is malformed.
+<list style="numbers">
+   <t>  Does the sum of all TLVs found in the BGP-LS-SPF Attribute correspond
+      to the BGP-LS-SPF Attribute length?
+   </t>  
+   <t>  Has the syntactic correctness of the Attributes (including BGP-LS-SPF
+      Attribute) been verified as per <xref target="RFC7606"/>?
+   </t>
+   <t>  Is the length of each TLV and, when the TLV is recognized then,
+      its sub-TLVs in the BGP-LS-SPF Attribute valid?
+   </t>
+</list>
+</t>
+
+<t>
+   When the error determined allows for the router to skip the malformed
+   BGP-LS-SPF Attribute and continue processing of the rest of the update
+   message (e.g. when the BGP-LS-SPF Attribute length and the total Path
+   Attribute Length are correct but some TLV/sub-TLV length within the
+   BGP-LS Attribute is invalid), then it MUST handle such malformed BGP-
+   LS-SPF Attribute as 'Attribute Discard'.  In other cases, where the error
+   in the BGP-LS-SPF Attribute encoding results in the inability to process
+   the BGP update message then the handling is the same as described
+   above for the malformed NLRI.
+</t>
+
+<t>
+   Note that the 'Attribute Discard' action results in the loss of all
+   TLVs in the BGP-LS-SPF Attribute and not the removal of a specific
+   malformed TLV.  The removal of specific malformed TLVs may give a
+   wrong indication to a BGP-LS-SPF speaker of that specific information
+   being deleted or not available.
+</t>
+
+<t>
+   When a BGP Speaker receives an update message with Link-State NLRI(s)
+   in the MP_REACH_NLRI but without the BGP-LS-SPF Attribute, it is most
+   likely an indication that a BGP Speaker preceding it has performed
+   the 'Attribute Discard' fault handling.  An implementation SHOULD
+   preserve and propagate the Link-State NLRIs in such an update message
+   so that the BGP-LS-SPF speaker can detect the loss of link-state
+   information for that object and not assume its deletion/withdraw.
+   This also makes it possible for a network operator to trace back to
+   the BGP-LS-SPF speaker which actually detected a fault with the BGP-LS-SPF
+   Attribute.
+</t>
+
+<t>
+   An implementation SHOULD log an error for any errors found during
+   syntax validation for further analysis.
+</t>
 </section>
 </section>
 
     <section anchor="IANA" title="IANA Considerations">
 <t>
-  This document defines an AFI/SAFI for BGP-LS SPF operation and
+  This document defines an AFI/SAFI for BGP-LS-SPF operation and
   requests IANA to assign the BGP-LS/BGP-LS-SPF (AFI 16388 / SAFI TBD1)
   as described in <xref target="RFC4760"/>.
 </t>
@@ -1053,11 +1190,11 @@ and <xref target="RFC7752"/>.
 
 <section anchor="Management" title="Management Considerations">
 <t>
-This section includes unique management considerations for the BGP-LS SPF address family.
+This section includes unique management considerations for the BGP-LS-SPF address family.
 </t>
 <section anchor="Config" title="Configuration">
 <t>
-In addition to configuration of the BGP-LS SPF address family, implementations SHOULD
+In addition to configuration of the BGP-LS-SPF address family, implementations SHOULD
 support the configuration of the INITIAL_SPF_DELAY, SHORT_SPF_DELAY, LONG_SPF_DELAY,
 TIME_TO_LEARN, and HOLDDOWN_INTERVAL as documented in <xref target="RFC8405"/>.
 </t>
@@ -1100,7 +1237,7 @@ available.
      protocols more mature.  It is up to the individual working groups
      to use this information as they see fit".</t>
 
-     <t>The BGP-LS SPF implementatation status is documented in
+     <t>The BGP-LS-SPF implementatation status is documented in
         <xref target="I-D.psarkar-lsvr-bgp-spf-impl"/>.</t>
 
 </section>
@@ -1113,7 +1250,7 @@ being used for non-local traffic (i.e., transit traffic).
 </t>
 <t>
 The authors extend special thanks to Eric Rosen for fruitful discussions on
-BGP-LS SPF convergence as compared to IGPs.
+BGP-LS-SPF convergence as compared to IGPs.
 </t>
 </section>
 
