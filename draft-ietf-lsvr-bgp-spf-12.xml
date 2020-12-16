@@ -30,8 +30,6 @@
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4750.xml">
 <!ENTITY RFC4760 SYSTEM
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4760.xml">
-<!ENTITY RFC4790 SYSTEM
-  "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4790.xml">
 <!ENTITY RFC4915 SYSTEM
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4915.xml">
 <!ENTITY RFC5065 SYSTEM
@@ -50,10 +48,10 @@
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7938.xml">
 <!ENTITY RFC7942 SYSTEM
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7942.xml">
-<!ENTITY RFC8174 SYSTEM
-  "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8174.xml">
 <!ENTITY RFC8402 SYSTEM
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8402.xml">
+<!ENTITY RFC8174 SYSTEM
+  "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8174.xml">
 <!ENTITY RFC8405 SYSTEM
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8405.xml">
 <!ENTITY I-D.ietf-idr-bgpls-segment-routing-epe SYSTEM
@@ -101,8 +99,8 @@
 
   <front>
 
-    <title abbrev="BGP Protocol SPF Extensions">
-    Shortest Path Routing Extensions for BGP Protocol </title>
+    <title abbrev="BGP Link-State SPF Routing">
+    BGP Link-State Shortest Path First (SPF) Routing</title>
 
     <!-- add 'role="editor"' below for the editors if appropriate -->
 
@@ -419,7 +417,7 @@ The simplest peering model is the one described in section 5.2.1 of
 EBGP single-hop sessions are established over direct point-to-point links
 interconnecting the SPF domain nodes. For the purposes of BGP SPF, Link NLRI is only
 advertised if a single-hop BGP session has been established and the Link-State/SPF
-address family capability has been exchanged <xref target="RFC4790"/> on the
+address family capability has been exchanged <xref target="RFC4760"/> on the
 corresponding session.
 If the session goes down, the corresponding Link NLRI will be withdrawn. Topologically,
 this would be equivalent to the peering model in <xref target="RFC7938"/> where there
@@ -437,7 +435,7 @@ Consequently, there will be a single session even if there are multiple
 direct connections between BGP speakers.
 For the purposes of BGP SPF, Link NLRI is advertised as long as
 a BGP session has been established, the Link-State/SPF address family
-capability has been exchanged <xref target="RFC4790"/> and
+capability has been exchanged <xref target="RFC4760"/> and
 the corresponding link is considered is up and considered operational.
 This is much like the previous peering model only peering is on a single
 loopback address and the switch fabric links can be unnumbered. However,
@@ -468,7 +466,7 @@ discussed in greater detail in <xref target="I-D.ietf-lsvr-applicability"/>.
   existing Decision Process with an SPF-based Decision Process and streamline
   the Phase 3 decision functions in a backward compatible manner, this draft
   introduces the BGP-LS-SFP SAFI for BGP-LS-SPF operation.
-  The BGP-LS-SPF (AFI 16388 / SAFI TBD1) <xref target="RFC4790"/> is allocated by IANA
+  The BGP-LS-SPF (AFI 16388 / SAFI TBD1) <xref target="RFC4760"/> is allocated by IANA
   as specified in the <xref target="IANA"/>. A BGP speaker using the
   BGP-LS-SPF extensions described herein MUST exchange the AFI/SAFI using
   Multiprotocol Extensions Capability Code <xref target="RFC4760"/> with
@@ -502,7 +500,7 @@ The BGP protocol will be used in the Protocol-ID field specified in
 table 1 of <xref target="I-D.ietf-idr-bgpls-segment-routing-epe"/>.
 The local and remote node descriptors for all NLRI will be the BGP Router-ID (TLV 516)
 and either the AS Number (TLV 512) <xref target="RFC7752"/> or the BGP Confederation
-Member (TLV 517) <xref target="RFC8402"/>.
+Member (TLV 517) <xref target="RFC7752"/>.
 However, if the BGP Router-ID is known to be unique within the BGP Routing domain,
 it can be used as the sole descriptor.
 </t>
@@ -566,6 +564,7 @@ node out of service or to indicate the node is not to be used for transit (i.e.,
 non-local) traffic. If the
 SPF Status TLV is not included with the Node NLRI, the node is considered to be up
 and is available for transit traffic.
+A single TLV type will be shared by the Node, Link, and Prefix NLRI.
 </t>
 <t>
 <figure align="center">
@@ -646,6 +645,7 @@ the link with respect to the BGP SPF calculation. This will be used to expedite
 convergence for link failures as discussed in <xref target="failure-converge"/>. If the
 SPF Status TLV is not included with the Link NLRI, the link is considered
 up and available.
+A single TLV type will be shared by the Node, Link, and Prefix NLRI.
 </t>
 <t>
 <figure align="center">
@@ -684,6 +684,7 @@ the prefix with respect to the BGP SPF calculation. This will be used to expedit
 convergence for prefix unreachability as discussed in <xref target="failure-converge"/>.
 If the SPF Status TLV is not included with the Prefix NLRI, the prefix is considered
 reachable.
+A single TLV type will be shared by the Node, Link, and Prefix NLRI.
 </t>
 <t>
 <figure align="center">
@@ -1166,9 +1167,9 @@ further analysis.
 
     <section anchor="IANA" title="IANA Considerations">
 <t>
-  This document defines an AFI/SAFI for BGP-LS-SPF operation and
-  requests IANA to assign the BGP-LS/BGP-LS-SPF (AFI 16388 / SAFI TBD1)
-  as described in <xref target="RFC4760"/>.
+    This document defines the use of a new SAFI (TBD1) for BGP SPF operation
+   <xref target="SAFI"/>, and requests IANA to assign a value from the xxx range in the
+   Subsequent Address Family Identifiers (SAFI) Parameters registry.
 </t>
 <t>
   This document also defines five attribute TLVs for BGP-LS NLRI.
@@ -1178,6 +1179,17 @@ further analysis.
   from the "BGP-LS Node Descriptor, Link Descriptor,  Prefix Descriptor,
   and  Attribute TLVs" Registry.
 </t>
+        <texttable anchor="tab.iana-attr" title="NLRI Attribute TLVs">
+          <ttcol>Attribute TLV</ttcol>
+          <ttcol>Suggested Value</ttcol>
+          <ttcol>NLRI Applicability</ttcol>
+          <c>SPF Capabilty</c><c>TBD2</c><c>Node</c>
+          <c>Sequence NUmber</c><c>TBD3</c><c>Node, Link, Prefix</c>
+          <c>SPF Status</c><c>TBD4</c><c>Node, Link, Prefix</c>
+          <c>IPv4 Link Prefix Length</c><c>TBD5</c><c>Link</c>
+          <c>IPv6 Link Prefix Length</c><c>TBD6</c><c>Link</c>
+        </texttable>
+
 </section>
 
 <section anchor="Security" title="Security Considerations">
@@ -1195,8 +1207,9 @@ This section includes unique management considerations for the BGP-LS-SPF addres
 <section anchor="Config" title="Configuration">
 <t>
 In addition to configuration of the BGP-LS-SPF address family, implementations SHOULD
-support the configuration of the INITIAL_SPF_DELAY, SHORT_SPF_DELAY, LONG_SPF_DELAY,
-TIME_TO_LEARN, and HOLDDOWN_INTERVAL as documented in <xref target="RFC8405"/>.
+support the "Shortest Path First (SPF) Back-Off Delay Algorithm for Link-State IGPs"
+<xref target="RFC8405"/>. If supported, configuration of the INITIAL_SPF_DELAY, SHORT_SPF_DELAY,
+LONG_SPF_DELAY, TIME_TO_LEARN, and HOLDDOWN_INTERVAL MUST be supported <xref target="RFC8405"/>.
 </t>
 </section>
 <section anchor="Operation" title="Operational Data">
@@ -1205,7 +1218,7 @@ In order to troubleshoot SPF issues, implementations SHOULD support an SPF log i
 entries for previous SPF computations, Each SPF log entry would include the BGP-LS NLRI SPF
 triggering the SPF, SPF scheduled time, SPF start time, SPF end time, and SPF type if
 different types of SPF are supported. Since the size of the log will be finite, implementations
-SHOULD also maintain counters for the total number of SPF computations of each type and the
+SHOULD also maintain counters for the total number of SPF computations and the
 total number of SPF triggering events. Additionally, to troubleshoot SPF scheduling and
 back-off <xref target="RFC8405"/>, the current SPF back-off state, remaining time-to-learn,
 remaining holddown, last trigger event time, last SPF time, and next SPF time should be
@@ -1316,6 +1329,10 @@ co-authors have contributed to the document.
 
       &RFC4271;
 
+      &RFC4750;
+
+      &RFC4760;
+
       &RFC7606;
 
       &RFC7752;
@@ -1337,12 +1354,6 @@ co-authors have contributed to the document.
       &RFC4456;
 
       &RFC4724;
-
-      &RFC4750;
-
-      &RFC4760;
-
-      &RFC4790;
 
       &RFC4915;
 
