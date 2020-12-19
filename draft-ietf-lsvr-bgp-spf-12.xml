@@ -44,6 +44,8 @@
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7752.xml">
 <!ENTITY RFC7606 SYSTEM
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7606.xml">
+<!ENTITY RFC7911 SYSTEM
+  "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7911.xml">
 <!ENTITY RFC7938 SYSTEM
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7938.xml">
 <!ENTITY RFC7942 SYSTEM
@@ -206,9 +208,11 @@ Many Massively Scaled Data Centers (MSDCs) have converged on simplified
 layer 3 routing. Furthermore, requirements for operational simplicity
 have led many of these MSDCs to converge on BGP as their single routing
 protocol for both their fabric routing and their Data Center Interconnect
-(DCI) routing. This document describes a solution which leverages BGP
+(DCI) routing. This document describes extentions to BGP to use BGP
 Link-State distribution and the Shortest Path First (SPF) algorithm similar
-to Internal Gateway Protocols (IGPs) such as OSPF.
+to Internal Gateway Protocols (IGPs) such as OSPF. In doing this, it allows
+BGP to be efficiently used as both the underlay protocol and the overlay protocol in
+data center fabrics.
 </t>
 </abstract>
 
@@ -222,8 +226,7 @@ Many Massively Scaled Data Centers (MSDCs) have converged on simplified
 layer 3 routing. Furthermore, requirements for operational simplicity
 have led many of these MSDCs to converge on BGP <xref target="RFC4271"/>
 as their single routing protocol for both their fabric routing and
-their Data Center Interconnect (DCI) routing. Requirements and procedures
-for using BGP are described in <xref target="RFC7938"/>.
+their Data Center Interconnect (DCI) routing <xref target="RFC7938"/>.
 This document describes an alternative solution which leverages
 BGP-LS <xref target="RFC7752"/> and the Shortest Path First algorithm similar
 to Internal Gateway Protocols (IGPs) such as OSPF <xref target="RFC2328"/>.
@@ -231,7 +234,9 @@ to Internal Gateway Protocols (IGPs) such as OSPF <xref target="RFC2328"/>.
 <t>This documents leverages both the BGP protocol <xref target="RFC4271"/> and
 the BGP-LS <xref target="RFC7752"/> protocols. The relationship, as well as,
 the scope of changes are described respectively in <xref target="BGP-base"/>
-and <xref target="BGP-LS"/>.
+and <xref target="BGP-LS"/>. The modifications to <xref target="RFC4271"/>
+for BGP SPF described herein only apply to the IPv4 and IPv6 as underlay AFIs.
+Operations for any other BGP SAFIs are outside the scope of this document.
 </t>
 <t>
 This solution avails the benefits of both BGP and SPF-based IGPs.
@@ -240,8 +245,9 @@ completely incremental NLRI advertisement. These advantages can reduce the
 overhead in MSDCs where there is a high degree of Equal Cost Multi-Path
 (ECMPs) and the topology is very stable.
 Additionally, using an SPF-based computation can support fast convergence and
-the computation of Loop-Free Alternatives (LFAs) <xref target="RFC5286"/> in the
-event of link failures.
+the computation of Loop-Free Alternatives (LFAs). The SPF LFA extensions defined
+in <xref target="RFC5286"/> can be similarily applied to the BGP SPF.
+However, the details are a matter of implementation detail.
 Furthermore, a BGP based solution lends itself to multiple peering models
 including those incorporating route-reflectors <xref target="RFC4456"/>
 or controllers.
@@ -252,16 +258,18 @@ Given that <xref target="RFC7938"/> already describes how BGP could be used
 as the sole routing protocol in an MSDC, one might question the motivation for
 defining an alternate BGP deployment model when a mature solution exists.
 For both alternatives, BGP offers the operational benefits of a single
-routing protocol. However, BGP SPF offers some unique advantages above
-and beyond standard BGP distance-vector routing.
+routing protocol as opposed to the combination of an IGP for the underlay
+and BGP as an overlay. However, BGP SPF offers some unique advantages above
+and beyond standard BGP distance-vector routing. With BGP SPF, the standard
+hop-by-hop peering model is relaxed.
 </t>
 <t>
-A primary advantage is that all BGP speakers in the BGP SPF routing domain
+A primary advantage is that all BGP SPF speakers in the BGP SPF routing domain
 will have a complete view of the topology. This will allow support for ECMP,
 IP fast-reroute (e.g., Loop-Free Alternatives), Shared Risk Link Groups
-(SRLGs), and other routing enhancements without advertisement of addition
-BGP paths or other extensions. In short, the advantages of an IGP such as
-OSPF <xref target="RFC2328"/> are availed in BGP.
+(SRLGs), and other routing enhancements without advertisement of additional
+BGP paths <xref target="RFC7911"/>  or other extensions. In short, the advantages
+of an IGP such as OSPF <xref target="RFC2328"/> are availed in BGP.
 </t>
 <t>
   With the simplified BGP decision process as defined in <xref target="BGP-base"/>
@@ -375,12 +383,11 @@ as next-hops can be deployed similar to  <xref target="RFC5549"/>.
 <t>
  <xref target="RFC7752"/> describes a mechanism by which link-state and TE information can
  be collected from networks and shared with external components using BGP.
- This is achieved by defining NLRI advertised within the BGP-LS/BGP-LS-SPF
- AFI/SAFI. The BGP-LS extensions defined in
+ This is achieved by defining NLRI advertised using the BGP-LS AFI. The BGP-LS extensions defined in
  <xref target="RFC7752"/> makes use of the  Decision Process defined in
- <xref target="RFC4271"/>.  This document augments <xref target="RFC7752"/> by replacing its
- use of the existing Decision Process. Rather than reusing the BGP-LS SAFI, the BGP-LS-SPF SAFI
- <xref target="SAFI"/> is introduced to insure backward compatibility.
+ <xref target="RFC4271"/>.  This document uses NLRIs and TLVs defined in <xref target="RFC7752"/>.
+ Rather than reusing the BGP-LS SAFI, the BGP-LS-SPF SAFI
+ <xref target="SAFI"/> is introduced to insure backward compatibility due to the alternate usage.
 </t>
 <t>
   The BGP SPF enhancement reuses of the Node, Link, and Prefix NLRI defined
@@ -391,10 +398,9 @@ as next-hops can be deployed similar to  <xref target="RFC5549"/>.
   specified in subsequent documents.
 </t>
 <t>
-  Support for Multiple Topology Routing (MTR) as described in
-  <xref target="RFC4915"/> is an area for further study dependent on deployment
-  requirements. Consequently, usage of the Multi-Topology TLV as described in section 3.2.1.5 of
-  <xref target="RFC7752"/> is not specified.
+  Support for Multiple Topology Routing (MTR) similar to the OSPF MTR computation described in
+  <xref target="RFC4915"/> is beyond the scope of this document and usage of the Multi-Topology TLV
+  as described in section 3.2.1.5 of <xref target="RFC7752"/> is not specified.
 </t>
 <t>
   The rules for setting the NLRI next-hop path attribute will follow section 3.4
@@ -1362,6 +1368,8 @@ co-authors have contributed to the document.
       &RFC5549;
 
       &RFC5880;
+
+      &RFC7911;
 
       &RFC7938;
 
