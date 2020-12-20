@@ -293,8 +293,6 @@ originator is required. Given that verification of the adjacencies is done
 outside of BGP (see <xref target="peering-models"/>), each BGP speaker will
 only need as many sessions and copies of the NLRI as required for
 redundancy (e.g., one for the SPF computation and another for backup).
-Functions such as Optimized Route Reflection (ORR)
-are supported without extension by virtue of the primary advantages.
 Additionally, a controller could inject topology that
 is learned outside the BGP routing domain.
 </t>
@@ -316,6 +314,21 @@ address families (using the existing model) and realize all the above
 advantages. A simplified peering model using IPv6 link-local addresses
 as next-hops can be deployed similar to  <xref target="RFC5549"/>.
 </t>
+</section>
+      <section title="Document Overview">
+<t>
+  The document begins with sections defining the precise relationship that BGP SPF has
+  with both the base BGP <xref target="RFC4271"/>  (<xref target="BGP-base"/>) and the
+  BGP Link-State (BGP-LS)  extensions <xref target="RFC7752"/>
+  (<xref target="BGP-LS"/>). This is required to dispel the
+  notion that BGP SPF is an independent protocol. The BGP peering models as well as the
+  respective trade-offs of these models are then discussed in
+  <xref target="peering-models"/>. The remaining sections define the protocol enhancements
+  necessary to support BGP SPF with the BGP-LS extensions defined in <xref target="protocol-extend"/>,
+  the replacement of the BGP decision process described in
+  <xref target="bgp-decision"/>, and the BGP SPF error handling defined in
+  <xref target="error-handling"/>
+</t> 
 </section>
       <section title="Requirements Language">
        <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
@@ -466,6 +479,7 @@ discussed in greater detail in <xref target="I-D.ietf-lsvr-applicability"/>.
 </section>
 </section>
 
+<section anchor="protocol-extend" title="BGP Shortest Path Routing (SPF) Protocol Extensions">
 <section anchor="SAFI" title="BGP-LS Shortest Path Routing (SPF) SAFI">
 <t>
   In order to replace the Phase 1 and 2 decision functions of the
@@ -479,7 +493,7 @@ discussed in greater detail in <xref target="I-D.ietf-lsvr-applicability"/>.
   other BGP speakers in the SPF routing domain.
 </t>
 
-<section title="BGP-LS-SPF NLRI TLVs">
+<section anchor="BGP-LS-TLV" title="BGP-LS-SPF NLRI TLVs">
 <t>
   XXX Mention ordering of the TLV is must.
 </t>
@@ -758,8 +772,9 @@ is replaced or experiences a cold-start), the phase 1 decision function
 </t>
 </section>
 </section>
+</section>
 
-<section title="Decision Process with SPF Algorithm">
+<section anchor="bgp-decision" title="Decision Process with SPF Algorithm">
 <t>
 The Decision Process described in <xref target="RFC4271"/> takes place in
 three distinct phases. The Phase 1 decision function of the Decision Process is
@@ -1036,8 +1051,9 @@ bi-directional connectivity check.
 </t>
 </section>
 </section>
+</section>
 
-<section title="Error Handling">
+<section anchor="error-handling" title="Error Handling">
 <t>
 This section describes the Error Handling actions, as described in
 <xref target="RFC7606"/> , that are to be performed for handling of BGP update
@@ -1168,7 +1184,6 @@ further analysis.
    An implementation SHOULD log an error for any errors found during
    syntax validation for further analysis.
 </t>
-</section>
 </section>
 
     <section anchor="IANA" title="IANA Considerations">
