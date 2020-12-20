@@ -322,11 +322,11 @@ as next-hops can be deployed similar to  <xref target="RFC5549"/>.
   BGP Link-State (BGP-LS)  extensions <xref target="RFC7752"/>
   (<xref target="BGP-LS"/>). This is required to dispel the
   notion that BGP SPF is an independent protocol. The BGP peering models as well as the
-  respective trade-offs of these models are then discussed in
-  <xref target="peering-models"/>. The remaining sections define the protocol enhancements
-  necessary to support BGP SPF with the BGP-LS extensions defined in <xref target="protocol-extend"/>,
-  the replacement of the BGP decision process described in
-  <xref target="bgp-decision"/>, and the BGP SPF error handling defined in
+  their respective trade-offs are then discussed in
+  <xref target="peering-models"/>. The remaining sections which make up the bulk of the document
+  define the protocol enhancements necessary to support BGP SPF. The BGP-LS extensions are
+  defined in <xref target="protocol-extend"/>. The replacement of the base BGP decision process
+  is defined in <xref target="bgp-decision"/>. Finally, BGP SPF error handling is defined in
   <xref target="error-handling"/>
 </t> 
 </section>
