@@ -20,10 +20,14 @@
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3552.xml">
 <!ENTITY RFC4271 SYSTEM
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4271.xml">
+<!ENTITY RFC4272 SYSTEM
+  "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4272.xml">
 <!ENTITY RFC4456 SYSTEM
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4456.xml">
 <!ENTITY RFC4486 SYSTEM
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4486.xml">
+<!ENTITY RFC4593 SYSTEM
+  "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4593.xml">
 <!ENTITY RFC4724 SYSTEM
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4724.xml">
 <!ENTITY RFC4750 SYSTEM
@@ -40,6 +44,10 @@
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5549.xml">
 <!ENTITY RFC5880 SYSTEM
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5880.xml">
+<!ENTITY RFC6811 SYSTEM
+  "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6811.xml">
+<!ENTITY RFC6952 SYSTEM
+  "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6952.xml">
 <!ENTITY RFC7752 SYSTEM
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7752.xml">
 <!ENTITY RFC7606 SYSTEM
@@ -54,6 +62,8 @@
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8402.xml">
 <!ENTITY RFC8174 SYSTEM
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8174.xml">
+<!ENTITY RFC8205 SYSTEM
+  "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8205.xml">
 <!ENTITY RFC8405 SYSTEM
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8405.xml">
 <!ENTITY RFC8654 SYSTEM
@@ -1301,9 +1311,36 @@ further analysis.
 
 <section anchor="Security" title="Security Considerations">
 <t>
-This extension to BGP does not change the underlying security issues
-inherent in the existing <xref target="RFC4271"/>, <xref target="RFC4724"/>,
-and <xref target="RFC7752"/>.
+This document defines a new BGP SAFI, i.e., the BGP-LS-SPF SAFI. This document
+does not change the underlying security issues inherent in the BGP protocol
+<xref target="RFC4271"/>. The Security Considerations
+discused in <xref target="RFC4271"/> applies to the BGP SPF functionality as well.
+The analysis of the security issues for BGP mentioned
+in <xref target="RFC4272"/> and <xref target="RFC6952"/> also applies to this document.
+The analysis of Generic Threats to Routing Protocols done in <xref target="RFC4593"/>
+is also worth noting. As the modifications described in this document for
+BGP SPF applies to IPv4 Unicast and IPv6 Unicast as undelay AFIs, the BGP
+security solutions described in <xref target="RFC6811"/> and <xref target="RFC8205"/>
+are somewhat constricted as they are meant to apply for interdomain BGP where
+mutiple administrative domains are typically involved.
+</t>
+<t>
+In the context of the BGP peerings associated with this document, a
+BGP speaker MUST NOT accept updates from a peer that is not within
+any adminstrative control of an operator. That is, a participating
+BGP speaker SHOULD be aware of the nature of its peering relationships.
+Such protection can be achieved by manual configuration of peers
+at the BGP speaker.
+</t>
+<t>
+There could always be misbehaving or rouge BGP speakers that are participating
+within a given domain of adminstrative control of an operator. These speakers
+could be advertising incorrect information like: someone else's node NLRI or
+a Link NLRI or any BGP information that results into a bogus topology or
+repeated SPF calculations. While there are ways to mitigate such errors, any
+persistent error conditions typically results in an excessive flooding. At this
+point, appropriate errors are logged and an operator intervention is required,
+similar to what is done in OSFP <xref target="RFC2328"/>.
 </t>
 </section>
 
@@ -1436,15 +1473,23 @@ co-authors have contributed to the document.
 
       &RFC4271;
 
+      &RFC4272;
+
+      &RFC4593;
+
       &RFC4750;
 
       &RFC4760;
+
+      &RFC6811;
 
       &RFC7606;
 
       &RFC7752;
 
       &RFC8174;
+
+      &RFC8205;
 
       &RFC8402;
 
@@ -1471,6 +1516,8 @@ co-authors have contributed to the document.
       &RFC5549;
 
       &RFC5880;
+
+      &RFC6952;
 
       &RFC7911;
 
