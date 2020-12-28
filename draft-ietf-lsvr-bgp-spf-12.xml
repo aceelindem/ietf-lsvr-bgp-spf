@@ -40,10 +40,14 @@
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5065.xml">
 <!ENTITY RFC5286 SYSTEM
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5286.xml">
+<!ENTITY RFC5492 SYSTEM
+  "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5492.xml">
 <!ENTITY RFC5549 SYSTEM
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5549.xml">
 <!ENTITY RFC5880 SYSTEM
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5880.xml">
+<!ENTITY RFC5926 SYSTEM
+  "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5926.xml">
 <!ENTITY RFC6811 SYSTEM
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6811.xml">
 <!ENTITY RFC6952 SYSTEM
@@ -58,8 +62,8 @@
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7938.xml">
 <!ENTITY RFC7942 SYSTEM
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7942.xml">
-<!ENTITY RFC8402 SYSTEM
-  "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8402.xml">
+<!ENTITY RFC8665 SYSTEM
+  "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8665.xml">
 <!ENTITY RFC8174 SYSTEM
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8174.xml">
 <!ENTITY RFC8205 SYSTEM
@@ -68,8 +72,6 @@
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8405.xml">
 <!ENTITY RFC8654 SYSTEM
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8654.xml">
-<!ENTITY I-D.ietf-idr-bgpls-segment-routing-epe SYSTEM
-  "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-idr-bgpls-segment-routing-epe-19.xml">
 <!ENTITY I-D.ietf-lsvr-applicability SYSTEM
   "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-lsvr-applicability-05.xml">
 <!ENTITY I-D.psarkar-lsvr-bgp-spf-impl SYSTEM
@@ -514,15 +516,16 @@ and the stability of the BGP sessions. This is discussed in greater detail in
 <section anchor="protocol-extend" title="BGP Shortest Path Routing (SPF) Protocol Extensions">
   <section anchor="SAFI" title="BGP-LS Shortest Path Routing (SPF) SAFI">
     <t>
-      In order to replace the Phase 1 and 2 decision functions of the
-      existing Decision Process with an SPF-based Decision Process and streamline
-      the Phase 3 decision functions in a backward compatible manner, this document
+      In order to replace the exiting BGP decision process with an SPF-based Decision Process
+      in a backward compatible manner by not impacting the BGP-LS SAFI, this document
       introduces the BGP-LS-SPF SAFI.
-      The BGP-LS-SPF (AFI 16388 / SAFI TBD1) <xref target="RFC4760"/> is allocated by IANA
-      as specified in the <xref target="IANA"/>. A BGP speaker using the
-      BGP-LS-SPF extensions described herein MUST exchange the AFI/SAFI using
-      Multiprotocol Extensions Capability Code <xref target="RFC4760"/> with
-      other BGP speakers in the SPF routing domain. The BGP-LS-SPF SAFI is used to carry
+      The BGP-LS-SPF (AFI 16388 / SAFI 80) <xref target="RFC4760"/> is allocated by IANA
+      as specified in the <xref target="IANA"/>.
+      In order for two BGP speakers to exchange BGP SPF NLRI, they MUST exchange
+      the Multiprotocol Extensions Capability <xref target="RFC5492"/> <xref target="RFC4760"/>
+      to ensure that they are both capable of properly processing such NLRI.  This is done with
+      AFI 16388 / SAFI 80 for BGP-LS-SPF advertised with the BGP SPF Routing Domain.
+      The BGP-LS-SPF SAFI is used to carry
       IPv4 and IPv6 prefix information in a format that is easier to calculate SPF-based
       Decision Process.
     </t>
@@ -603,37 +606,38 @@ and the stability of the BGP sessions. This is discussed in greater detail in
 <t>
   <xref target="RFC7752"/> describes a mechanism by which link-state and TE
   information can be collected from networks and shared with external components
-  using BGP protocol. It describes both the definition of BGP-LS-SPF NLRI
-   that describes links, nodes, and prefixes comprising IGP link-state
-   information and the definition of a BGP path attribute (BGP-LS
-   attribute) that carries link, node, and prefix properties and
-   attributes, such as the link and prefix metric or auxiliary
-   Router-IDs of nodes, etc.
+  using the BGP protocol. It describes both the definition of BGP-LS-SPF NLRI
+  that describes links, nodes, and prefixes comprising IGP link-state
+  information and the definition of a BGP path attribute (BGP-LS
+  attribute) that carries link, node, and prefix properties and
+  attributes, such as the link and prefix metric or auxiliary
+  Router-IDs of nodes, etc. This document extends the usage of BGP-LS NLRI for
+  the purpose of BGP SPF calculation via advertisement in the BGP-LS-SPF SAFI.
 </t>
 
 <t>
-The BGP protocol will be used in the Protocol-ID field specified in
-table 1 of <xref target="I-D.ietf-idr-bgpls-segment-routing-epe"/>.
-The local and remote node descriptors for all NLRI will be the BGP Router-ID (TLV 516)
-and either the AS Number (TLV 512) <xref target="RFC7752"/> or the BGP Confederation
-Member (TLV 517) <xref target="RFC7752"/>.
-However, if the BGP Router-ID is known to be unique within the BGP Routing domain,
-it can be used as the sole descriptor.
+  The protocol identifier specified in the Protocol-ID field <xref target="RFC7752"/>
+  will represent the origin of the advertised NLRI. For Node NLRI and Link NLRI,
+  this MUST be the direct protocol (4). Node or Link NLRI with a Protocol-ID other than
+  direct will be considered malformed. For Prefix NLRI, the specified Protocol-ID
+  MUST be origin of the prefix. The local and remote node descriptors for all NLRI MUST
+  include the BGP Identifier (TLV 516) and the AS Number (TLV 512)
+  <xref target="RFC7752"/>. The BGP Confederation Member (TLV 517)  <xref target="RFC7752"/> is not
+  appliable and SHOULD not be included. If TLV 517 is included,
+  it will be ignored.
 </t>
 <section anchor="NLRI-Use" title="Node NLRI Usage">
 <t>
-The BGP Node NLRI will be advertised unconditionally by all routers in
+The Node NLRI MUST be advertised unconditionally by all routers in
 the BGP SPF routing domain.
 </t>
 <section title="Node NLRI Attribute SPF Capability TLV">
 <t>
-The SPF capability is a new Node Attribute TLV that will be added
-to those defined in table 7 of <xref target="RFC7752"/>. The
-new attribute TLV will only be applicable when BGP is specified
-in the Node NLRI Protocol ID field.
-The TBD TLV type will be defined by IANA. The new Node
+The SPF capability is an additional Node Attribute TLV.
+This attribute TLV SHOULD only be included with the
+BGP-LS-SPF SAFI. The TBD TLV type will be defined by IANA. The Node
 Attribute TLV will contain a single-octet SPF algorithm as defined
-in <xref target="RFC8402"/>.
+in <xref target="RFC8665"/>.
 </t>
 <t>
 <figure align="center">
@@ -664,7 +668,7 @@ The SPF Algorithm may take the following values:
 </t>
 <t>Note that usage of Strict Shortest Path First (SPF) algorithm is
 defined in the IGP algorithm registry but usage is restricted to
-<xref target="I-D.ietf-idr-bgpls-segment-routing-epe"/>. Hence, its
+<xref target="RFC8665"/>. Hence, its
 usage for BGP-LS-SPF is out of scope.</t>
 <t>
 When computing the SPF for a given BGP routing domain, only BGP nodes
@@ -1155,6 +1159,7 @@ This section describes the Error Handling actions, as described in
 <xref target="RFC7606"/> , that are to be performed for handling of BGP update
 messages for BGP-LS-SPF.
 </t>
+<t>XXX-Keyur Node descriptor TLV handling</t>
 
 <t>
 When a BGP speaker receives a BGP Update containing a malformed SPF Capability TLV
@@ -1168,7 +1173,7 @@ further analysis.
 <t>
   A Link-State NLRI MUST NOT be considered as malformed or invalid
   based on the inclusion/exclusion of TLVs or contents of the TLV
-  fields (i.e. semantic errors), as described in Section 4.1 and
+  fields (i.e., semantic errors), as described in Section 4.1 and
   Section 4.2.
 </t>
 
@@ -1212,7 +1217,7 @@ further analysis.
   (e.g. when the TLV ordering rule is violated), then it MUST handle
   such malformed NLRIs as 'Treat-as-withdraw'.  In other cases, where
   the error in the NLRI encoding results in the inability to process
-  the BGP update message (e.g. length related encoding errors), then
+  the BGP update message (e.g., length related encoding errors), then
   the router SHOULD handle such malformed NLRIs as 'AFI/SAFI disable'
   when other AFI/SAFI besides BGP-LS are being advertised over the same
   session.  Alternately, the router MUST perform 'session reset' when
@@ -1223,7 +1228,7 @@ further analysis.
 <t>
    A BGP-LS-SPF Attribute MUST NOT be considered as malformed or invalid
    based on the inclusion/exclusion of TLVs or contents of the TLV
-   fields (i.e. semantic errors), as described in Section 4.1 and
+   fields (i.e., semantic errors), as described in Section 4.1 and
    Section 5.2.
 </t>
 
@@ -1319,10 +1324,12 @@ The analysis of the security issues for BGP mentioned
 in <xref target="RFC4272"/> and <xref target="RFC6952"/> also applies to this document.
 The analysis of Generic Threats to Routing Protocols done in <xref target="RFC4593"/>
 is also worth noting. As the modifications described in this document for
-BGP SPF applies to IPv4 Unicast and IPv6 Unicast as undelay AFIs, the BGP
+BGP SPF applyto IPv4 Unicast and IPv6 Unicast as undelay AFIs, the BGP
 security solutions described in <xref target="RFC6811"/> and <xref target="RFC8205"/>
-are somewhat constricted as they are meant to apply for interdomain BGP where
-mutiple administrative domains are typically involved.
+are somewhat constricted as they are meant to apply for inter-domain BGP where
+mutiple administrative domains are typically involved. The BGP-LS-SPF SAFI NLRI described
+in this document are usually advertised between EBGP or IBGP speakers under a single
+administrative domain.
 </t>
 <t>
 In the context of the BGP peerings associated with this document, a
@@ -1333,14 +1340,15 @@ Such protection can be achieved by manual configuration of peers
 at the BGP speaker.
 </t>
 <t>
-There could always be misbehaving or rouge BGP speakers that are participating
-within a given domain of adminstrative control of an operator. These speakers
-could be advertising incorrect information like: someone else's node NLRI or
-a Link NLRI or any BGP information that results into a bogus topology or
-repeated SPF calculations. While there are ways to mitigate such errors, any
-persistent error conditions typically results in an excessive flooding. At this
-point, appropriate errors are logged and an operator intervention is required,
-similar to what is done in OSFP <xref target="RFC2328"/>.
+  In order to mitigate the risk of peering with BGP speakers masquerading
+  as legitimate authorized BGP speakers, it is recommended that the
+  TCP Authentication Option (TCP-AO) <xref target="RFC5926"/> be used to
+  authenticate BGP sessions. If an authorized BGP peer is compromised, that
+  BGP peer could advertise modified Node, Link, or Prefix NLRI will result
+  in misrouting, repeating origination of NLRI, and/or excessive SPF
+  calculations. When a BGP speaker detects that its self-originated NLRI
+  is being originated by another BGP speaker, an appropriate error should
+  be logged so that the operator can take corrective action.
 </t>
 </section>
 
@@ -1481,6 +1489,10 @@ co-authors have contributed to the document.
 
       &RFC4760;
 
+      &RFC5492;
+
+      &RFC5926;
+
       &RFC6811;
 
       &RFC7606;
@@ -1491,13 +1503,11 @@ co-authors have contributed to the document.
 
       &RFC8205;
 
-      &RFC8402;
+      &RFC8665;
 
       &RFC8405;
 
       &RFC8654;
-
-      &I-D.ietf-idr-bgpls-segment-routing-epe;
 
     </references>
 
