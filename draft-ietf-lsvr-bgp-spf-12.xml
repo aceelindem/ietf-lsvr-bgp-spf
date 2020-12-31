@@ -245,11 +245,12 @@ This document describes an alternative solution which leverages
 BGP-LS <xref target="RFC7752"/> and the Shortest Path First algorithm similar
 to Internal Gateway Protocols (IGPs) such as OSPF <xref target="RFC2328"/>.
 </t>
-<t>This documents leverages both the BGP protocol <xref target="RFC4271"/> and
+<t>This document leverages both the BGP protocol <xref target="RFC4271"/> and
 the BGP-LS <xref target="RFC7752"/> protocols. The relationship, as well as,
 the scope of changes are described respectively in <xref target="BGP-base"/>
 and <xref target="BGP-LS"/>. The modifications to <xref target="RFC4271"/>
-for BGP SPF described herein only apply to the IPv4 and IPv6 as underlay AFIs.
+for BGP SPF described herein only apply to the IPv4 and IPv6 as underlay unicast
+Subsequent Address Families Indentifiers (SAFIs).
 Operations for any other BGP SAFIs are outside the scope of this document.
 </t>
 <t>
@@ -271,10 +272,10 @@ or controllers.
   including BGP speaker, NLRI, and Route.</t>
   <t>Additionally, this document introduces the following terms:
   <list style="hanging">
-    <t hangText="BGP SPF Routing Domain"> A set of BGP routers that are under a single
+    <t hangText="BGP SPF Routing Domain:"> A set of BGP routers that are under a single
     administrative domain and are link-state information using the BGP-LS-SPF information
     and computing routes using BGP SPF as described herein.</t>
-    <t hangText="BGP-LS-SPF NLRI"> This refers to BGP-LS Network Layer Reachability
+    <t hangText="BGP-LS-SPF NLRI:"> This refers to BGP-LS Network Layer Reachability
     Information (NLRI) that is being advertised in the BGP-LS-SPF SAFI (<xref target="SAFI"/>)
     and is being used for BGP SPF route computation.</t>
   </list></t>
@@ -299,8 +300,8 @@ BGP paths <xref target="RFC7911"/>  or other extensions. In short, the advantage
 of an IGP such as OSPF <xref target="RFC2328"/> are availed in BGP.
 </t>
 <t>
-  With the simplified BGP decision process as defined in <xref target="BGP-base"/>
-  and <xref target="bgp-decision"/>, NLRI changes can be disseminated throughout the BGP
+  With the simplified BGP decision process as defined in 
+  <xref target="bgp-decision"/>, NLRI changes can be disseminated throughout the BGP
   routing domain much more rapidly (equivalent to IGPs with the proper
   implementation).
 </t>
@@ -324,7 +325,7 @@ outside of BGP (see <xref target="peering-models"/>), each BGP speaker will
 only need as many sessions and copies of the NLRI as required for
 redundancy (see <xref target="peering-models"/>).
 Additionally, a controller could inject topology that
-is learned outside the BGP routing domain.
+is learned outside the BGP SPF routing domain.
 </t>
 <t>
 Given that controllers are already consuming BGP-LS-SPF NLRI
@@ -340,7 +341,7 @@ while sharing the same NLRI.
 </t>
 <t>
 Finally, the BGP SPF topology can be used as an underlay for other BGP
-address families (using the existing model) and realize all the above
+SAFIs (using the existing model) and realize all the above
 advantages.
 </t>
 </section>
@@ -352,8 +353,8 @@ advantages.
   (<xref target="BGP-LS"/>). This is required to dispel the
   notion that BGP SPF is an independent protocol. The BGP peering models as well as the
   their respective trade-offs are then discussed in
-  <xref target="peering-models"/>. The remaining sections which make up the bulk of the document
-  define the protocol enhancements necessary to support BGP SPF. The BGP-LS extensions are
+  <xref target="peering-models"/>. The remaining sections, which make up the bulk of the
+  document, define the protocol enhancements necessary to support BGP SPF. The BGP-LS extensions are
   defined in <xref target="protocol-extend"/>. The replacement of the base BGP decision process
   is defined in <xref target="bgp-decision"/>. Finally, BGP SPF error handling is defined in
   <xref target="error-handling"/>
@@ -371,8 +372,8 @@ advantages.
 
 <section anchor="BGP-base" title="Base BGP Relationship">
   <t>
-    With the exception of the decision process, the BGP SPF extension leverages the BGP
-    protocol <xref target="RFC4271"/>  without change. This includes BGP protocol
+    With the exception of the decision process, the BGP SPF extensions leverage the BGP
+    protocol <xref target="RFC4271"/>  without change. This includes the BGP protocol
     Finite State Machine, BGP messages and the message formats, processing of BGP messages,
     BGP attributes and path attributes, BGP NLRI encodings, and any error handling 
     defined in the <xref target="RFC4271"/> and
@@ -382,9 +383,9 @@ advantages.
     Due to the changes to the decision
     process, there are mechanisms and encodings that are no longer applicable.
     While not necessarily required for computation, the ORIGIN, AS_PATH,
-    MULTI_EXIT_DISC, LOCAL_PREF and NEXT_HOP path attributes are mandatory and will 
+    MULTI_EXIT_DISC, LOCAL_PREF, and NEXT_HOP path attributes are mandatory and will 
     be validated. The ATOMIC_AGGEGATE, and AGGREGATOR are not applicable within the 
-    context of BGP SPF and SHOULD not be advertised. However, if they are advertised, 
+    context of BGP SPF and SHOULD NOT be advertised. However, if they are advertised, 
     they will be accepted, validated,
     and propagated consistent with the BGP protocol.
   </t>
@@ -424,29 +425,29 @@ advantages.
 <section anchor="BGP-LS" title="BGP Link-State (BGP-LS) Relationship">
 <t>
  <xref target="RFC7752"/> describes a mechanism by which link-state and TE information can
- be collected from networks and shared with external components using BGP.
+ be collected from networks and shared with external entities using BGP.
  This is achieved by defining NLRI advertised using the BGP-LS AFI. The BGP-LS extensions defined in
- <xref target="RFC7752"/> makes use of the  Decision Process defined in
- <xref target="RFC4271"/>.  This document uses NLRIs and TLVs defined in <xref target="RFC7752"/>.
+ <xref target="RFC7752"/> make use of the Decision Process defined in
+ <xref target="RFC4271"/>.  This document reuses NLRI and TLVs defined in <xref target="RFC7752"/>.
  Rather than reusing the BGP-LS SAFI, the BGP-LS-SPF SAFI
- <xref target="SAFI"/> is introduced to insure backward compatibility due to the alternate usage.
+ <xref target="SAFI"/> is introduced to insure backward compatibility for the BGP-LS SAFI usage.
 </t>
 <t>
-  The BGP SPF enhancement reuses of the Node, Link, and Prefix NLRI defined
+  The BGP SPF entensions reuse the Node, Link, and Prefix NLRI defined
   in <xref target="RFC7752"/>.  The usage of the BGP-LS
   NLRI, metric attributes, and attribute extensions is described in
   <xref target="NLRI-Use"/>. The usage of others BGP-LS attributes is not precluded and is,
   in fact, expected. However, the details are beyond the scope of this document and will be
-  specified in subsequent documents.
+  specified in future documents.
 </t>
 <t>
   Support for Multiple Topology Routing (MTR) similar to the OSPF MTR computation described in
-  <xref target="RFC4915"/> is beyond the scope of this document and usage of the Multi-Topology TLV
-  as described in section 3.2.1.5 of <xref target="RFC7752"/> is not specified.
+  <xref target="RFC4915"/> is beyond the scope of this document. Consequently, the usage of the
+  Multi-Topology TLV as described in section 3.2.1.5 of <xref target="RFC7752"/> is not specified.
 </t>
 <t>
-  The rules for setting the NLRI next-hop path attribute will follow section 3.4
-  of <xref target="RFC7752"/>.
+  The rules for setting the NLRI next-hop path attribute for the BGP-LS-SPF SAFI will follow 
+  the BGP-LS SAFI as specified in section 3.4 of <xref target="RFC7752"/>.
 </t>
 </section> <!-- for BGP-LS relationship section -->
 
@@ -455,26 +456,26 @@ advantages.
   Depending on the topology, scaling, capabilities of the BGP-LS-SPF speakers, and redundancy
   requirements, various peering models are supported. The only requirements are that all BGP
   SPF speakers in the BGP SPF routing domain receive BGP-LS-SPF NLRI, run an SPF calculation,
-  and update their data plane appropriately. The content of the Link NLRI is described
-  in <xref target="Link-NLRI"/>.
+  and update their routing table appropriately.
 </t>
 <section title="BGP Single-Hop Peering on Network Node Connections">
 <t>
-The simplest peering model is the one where 
-EBGP single-hop sessions are established over direct point-to-point links
-interconnecting the BGP SPF routing domain nodes. Once the single-hop BGP session has been
-established and the Link-State/SPF address family capability has been exchanged
-<xref target="RFC4760"/> on the corresponding session, the link is considered up from
-a BGP SPF prespective and the corresponding BGP-LS-SPF Link NLRI is advertised.
-If the session goes down, the corresponding Link NLRI will be withdrawn. Topologically,
-this would be equivalent to the peering model in <xref target="RFC7938"/> where there
-is a BGP session on every link in the data center switch fabric.
+  The simplest peering model is the one where 
+  EBGP single-hop sessions are established over direct point-to-point links
+  interconnecting the nodes in the BGP SPF routing domain. Once the single-hop BGP session has been
+  established and the BGP-LS/BGP-LS-SPF AFI/SAFI capability has been exchanged
+  <xref target="RFC4760"/> for the corresponding session, then the link is considered up from
+  a BGP SPF prespective and the corresponding BGP-LS-SPF Link NLRI is advertised.
+  If the session goes down, the corresponding Link NLRI will be withdrawn. Topologically,
+  this would be equivalent to the peering model in <xref target="RFC7938"/> where there
+  is a BGP session on every link in the data center switch fabric.  The content of the Link NLRI
+  is described in <xref target="Link-NLRI"/>.
 </t>
 </section>
-<section title="BGP Peering Between Directly Connected Network Nodes">
+<section title="BGP Peering Between Directly-Connected Nodes">
 <t>
-In this model, BGP-LS-SPF speakers peer with all directly connected
-network nodes but the sessions may be between loopback addresses (i.e.,
+In this model, BGP-LS-SPF speakers peer with all directly-connected
+nodes but the sessions may be between loopback addresses (i.e.,
 two-hop sessions) and the direct connection
 discovery and liveliness detection for the interconnecting links are
 independent of the BGP protocol. How this is accomplished is outside
@@ -482,33 +483,34 @@ the scope of this document. For example, liveliness detection could be
 done using the BFD protocol <xref target="RFC5880"/>.
 Consequently, there will be a single BGP session even if there are multiple
 direct connections between BGP-LS-SPF speakers. BGP-LS-SPF Link NLRI is advertised
-as long asa BGP session has been established, the Link-State/SPF address family
-capability has been exchanged <xref target="RFC4760"/> and
+as long as a BGP session has been established, the BGP-LS/BGP-LS-SPF AFI/SAFI
+capability has been exchanged <xref target="RFC4760"/>, and
 the link is operational as determined using liveliness detection mechanisms
 outside the scope of this document.
 This is much like the previous peering model only peering is between
-loopback addresses and the switch fabric links can be unnumbered. However,
-since there are BGP sessions between every directly connected node in the
-fabric, there is only a reduction in BGP sessions when there are parallel
-links between nodes in the fabric.
+loopback addresses and the interconnecting links can be unnumbered. However,
+since there are BGP sessions between every directly-connected node in the
+network, there is only a reduction in BGP sessions when there are parallel
+links between nodes.
 </t>
 </section>
 <section title="BGP Peering in Route-Reflector or Controller Topology">
 <t>
-In this model, BGP-LS-SPF speakers peer solely with one or more Route Reflectors
-<xref target="RFC4456"/> or controllers. As in the previous model, direct
-connection discovery and liveliness detection for those connections are
-done outside the BGP protocol.
-BGP-LS-SPF Link NLRI is advertised as long as the corresponding link is
-considered up as per the chosen liveness detection mechanism. 
+  In this model, BGP-LS-SPF speakers peer solely with one or more Route Reflectors
+  <xref target="RFC4456"/> or controllers. As in the previous model, direct
+  connection discovery and liveliness detection for those connections are
+  done outside of the BGP protocol.
+  BGP-LS-SPF Link NLRI is advertised as long as the corresponding link is
+  considered up as per the chosen liveness detection mechanism. 
 </t>
-<t>This peering model, known as sparse peering, allows for fewer BGP sessions
-and, consequently, fewer instances of the same NLRI received from multiple peers.
-Normally, the route-reflectors or controller BGP sessions would be on directly links to
-avoid dependence on another routing protocol for session connectivity. However, this is
-not precluded. The number of BGP sessions is dependent on the redundancy requirements
-and the stability of the BGP sessions. This is discussed in greater detail in
-<xref target="I-D.ietf-lsvr-applicability"/>.
+<t>
+  This peering model, known as sparse peering, allows for fewer BGP sessions
+  and, consequently, fewer instances of the same NLRI received from multiple peers.
+  Normally, the route-reflectors or controller BGP sessions would be on directly-connected
+  links to avoid dependence on another routing protocol for session connectivity. However,
+  multi-hop peering is not precluded. The number of BGP sessions is dependent
+  on the redundancy requirements and the stability of the BGP sessions. This is
+  discussed in greater detail in <xref target="I-D.ietf-lsvr-applicability"/>.
 </t>
 </section>
 </section>
