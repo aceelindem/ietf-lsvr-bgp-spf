@@ -517,7 +517,7 @@ links between nodes.
 
 <section anchor="protocol-extend" title="BGP Shortest Path Routing (SPF) Protocol Extensions">
   <section anchor="SAFI" title="BGP-LS Shortest Path Routing (SPF) SAFI">
-    <t>
+    <t> 
       In order to replace the exiting BGP decision process with an SPF-based Decision Process
       in a backward compatible manner by not impacting the BGP-LS SAFI, this document
       introduces the BGP-LS-SPF SAFI.
@@ -636,8 +636,9 @@ the BGP SPF routing domain.
 <section title="Node NLRI Attribute SPF Capability TLV">
 <t>
 The SPF capability is an additional Node Attribute TLV.
-This attribute TLV SHOULD only be included with the
-BGP-LS-SPF SAFI. The TBD2 TLV type will be defined by IANA. The Node
+This attribute TLV MUST be included with the
+BGP-LS-SPF SAFI and SHOULD NOT be used for other SAFIs.
+The TBD2 TLV type will be defined by IANA. The Node
 Attribute TLV will contain a single-octet SPF algorithm as defined
 in <xref target="RFC8665"/>.
 </t>
@@ -651,42 +652,31 @@ in <xref target="RFC8665"/>.
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    | SPF Algorithm |
    +-+-+-+-+-+-+-+-+
-
-The SPF Algorithm may take the following values:
-
-0 - Normal Shortest Path First (SPF) algorithm based on link
-    metric. This is the standard shortest path algorithm as
-    computed by the IGP protocol.  Consistent with the deployed
-    practice for link-state protocols, Algorithm 0 permits any
-    node to overwrite the SPF path with a different path based on
-    its local policy.
-1 - Strict Shortest Path First (SPF) algorithm based on link
-    metric. The algorithm is identical to Algorithm 0 but Algorithm
-    1 requires that all nodes along the path will honor the SPF
-    routing decision.  Local policy at the node claiming support for
-    Algorithm 1 MUST NOT alter the SPF paths computed by Algorithm 1.
+ 
 ]]></artwork>
 </figure>
 </t>
-<t>Note that usage of Strict Shortest Path First (SPF) algorithm is
-defined in the IGP algorithm registry but usage is restricted to
-<xref target="RFC8665"/>. Hence, its
-usage for BGP-LS-SPF is out of scope.</t>
+<t>The SPF algorithm inherits the values from the IGP Algortithm Types
+registry <xref target="RFC8665"/>. Algorithm 0, (Shortest Path Algorithm (SPF)
+based on link metric, is supported and described in <xref target="BGP-SPF"/>.
+Support for other algorithm types is beyond the scope of this specification.
+</t>
 <t>
 When computing the SPF for a given BGP routing domain, only BGP nodes
-advertising the SPF capability attribute will be included the Shortest
-Path Tree (SPT).
+advertising the SPF capability TLV with same SPF algorithm
+will be included the Shortest Path Tree (SPT).
 </t>
 </section>
 <section anchor="node-status-tlv" title="BGP-LS-SPF Node NLRI Attribute SPF Status TLV">
 <t>
 A BGP-LS Attribute TLV to BGP-LS-SPF Node NLRI is defined to indicate the status of
 the node with respect to the BGP SPF calculation. This will be used to rapidly take a
-node out of service or to indicate the node is not to be used for transit (i.e.,
-non-local) traffic. If the
+node out of service <xref target="node-failure"/> or to indicate the node is not to be
+used for transit (i.e., non-local) traffic <xref target="BGP-SPF"/>. If the
 SPF Status TLV is not included with the Node NLRI, the node is considered to be up
-and is available for transit traffic.
-A single TLV type will be shared by the Node, Link, and Prefix NLRI.
+and is available for transit traffic. The SPF status is acted upon with the execution of
+the next SPF calculation <xref target="BGP-SPF"/>. XXX-KEYUR-ERROR-HANLDING
+A single TLV type will be shared by the BGP-LS-SPF Node, Link, and Prefix NLRI.
 </t>
 <t>
 <figure align="center">
@@ -727,28 +717,41 @@ of descriptors may be included in the same Link NLRI. The link identifiers are
 described in table 5 of <xref target="RFC7752"/>.
 </t>
 <t>
-  The link IGP metric attribute TLV (TLV 1095) SHOULD be advertised. The usage of other
-  Link attribute TLVs is beyond the scope of this document. 
-  The metric value in this TLV is variable length dependent
-  on specific protocol usage (refer to section 3.3.2.4 in <xref target="RFC7752"/>).
-  For simplicity, the BGP-LS-SPF metric length will be 4 octets.
+  For a link to be used in Shortest Path Tree (SPT) for a given address family,
+  i.e., IPv4 or IPv6, both routers connecting the link MUST have an address in the
+  same subnet for that address family. However, an IPv4 or IPv6 prefix associated
+  with the link MAY be installed without the corresponding address on the other
+  side of link.
+</t> 
+<t>
+  The link IGP metric attribute TLV (TLV 1095) MUST be advertised. XXX-KEYUR-ERROR
+  The BGP SPF metric length is 4 octets.
+  Like OSPF <xref target="RFC2328"/>, A cost is associated with the output side of each 
+  router interface.  This cost is configurable by the system administrator.  The
+  lower the cost, the more likely the interface is to be used to forward data traffic.
+  One possible default for metric would be to give each interface a cost of 1
+  making it effectively a hop count.
   Algorithms such as setting the metric inversely to the link speed as done in the
   OSPF MIB <xref target="RFC4750"/> MAY be supported. However, this is beyond the scope
-  of this document.
+  of this document. Refer to <xref target="link-metric-config"/> for
+  operational guidance.
+</t>
+<t>
+  The usage of other link attribute TLVs is beyond the scope of this document.
 </t>
 <section title="BGP-LS-SPF Link NLRI Attribute Prefix-Length TLVs">
 <t>
-Two BGP-LS Attribute TLVs to BGP-LS-SPF Link NLRI are defined to advertise the prefix length
-associated with the IPv4 and IPv6 link prefixes. The prefix length is used for the
-optional installation of prefixes corresponding to Link NLRI as defined in
-<xref target="BGP-SPF"/>.</t>
+  Two BGP-LS Attribute TLVs to BGP-LS-SPF Link NLRI are defined to advertise the prefix length
+  associated with the IPv4 and IPv6 link prefixes associated with the link descriptor addresses.
+  The prefix length is used for the optional installation of prefixes corresponding to
+  Link NLRI as defined in <xref target="BGP-SPF"/>. XXX-KEYUR-ERROR</t>
 <t>
 <figure align="center">
 <artwork align="left"><![CDATA[
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   | IPv4 (TBD4) IPv6 Type (TBD5)  |          Length (1 Octet)     |
+   |IPv4 (TBD4) or IPv6 Type (TBD5)|          Length (1 Octet)     |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    | Prefix-Length |
    +-+-+-+-+-+-+-+-+
@@ -766,7 +769,7 @@ A BGP-LS Attribute TLV to BGP-LS-SPF Link NLRI is defined to indicate the status
 the link with respect to the BGP SPF calculation. This will be used to expedite
 convergence for link failures as discussed in <xref target="failure-converge"/>. If the
 SPF Status TLV is not included with the Link NLRI, the link is considered
-up and available.
+up and available. XXX-KEYUR-ERROR (Unknown values and priority)
 A single TLV type will be shared by the Node, Link, and Prefix NLRI.
 </t>
 <t>
@@ -790,14 +793,15 @@ A single TLV type will be shared by the Node, Link, and Prefix NLRI.
 </t>
 </section>
 </section>
-<section title="Prefix NLRI Usage">
+<section title="IPv4/IPv6 Prefix NLRI Usage">
 <t>
-Prefix NLRI is advertised with a local node descriptor as described above and the prefix and
-length used as the descriptors (TLV 265) as described in <xref target="RFC7752"/>.
-The prefix metric attribute TLV (TLV 1155) SHOULD be advertised. The usage of other
-attribute TLVs is beyond the scope of this document. For loopback prefixes, the metric
-should be 0. For non-loopback prefixes, the setting of the metric is a local matter and
-beyond the scope of this document.
+  IPv4/IPv6 Prefix NLRI is advertised with a Local Node Descriptor as described above and
+  the prefix and length. The Prefix Descriptors field includes the IP Reachability
+  Information TLV (TLV 265) as described in <xref target="RFC7752"/>.
+  The prefix metric attribute TLV (TLV 1155) MUST be advertised. The usage of other
+  attribute TLVs is beyond the scope of this document. For loopback prefixes, the metric
+  should be 0. For non-loopback prefixes, the setting of the metric is a local matter and
+  beyond the scope of this document.
 </t>
 <section anchor="prefix-status-tlv" title="BGP-LS-SPF Prefix NLRI Attribute SPF Status TLV">
 <t>
@@ -820,7 +824,7 @@ A single TLV type will be shared by the Node, Link, and Prefix NLRI.
    +-+-+-+-+-+-+-+-+
 
     BGP Status Values: 0 - Reserved
-                       1 - Prefix down with respect to SPF
+                       1 - Prefix Unreachable with respect to SPF
                    2-254 - Undefined
                      255 - Reserved
 
@@ -1390,11 +1394,30 @@ This section includes unique management considerations for the BGP-LS-SPF addres
 </t>
 <section anchor="Config" title="Configuration">
 <t>
-In addition to configuration of the BGP-LS-SPF address family, implementations SHOULD
-support the "Shortest Path First (SPF) Back-Off Delay Algorithm for Link-State IGPs"
-<xref target="RFC8405"/>. If supported, configuration of the INITIAL_SPF_DELAY, SHORT_SPF_DELAY,
-LONG_SPF_DELAY, TIME_TO_LEARN, and HOLDDOWN_INTERVAL MUST be supported <xref target="RFC8405"/>.
+  All routers in BGP SPF Routing Domain are under a single administrative domain
+  allowing for consistent configuration.
 </t>
+<section anchor="link-metric-config" title="Link Metric Configuration">
+<t>
+  Within a BGP SPF Routing Domain, the IGP metrics for all advertised links SHOULD be configured or
+  defaulted consistently. For example, if a default metric is used for one router's links, then a
+  similar metric should be used for all router's links. Similarily, if the link cost is
+  derived from using the inverse of the link bandwidth on one router, then this SHOULD
+  be done for all routers and the same reference bandwidth should be used to derive the
+  inversely proportional metric. Failure to do so will not result in routing based on
+  link metric.
+</t>
+</section>
+<section anchor="spf-backoff-config" title="backoff-config">
+<t>
+  In addition to configuration of the BGP-LS-SPF address family, implementations SHOULD
+  support the "Shortest Path First (SPF) Back-Off Delay Algorithm for Link-State IGPs"
+  <xref target="RFC8405"/>. If supported, configuration of the INITIAL_SPF_DELAY, SHORT_SPF_DELAY,
+  LONG_SPF_DELAY, TIME_TO_LEARN, and HOLDDOWN_INTERVAL MUST be supported <xref target="RFC8405"/>.
+  Section 6 of <xref target="RFC8405"/> recommends consistent configuration of these values
+  throughout the IGP routing domain and this also applies to the BGP SPF Routing Domain.
+</t>
+</section>
 </section>
 <section anchor="Operation" title="Operational Data">
 <t>
