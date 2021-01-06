@@ -1250,43 +1250,52 @@ bi-directional connectivity check.
 <section anchor="error-handling" title="Error Handling">
 <t>
 This section describes the Error Handling actions, as described in
-<xref target="RFC7606"/> , that are to be performed for handling of BGP update
-messages for BGP-LS-SPF.
+<xref target="RFC7606"/>, that are specific to SAFI BGP-LS-SPF BGP Update
+message processing.
 </t>
 
 <section anchor="new-TLVs" title="Processing of New TLVs">
 <t>
 When a BGP speaker receives a BGP Update containing a malformed Node NLRI
 SPF Status TLV in the BGP-LS Attribute <xref target="RFC7752"/>,
-it MUST ignore the received TLV and not pass it to other BGP peers as
+it MUST ignore the received TLV and MUST NOT pass it to other BGP peers as
 specified in <xref target="RFC7606"/>.
-When discarding an associated Node NLRI with malformed TLV,
+When discarding an associated Node NLRI with a malformed TLV,
 a BGP speaker SHOULD log an error for further analysis.
 </t>
 
 <t>
 When a BGP speaker receives a BGP Update containing a malformed Link NLRI
 SPF Status TLV in the BGP-LS Attribute <xref target="RFC7752"/>,
-it MUST ignore the received TLV and not pass it to other BGP peers as
+it MUST ignore the received TLV and MUST NOT pass it to other BGP peers as
 specified in <xref target="RFC7606"/>.
-When discarding an associated Link NLRI with malformed TLV,
+When discarding an associated Link NLRI with a malformed TLV,
+a BGP speaker SHOULD log an error for further analysis.
+</t>
+
+<t>
+When a BGP speaker receives a BGP Update containing a malformed Prefix NLRI
+SPF Status TLV in the BGP-LS Attribute <xref target="RFC7752"/>,
+it MUST ignore the received TLV and MUST NOT pass it to other BGP peers as
+specified in <xref target="RFC7606"/>.
+When discarding an associated Prefix NLRI with a malformed TLV,
 a BGP speaker SHOULD log an error for further analysis.
 </t>
 
 <t>
 When a BGP speaker receives a BGP Update containing a malformed SPF Capability TLV
 in the Node NLRI BGP-LS Attribute <xref target="RFC7752"/>,
-it MUST ignore the received TLV and the Node NLRI and not pass it to other BGP peers as
-specified in <xref target="RFC7606"/>.
-When discarding a Node NLRI with malformed TLV, a BGP speaker SHOULD log an error for
+it MUST ignore the received TLV and the Node NLRI and MUST NOT pass it to other
+BGP peers as specified in <xref target="RFC7606"/>.
+When discarding a Node NLRI with a malformed TLV, a BGP speaker SHOULD log an error for
 further analysis.
 </t>
 
 <t>
 When a BGP speaker receives a BGP Update containing a malformed IPv4 Prefix-Length TLV
 in the Link NLRI BGP-LS Attribute <xref target="RFC7752"/>,
-it MUST ignore the received TLV and the Node NLRI and not pass it to other BGP peers as
-specified in <xref target="RFC7606"/>. The corresponding Link NLRI is
+it MUST ignore the received TLV and the Node NLRI and MUST NOT pass it to other
+BGP peers as specified in <xref target="RFC7606"/>. The corresponding Link NLRI is
 considered as malformed and MUST be handled as 'Treat-as-withdraw'. An
 implementation MAY log an error for further analysis.
 </t>
@@ -1294,7 +1303,7 @@ implementation MAY log an error for further analysis.
 <t>
 When a BGP speaker receives a BGP Update containing a malformed IPv6 Prefix-Length TLV
 in the Link NLRI BGP-LS Attribute <xref target="RFC7752"/>,
-it MUST ignore the received TLV and the Node NLRI and not pass it to other BGP peers as
+it MUST ignore the received TLV and the Node NLRI and MUST NOT pass it to other BGP peers as
 specified in <xref target="RFC7606"/>. The corresponding Link NLRI is
 considered as malformed and MUST be handled as 'Treat-as-withdraw'. An
 implementation MAY log an error for further analysis.
@@ -1305,8 +1314,8 @@ implementation MAY log an error for further analysis.
 <t>
   A Link-State NLRI MUST NOT be considered as malformed or invalid
   based on the inclusion/exclusion of TLVs or contents of the TLV
-  fields (i.e., semantic errors), as described in Section 4.1 and
-  Section 4.2.
+  fields (i.e., semantic errors), as described in <xref target="SAFI"/>
+  and <xref target="BGP-LS-TLV"/>.
 </t>
 
 <t>
@@ -1329,8 +1338,8 @@ implementation MAY log an error for further analysis.
    </t>
 
    <t>
-     Is the length of the TLVs and, when the TLV is recognized then,
-     its sub-TLVs in the NLRI valid?
+     When an NLRI TLV is recognized, is the length of the TLV and
+     its sub-TLVs valid?
    </t>
 
    <t>
@@ -1339,21 +1348,21 @@ implementation MAY log an error for further analysis.
    </t>
    <t>
      Has the rule regarding ordering of TLVs been followed as described
-     in Section 5.1?
+     in <xref target="BGP-LS-TLV"/>?
    </t>
    </list>
 </t>
 <t>
   When the error determined allows for the router to skip the malformed
   NLRI(s) and continue processing of the rest of the update message
-  (e.g. when the TLV ordering rule is violated), then it MUST handle
+  (e.g., when the TLV ordering rule is violated), then it MUST handle
   such malformed NLRIs as 'Treat-as-withdraw'.  In other cases, where
   the error in the NLRI encoding results in the inability to process
   the BGP update message (e.g., length related encoding errors), then
   the router SHOULD handle such malformed NLRIs as 'AFI/SAFI disable'
   when other AFI/SAFI besides BGP-LS are being advertised over the same
   session.  Alternately, the router MUST perform 'session reset' when
-  the session is only being used for BGP-LS-SPF or when it 'AFI/SAFI
+  the session is only being used for BGP-LS-SPF or when its 'AFI/SAFI
   disable' action is not possible.
 </t>
 </section>
@@ -1362,8 +1371,8 @@ implementation MAY log an error for further analysis.
 <t>
    A BGP-LS Attribute MUST NOT be considered as malformed or invalid
    based on the inclusion/exclusion of TLVs or contents of the TLV
-   fields (i.e., semantic errors), as described in Section 4.1 and
-   Section 5.2.
+   fields (i.e., semantic errors), as described in <xref target="SAFI"/>
+   and <xref target="BGP-LS-TLV"/>.
 </t>
 
 <t>
@@ -1385,12 +1394,12 @@ implementation MAY log an error for further analysis.
 <t>
    When the error determined allows for the router to skip the malformed
    BGP-LS Attribute and continue processing of the rest of the update
-   message (e.g. when the BGP-LS Attribute length and the total Path
+   message (e.g., when the BGP-LS Attribute length and the total Path
    Attribute Length are correct but some TLV/sub-TLV length within the
    BGP-LS Attribute is invalid), then it MUST handle such malformed BGP-
-   LS Attribute as 'Attribute Discard'.  In other cases, where the error
+   LS Attribute as 'Attribute Discard'.  In other cases, when the error
    in the BGP-LS Attribute encoding results in the inability to process
-   the BGP update message then the handling is the same as described
+   the BGP update message, then the handling is the same as described
    above for the malformed NLRI.
 </t>
 
@@ -1416,16 +1425,16 @@ implementation MAY log an error for further analysis.
 </t>
 
 <t>
-   An implementation SHOULD log an error for any errors found during
-   syntax validation for further analysis.
+   An implementation SHOULD log an error for further analysis for problems
+   detected during syntax validation.
 </t>
 <t>
 When a BGP speaker receives a BGP Update containing a malformed IGP metric TLV
-in the Node NLRI BGP-LS Attribute <xref target="RFC7752"/>,
-it MUST ignore the received TLV and the Link NLRI and not pass it to other BGP peers as
-specified in <xref target="RFC7606"/>.
-When discarding a Node NLRI with malformed TLV, a BGP speaker SHOULD log an error for
-further analysis.
+in the Link NLRI BGP-LS Attribute <xref target="RFC7752"/>,
+it MUST ignore the received TLV and the Link NLRI and MUST NOT pass it to other
+BGP peers as specified in <xref target="RFC7606"/>.
+When discarding a Link NLRI with a malformed TLV, a BGP speaker SHOULD log
+an error for further analysis.
 </t>
 </section>
 </section>
