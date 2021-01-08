@@ -312,7 +312,7 @@ With standard BGP distance-vector routing, a single link failure may impact
 the attendant NLRI. With BGP SPF, only the BGP speakers corresponding to
 the link NLRI need withdraw the corresponding BGP-LS-SPF Link NLRI. Additionally,
 the changed NLRI will be advertised immediately as opposed to normal BGP where it
-is only advertised after the best-path selection. These advantages will afford
+is only advertised after the best route selection. These advantages will afford
 NLRI dissemination throughout the BGP SPF routing domain with efficiencies similar
 to link-state protocols.
 </t>
@@ -894,8 +894,9 @@ A single TLV type will be shared by the Node, Link, and Prefix NLRI.
 <section title="BGP-LS Attribute Sequence-Number TLV">
 <t>
 A new BGP-LS Attribute TLV to BGP-LS-SPF NLRI types is defined to assure the most
-recent version of a given NLRI is used in the SPF computation.
-The TBD TLV type will be defined by IANA. The new BGP-LS
+recent version of a given NLRI is used in the SPF computation. The Sequence-Number TLV is
+mandatory for BGP-LS-SPF NLRI. ERROR-KEYUR
+The TBD6 TLV type will be defined by IANA. The new BGP-LS
 Attribute TLV will contain an 8-octet sequence number. The usage of the Sequence Number TLV
 is described in <xref target="Phase-1"/>.
 </t>
@@ -916,12 +917,12 @@ is described in <xref target="Phase-1"/>.
 </t>
 <t>
 Sequence Number <vspace blankLines="1" />
-The 64-bit strictly increasing sequence number is incremented for every
+The 64-bit strictly increasing sequence number MUST be incremented for every
 version of BGP-LS-SPF NLRI originated. BGP speakers implementing this specification MUST use
 available mechanisms to preserve the sequence number's strictly increasing property
 for the deployed life of the BGP speaker (including cold restarts).
 One mechanism for accomplishing this would be to use the high-order 32 bits of the
-sequence number as a wrap/boot count that is incremented anytime the BGP router
+sequence number as a wrap/boot count that is incremented any time the BGP router
 loses its sequence number state or the low-order 32 bits wrap.
 </t>
 <t>
@@ -951,70 +952,66 @@ The combination of the Phase 1 and 2 decision functions is characterized as
 a Path Vector algorithm.
 </t>
 <t>
-The SPF based Decision process replaces the BGP best-path Decision process described in
+The SPF based Decision process replaces the BGP Decision process described in
 <xref target="RFC4271"/>. This process starts with selecting only those Node NLRI whose
 SPF capability TLV matches with the local BGP-LS-SPF speaker's SPF capability TLV value.
 Since Link-State NLRI always contains the local descriptor
-<xref target="RFC7752"/>, it will only
-be originated by a single BGP-LS-SPF speaker in the BGP SPF routing domain.
+<xref target="NLRI-Use"/>, it will only
+be originated by a single BGP-LS-SPF speaker in the BGP SPF routing domain (ACEE).
 These selected Node NLRI and their Link/Prefix NLRI are used to build a directed
-graph during the SPF computation. The best paths for BGP prefixes
-are installed as a result of the SPF process.
+graph during the SPF computation as described below. The best routes for BGP prefixes
+are installed in the RIB as a result of the SPF process.
 </t>
 <t>
 When BGP-LS-SPF NLRI is received, all that is required is to determine
-whether it is the best-path by examining the Node-ID and sequence number as described
-in <xref target="Phase-1"/>. If the received best-path NLRI had changed, it will be advertised
+whether it is the most recent by examining the Node-ID and sequence number as described
+in <xref target="Phase-1"/>. If the received NLRI has changed, it will be advertised
 to other BGP-LS-SPF peers. If the attributes have changed (other than the sequence number),
-a BGP SPF calculation will be scheduled. However, a changed NLRI MAY be
-advertised to other peers almost immediately and propagation of changes can approach
-IGP convergence times.  To accomplish this, the MinRouteAdvertisementIntervalTimer and
+a BGP SPF calculation will be triggered. The frequency at which the SPF calculation is performed.
+is an implementation matter.
+However, a changed NLRI MAY be advertised immediately to other peers and prior to any
+SPF calculation. Note that the BGP MinRouteAdvertisementIntervalTimer and
 MinASOriginationIntervalTimer <xref target="RFC4271"/> are not applicable
-to the BGP-LS-SPF SAFI. Rather, SPF calculations SHOULD be triggered and dampened consistent
-with the SPF back-off algorithm specified in <xref target="RFC8405"/>.
+to the BGP-LS-SPF SAFI. SPF calculations MAY be triggered and dampened consistent
+with the SPF back-off algorithm specified in <xref target="RFC8405"/>. Explain ACEE.
 </t>
 <t>
 The Phase 3 decision function
 of the Decision Process <xref target="RFC4271"/> is also simplified since under
-normal SPF operation, a BGP speaker would advertise the NLRI
-selected for the SPF to all BGP peers with the BGP-LS/BGP-LS-SPF AFI/SAFI.
-Application of policy would not be prevented however its usage to best-path process
-would be limited as the SPF relies solely on link metrics.
+normal SPF operation, a BGP speaker MUST advertise the received NLRIs
+to all BGP peers with the BGP-LS/BGP-LS-SPF AFI/SAFI. The only exception are unchanged
+NLRIs or stale NLRIs, i.e., NLRI received with a less recent sequence number.
 </t>
 
 <section anchor="Phase-1" title="BGP NLRI Selection">
 <t>
-  The rules for NLRI selection are greatly simplified from phase 1 of the BGP
-  deciscion process <xref target="RFC4271"/>.
+  The rules for all BGP-LS-SPF NLRIs selection for phase 1 of the BGP
+  decision process, section 9.1.1 <xref target="RFC4271"/>, no longer apply.
 <list style="numbers">
 <t>
-If the NLRI is received from the BGP speaker originating the NLRI (as determined by the
-comparing BGP Router ID in the NLRI Node identifiers with the BGP speaker Router ID),
-then it is preferred over the same NLRI from non-originators. This rule will assure that
-stale NLRI is updated even if a BGP-LS router loses its sequence number state due to a
-cold-start.
+  Routes originated by directly connected BGP SPF peers are preferred.
+  This condition can be determined by comparing the BGP Identifiers in
+  the received Local Node Descriptor and OPEN message. This rule will assure that
+  stale NLRI is updated even if a BGP-LS router loses its sequence number state due to a
+  cold-start.
 </t>
 <t>
-If the Sequence-Number TLV is present in the BGP-LS Attribute, then the NLRI with the
-most recent, i.e., highest sequence number is selected. BGP-LS-SPF NLRI with a Sequence-Number
-TLV will be considered more recent than NLRI without a BGP-LS Attribute or a
-BGP-LS Attribute that doesn't include the Sequence-Number TLV.
+  The NLRI with the most recent Sequence Number TLV, i.e., highest sequence number is selected.
 </t>
-<t>The final tie-breaker is the NLRI from the BGP-LS-SPF speaker with the numerically largest
-BGP Router ID.
+<t>
+   The route received from the BGP SPF speaker with the numerically larger BGP
+   Identifier is preferred.
 </t>
 </list>
 </t>
 <t>
-When a BGP speaker completely loses its sequence number state, i.e., due to a cold start, or
+When a BGP SPF speaker completely loses its sequence number state, i.e., due to a cold start, or
 in the unlikely possibility that that sequence number wraps, the BGP routing domain will
 still converge. This is due to the fact that BGP speakers adjacent to the router will
 always accept self-originated NLRI from the associated speaker as more recent (rule # 1). When
 BGP speaker reestablishes a connection with its peers, any existing session will be taken
-down and stale NLRI will be replaced by the new NLRI and stale NLRI will be discarded
-independent of whether or not BGP graceful restart is deployed, <xref target="RFC4724"/>. The adjacent
-BGP speaker will update their NLRI advertisements in turn until the BGP routing domain has
-converged.
+down and stale NLRI will be replaced. The adjacent BGP speaker will update their NLRI
+advertisements in turn until the BGP routing domain has converged.
 </t>
 <t>
 The modified SPF Decision Process performs an SPF calculation rooted at the BGP
@@ -1037,11 +1034,11 @@ value is preserved but otherwise ignored during the SPF or best-path.
       </t>
       <t>
         If self-origanated NLRI is received and the sequence number is the same as the local node's
-        sequence number but the attributes differ,  the NLRI sequence number will be advanced to
+        sequence number but the attributes differ, the NLRI sequence number will be advanced to
         one greater than the received sequence number and the NLRI will be readvertised to all peers.
       </t>
       <t>
-        If self-origanated Link or Prefix NLRI is received and the Link or Prefix NLRI is no longer
+        If self-originated Link or Prefix NLRI is received and the Link or Prefix NLRI is no longer
         being advertised by the local node, the NLRI will be withdrawn.
       </t>
     </list>
@@ -1158,7 +1155,8 @@ be removed and reinserted with a lower cost.</t>
 the global RIB.</t>
 </list>
 </t>
-
+<t>
+</t>
 </section>
 
 <section title="NEXT_HOP Manipulation">
