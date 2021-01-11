@@ -940,48 +940,52 @@ is replaced or experiences a cold-start), the phase 1 decision function
 </section>
 
 <section anchor="bgp-decision" title="Decision Process with SPF Algorithm">
-<t>
-The Decision Process described in <xref target="RFC4271"/> takes place in
-three distinct phases. The Phase 1 decision function of the Decision Process is
-responsible for calculating the degree
-of preference for each route received from a BGP speaker's peer. The Phase 2 decision
-function is invoked on completion of the Phase 1 decision function and is responsible
-for choosing the best route out of all those available for each
-distinct destination, and for installing each chosen route into the Loc-RIB.
-The combination of the Phase 1 and 2 decision functions is characterized as
-a Path Vector algorithm.
-</t>
-<t>
-The SPF based Decision process replaces the BGP Decision process described in
-<xref target="RFC4271"/>. This process starts with selecting only those Node NLRI whose
-SPF capability TLV matches with the local BGP-LS-SPF speaker's SPF capability TLV value.
-Since Link-State NLRI always contains the local descriptor
-<xref target="NLRI-Use"/>, it will only
-be originated by a single BGP-LS-SPF speaker in the BGP SPF routing domain (ACEE).
-These selected Node NLRI and their Link/Prefix NLRI are used to build a directed
-graph during the SPF computation as described below. The best routes for BGP prefixes
-are installed in the RIB as a result of the SPF process.
-</t>
-<t>
-When BGP-LS-SPF NLRI is received, all that is required is to determine
-whether it is the most recent by examining the Node-ID and sequence number as described
-in <xref target="Phase-1"/>. If the received NLRI has changed, it will be advertised
-to other BGP-LS-SPF peers. If the attributes have changed (other than the sequence number),
-a BGP SPF calculation will be triggered. The frequency at which the SPF calculation is performed.
-is an implementation matter.
-However, a changed NLRI MAY be advertised immediately to other peers and prior to any
-SPF calculation. Note that the BGP MinRouteAdvertisementIntervalTimer and
-MinASOriginationIntervalTimer <xref target="RFC4271"/> are not applicable
-to the BGP-LS-SPF SAFI. SPF calculations MAY be triggered and dampened consistent
-with the SPF back-off algorithm specified in <xref target="RFC8405"/>. Explain ACEE.
-</t>
-<t>
-The Phase 3 decision function
-of the Decision Process <xref target="RFC4271"/> is also simplified since under
-normal SPF operation, a BGP speaker MUST advertise the received NLRIs
-to all BGP peers with the BGP-LS/BGP-LS-SPF AFI/SAFI. The only exception are unchanged
-NLRIs or stale NLRIs, i.e., NLRI received with a less recent sequence number.
-</t>
+  <t>
+    The Decision Process described in <xref target="RFC4271"/> takes place in
+    three distinct phases. The Phase 1 decision function of the Decision Process is
+    responsible for calculating the degree
+    of preference for each route received from a BGP speaker's peer. The Phase 2 decision
+    function is invoked on completion of the Phase 1 decision function and is responsible
+    for choosing the best route out of all those available for each
+    distinct destination, and for installing each chosen route into the Loc-RIB.
+    The combination of the Phase 1 and 2 decision functions is characterized as
+    a Path Vector algorithm.
+  </t>
+  <t>
+    The SPF based Decision process replaces the BGP Decision process described in
+    <xref target="RFC4271"/>. This process starts with selecting only those Node NLRI whose
+    SPF capability TLV matches with the local BGP-LS-SPF speaker's SPF capability TLV value.
+    Since Link-State NLRI always contains the local node descriptor
+    <xref target="NLRI-Use"/>, each NLRI is uniquely originated by a single
+    BGP-LS-SPF speaker in the BGP SPF routing domain (the BGP node matching the NLRI's Node
+    Descriptors). Instances of the same NLRI originated by mulitiple BGP speakers would be
+    inidicative of a configuration error or a masquerading attack (<xref target="Security"/>.
+    These selected Node NLRI and their Link/Prefix NLRI are used to build a directed
+    graph during the SPF computation as described below. The best routes for BGP prefixes
+    are installed in the RIB as a result of the SPF process.
+    </t>
+    <t>
+      When BGP-LS-SPF NLRI is received, all that is required is to determine
+      whether it is the most recent by examining the Node-ID and sequence number as described
+      in <xref target="Phase-1"/>. If the received NLRI has changed, it will be advertised
+      to other BGP-LS-SPF peers. If the attributes have changed (other than the sequence number),
+      a BGP SPF calculation will be triggered. However, a changed NLRI MAY be advertised immediately
+      to other peers and prior to any SPF calculation. Note that the BGP
+      MinRouteAdvertisementIntervalTimer and
+      MinASOriginationIntervalTimer <xref target="RFC4271"/> are not applicable
+      to the BGP-LS-SPF SAFI. The scheduling of the SPF calculation, as described in
+      <xref target="BGP-SPF"/>, is an implementation issue. Scheduling MAY be dampened
+      consistent with the SPF back-off algorithm
+      specified in <xref target="RFC8405"/>.
+    </t>
+    <t>
+      The Phase 3 decision function
+      of the Decision Process <xref target="RFC4271"/> is also simplified since under
+      normal SPF operation, a BGP speaker MUST advertise the received NLRIs
+      to all BGP peers with the BGP-LS/BGP-LS-SPF AFI/SAFI. The only exception are unchanged
+      NLRIs or stale NLRIs, i.e., NLRI received with a less recent (numerically smaller)
+      sequence number.
+    </t>
 
 <section anchor="Phase-1" title="BGP NLRI Selection">
 <t>
@@ -1057,7 +1061,7 @@ value is preserved but otherwise ignored during the SPF or best-path.
 <t>
 The SPF-based decision process operates on Node, Link, and Prefix NLRIs that support
 both IPv4 and IPv6 addresses. Whether to run a single SPF instance or multiple
-SPF instances for separate AFs is a matter of a local implementation. Normally, IPv4
+SPF instances for separate AFs is an implementation matter. Normally, IPv4
 next-hops are calculated for IPv4 prefixes and IPv6 next-hops are calculated for IPv6
 prefixes. However, an interesting use-case is deployment of <xref target="RFC5549"/> where
 IPv6 next-hops are calculated for both IPv4 and IPv6 prefixes. As stated in
@@ -1073,18 +1077,18 @@ following algorithm. This calculation yields the set of intra-area routes associ
 with the BGP-LS domain.  A router calculates the  shortest-path tree using itself
 as the root. Variations and optimizations of the algorithm are valid as long as it
 yields the same set of routes. The algorithm below supports Equal Cost Multi-Path (ECMP)
-routes. Weighted Unequal Cost Multi-Path are out of scope. The organization of this section
-owes heavily to section 16 of <xref target="RFC2328"/>.</t>
+routes. Weighted Unequal Cost Multi-Path routes are out of scope. The organization of this
+section owes heavily to section 16 of <xref target="RFC2328"/>.</t>
 <t>The following abstract data structures are defined in order to specify the algorithm.
 <list style="symbols">
-<t>Local Route Information Base (RIB) - This is abstract contains reachability information
-(i.e., next hops) for all prefixes (both IPv4 and IPv6) as well as the Node NLRI
+<t>Local Route Information Base (RIB) - This routing table contains reachability information
+(i.e., next hops) for all prefixes (both IPv4 and IPv6) as well as the Node
 reachability. Implementations may choose to implement this as separate RIBs for each
-address family and/or Node NLRI.</t>
+address family and/or Prefix verus Node reachability.</t>
 <t>Link State NLRI Database (LSNDB) - Database of BGP-LS-SPF NLRI that facilitates access to
 all Node, Link, and Prefix NLRI as well as all the Link and Prefix NLRI corresponding to
-a given Node NLRI. Other optimization, such as, resolving bi-directional connectivity
-associations between Link NLRI are possible but of scope of this document.</t>
+a given Node NLRI. Other optimizations, such as, pre-resolving bi-directional connectivity
+associations between Link NLRI are possible but out of scope for this document.</t>
 <t>Candidate List - This is a list of candidate Node NLRI with the lowest cost Node NLRI
 at the front of the list. It is typically implemented as a heap but other concrete
 data structures have also been used.</t>
