@@ -48,6 +48,8 @@
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5880.xml">
 <!ENTITY RFC5925 SYSTEM
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5925.xml">
+<!ENTITY RFC6793 SYSTEM
+  "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6793.xml">
 <!ENTITY RFC6811 SYSTEM
   "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6811.xml">
 <!ENTITY RFC6952 SYSTEM
@@ -906,7 +908,7 @@ A single TLV type will be shared by the Node, Link, and Prefix NLRI.
 <t>
 A new BGP-LS Attribute TLV to BGP-LS-SPF NLRI types is defined to assure the most
 recent version of a given NLRI is used in the SPF computation. The Sequence-Number TLV is
-mandatory for BGP-LS-SPF NLRI. ERROR-KEYUR
+mandatory for BGP-LS-SPF NLRI.
 The TBD6 TLV type will be defined by IANA. The new BGP-LS
 Attribute TLV will contain an 8-octet sequence number. The usage of the Sequence Number TLV
 is described in <xref target="Phase-1"/>.
@@ -946,15 +948,32 @@ or a BGP-LS-SPF speaker completely loses its sequence number state (e.g., the BG
 is replaced or experiences a cold-start), the phase 1 decision function
 (see <xref target="Phase-1"/>) rules will insure convergence, albeit, not immediately.
 </t>
+
+<t>
+The Sequence-Number TLV is mandatory for BGP-LS-SPF NLRI. If the Sequence-Number TLV
+is not received than the the corresponding Link NLRI is considered as malformed and 
+MUST be handled as 'Treat-as-withdraw'. An implementation MAY log an error for 
+further analysis.
+</t>
 </section>
 </section>
 <section title="NEXT_HOP Manipulation">
 <t>
-  All BGP peers that support SPF extensions would locally compute the Loc-RIB next-hops
-  as a result of the SPF process. Consequently, the NEXT_HOP attribute is always ignored on
-  receipt. However, BGP speakers MUST set the NEXT_HOP address according to the
-  NEXT_HOP attribute rules specified in <xref target="RFC4271"/> and
-  section 3.4 of <xref target="RFC7752"/>. XXX_KEYUR
+  All BGP peers that support SPF extensions would locally compute the Loc-RIB Next-Hop
+  as a result of the SPF process. Consequently, the Next-Hop is always ignored on
+  receipt. The Next-Hop address MUST be encoded as described in <xref target="RFC4760"/>. 
+  BGP speakers MUST interpret the Next-Hop address of 
+  MP_REACH_NLRI attribute as an IPv4 address whenever the length of the Next-Hop address 
+  is 4 octets, and as a IPv6 address whenever the length of the Next-Hop address is
+  16 octets.
+</t>
+<t>
+  <xref target="RFC4760"/> modifes the rules of NEXT_HOP attribute whenever the
+  multiprotocol extensions for BGP-4 are enabled. BGP speakers MUST set the 
+  NEXT_HOP attribute according to the rules specified in <xref target="RFC4760"/> as
+  the BGP-LS-SPF routing information is carried within the multiprotocol extensions for
+  BGP-4.
+  
 </t>
 </section>
 </section>
@@ -1045,7 +1064,10 @@ As a result, any attributes that
 would influence the Decision process defined in <xref target="RFC4271"/> like 
 ORIGIN, MULTI_EXIT_DISC, and
 LOCAL_PREF attributes are ignored by the SPF algorithm. Furthermore, the NEXT_HOP attribute
-value is preserved but otherwise ignored during the SPF or best-path. AS_PATH XXX_KEYUR,
+value is preserved but otherwise ignored during the SPF or the best-path computation
+for BGP-LS-SPF NLRIs. The AS_PATH and AS4_PATH <xref target="RFC6793"/> attributes 
+are preserved and used for loop detection <xref target="RFC4271"/>. They are ignored 
+during the SPF or the best-path compuation for BGP-LS-SPF NRLIs.
 </t>
 <section anchor="Self-Origin" title="BGP Self-Originated NLRI">
   <t>
@@ -1288,49 +1310,51 @@ the GLOBAL-RIB. For each route in the LOC-RIB:
 
 <section title="IPv4/IPv6 Unicast Address Family Interaction">
 <t>
-While the BGP-LS-SPF address family and the IPv4/IPv6 unicast address families install routes
+While the BGP-LS-SPF address family and the IPv4/IPv6 unicast address families MAY install routes
 into the same device routing tables, they will operate independently much the same as OSPF and
-IS-IS would operate today (i.e., "Ships-in-the-Night" mode). There will be no implicit
-route redistribution between the BGP address families. However, implementation specific
-redistribution mechanisms SHOULD be made available with the restriction that redistribution
-of BGP-LS-SPF routes into the IPv4 address family applies only to IPv4 routes and redistribution
-of BGP-LS-SPF route into the IPv6 address family applies only to IPv6 routes.
+IS-IS would operate today (i.e., "Ships-in-the-Night" mode). There is no implicit
+route redistribution between the BGP address families. 
 </t>
 <t>
 Given the fact that SPF algorithms are based on the assumption that all routers in the
-routing domain calculate the precisely the same SPF tree and install the same set of
+routing domain calculate precisely the same SPF tree and install the same set of
 routes, it is RECOMMENDED that BGP-LS-SPF IPv4/IPv6 routes be given priority by default
-when installed into their respective RIBs. In common implementations the prioritization
+over other BGP address familes when installed into their respective RIBs as they 
+would be considered as an underlay SAFI.
+In common implementations the prioritization
 is governed by route preference or administrative distance with lower being more preferred.
 </t>
 </section>
 
 
-<section anchor="NLRI-Advertise" title="NLRI Advertisement and Convergence">
+<section anchor="NLRI-Advertise" title="NLRI Advertisement">
 <section anchor="failure-converge" title="Link/Prefix Failure Convergence">
-<t>A local failure will prevent a link from being used in the SPF calculation
+<t>A local failures will prevent a link from being used in the SPF calculation
 due to the IGP bi-directional connectivity requirement. Consequently, local link
-failures should always be given priority over updates (e.g., withdrawing all
+failures SHOULD always be given priority over updates (e.g., withdrawing all
 routes learned on a session) in order to ensure the highest priority propagation
 and optimal convergence.
 </t>
 <t>
 An IGP such as OSPF <xref target="RFC2328"/> will stop using the link as soon as
-the Router-LSA for one side of the link is received. With normal BGP advertisement,
+the Router-LSA for one side of the link is received. With a BGP advertisement,
 the link would continue to be used until the last copy of the BGP-LS-SPF Link NLRI
-is withdrawn. In order to avoid this delay, the originator of the Link NLRI will
-advertise a more recent version of the BGP-LS-SPF Link NLRI including the SPF Status TLV
-<xref target="link-status-tlv"/> indicating the link
-is down with respect to BGP SPF. After some configurable period of time, e.g., 2-3 seconds,
+is withdrawn. In order to avoid this delay, the originator of the Link NLRI SHOULD
+advertise a more recent version with an increased Sequence Number TLV for 
+the BGP-LS-SPF Link NLRI including the SPF Status TLV
+(<xref target="link-status-tlv"/>) indicating the link
+is down with respect to BGP SPF. After some configurable period of time which is 
+an implementation dependent, e.g., 2-3 seconds,
 the BGP-LS-SPF Link NLRI can be withdrawn with no consequence.
 If the link becomes available
- in that period, the originator of the BGP-LS LINK NLRI will simply advertise a more recent
+ in that period, the originator of the BGP-LS-SPF LINK NLRI will simply advertise a more recent
 version of the BGP-LS-SPF Link NLRI without the SPF Status TLV in the BGP-LS Link Attributes.
 </t>
-<t>Similarly, when a prefix becomes unreachable, a more recent version of the BGP-LS
-Prefix NLRI will be advertised with the SPF Status TLV <xref target="prefix-status-tlv"/>
+<t>Similarly, when a prefix becomes unreachable, a more recent version of the BGP-LS-SPF
+Prefix NLRI will be advertised with the SPF Status TLV (<xref target="prefix-status-tlv"/>)
 indicating the prefix is unreachable in the BGP-LS Prefix Attributes and the prefix will be
-considered unreachable with respect to BGP SPF.  After some configurable period of time, e.g., 2-3 seconds,
+considered unreachable with respect to BGP SPF.  After some configurable period of time
+which is implementation dependent, e.g., 2-3 seconds,
 the BGP-LS-SPF Prefix NLRI can be withdrawn with no consequence.
 If the prefix becomes reachable in that period, the originator of the BGP-LS-SPF Prefix NLRI
 will simply advertise a more recent version of the BGP-LS-SPF Prefix NLRI without the
@@ -1339,15 +1363,17 @@ SPF Status TLV in the BGP-LS Prefix Attributes.
 </section>
 <section anchor="node-failure" title="Node Failure Convergence">
 <t>With BGP without graceful restart <xref target="RFC4724"/>, all the NLRI advertised
-by node are implicitly withdrawn when a session failure is detected. If fast failure
-detection such as BFD is utilized, and the node is on the fastest converging path, the most
-recent versions of BGP-LS-SPF NLRI may be withdrawn while these versions are in-flight on longer
-paths. This will result the older version of the NLRI being used until the new versions
-arrive and, potentially, unnecessary route flaps. Therefore, BGP-LS-SPF NLRI SHOULD always
-be retained before being implicitly withdrawn for a brief configurable interval, e.g., 2-3
-seconds. This will not delay convergence since the adjacent nodes will detect the
+by a node are implicitly withdrawn with an increased Sequence Number TLV when a session 
+failure is detected. If fast failure detection such as BFD is utilized, and the node is 
+on the fastest converging path, the most recent versions of BGP-LS-SPF NLRI may be 
+withdrawn. This will result into an older version of the NLRI being used until the 
+new versions arrive and, potentially, unnecessary route flaps. Therefore, BGP-LS-SPF 
+NLRI SHOULD always
+be retained before being implicitly withdrawn for a brief configurable interval
+which is implementation dependent, e.g., 2-3 seconds. 
+This will not delay convergence since the adjacent nodes will detect the
 link failure and advertise a more recent NLRI indicating the link is down with respect to
-BGP SPF <xref target="failure-converge"/> and the BGP SPF calculation will failure the
+BGP SPF (<xref target="failure-converge"/>) and the BGP SPF calculation will fail the
 bi-directional connectivity check.
 </t>
 </section>
@@ -1771,6 +1797,8 @@ co-authors have contributed to the document.
       &RFC5492;
 
       &RFC5925;
+
+      &RFC6793;
 
       &RFC6811;
 
