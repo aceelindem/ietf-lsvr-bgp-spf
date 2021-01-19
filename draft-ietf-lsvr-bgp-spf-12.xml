@@ -1317,12 +1317,13 @@ route redistribution between the BGP address families.
 </t>
 <t>
 Given the fact that SPF algorithms are based on the assumption that all routers in the
-routing domain calculate precisely the same SPF tree and install the same set of
-routes, it is RECOMMENDED that BGP-LS-SPF IPv4/IPv6 routes be given priority by default
-over other BGP address familes when installed into their respective RIBs as they 
-would be considered as an underlay SAFI.
-In common implementations the prioritization
-is governed by route preference or administrative distance with lower being more preferred.
+routing domain calculate precisely the same SPF tree and install the routes resulting from
+this SPF computation, it is RECOMMENDED that BGP-LS-SPF IPv4/IPv6 route computation and
+installation be given scheduling priority by default over other BGP address familes
+as they would be considered as an underlay SAFI. Similarly, it is RECOMMENDED that
+the route preference or administrative distance give active route installation preference
+to BGP-LS-SPF IPv4/IPv6 routes over BGP routes from other AFI/SAFIs. 
+However, this preference MAY be overriden by an operator-configured policy.
 </t>
 </section>
 
