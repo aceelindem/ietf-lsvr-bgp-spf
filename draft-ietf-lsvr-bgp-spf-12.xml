@@ -1594,9 +1594,10 @@ an error for further analysis.
 
     <section anchor="IANA" title="IANA Considerations">
 <t>
-    This document defines the use of a new SAFI (TBD1) for BGP SPF operation
-   <xref target="SAFI"/>, and requests IANA to assign a value from the xxx range in the
-   Subsequent Address Family Identifiers (SAFI) Parameters registry.
+    This document defines the use of a new SAFI (80) for BGP SPF operation
+    <xref target="SAFI"/>, and requests IANA to assign the value from the
+    First Come First Serve (FCFS) range in the
+    Subsequent Address Family Identifiers (SAFI) Parameters registry.
 </t>
 <t>
   This document also defines five attribute TLVs of BGP-LS-SPF NLRI.
