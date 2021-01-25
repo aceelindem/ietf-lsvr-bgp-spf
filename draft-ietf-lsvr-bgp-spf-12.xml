@@ -1039,8 +1039,9 @@ The TLV type 1184 will be assigned by IANA.
     <t>
       The Phase 3 decision function
       of the Decision Process <xref target="RFC4271"/> is also simplified since under
-      normal SPF operation, a BGP speaker MUST advertise the received NLRIs
-      to all BGP peers with the BGP-LS-SPF AFI/SAFI. The only exception are unchanged
+      normal SPF operation, a BGP speaker MUST advertise the changed NLRIs
+      to all BGP peers with the BGP-LS-SPF AFI/SAFI and install the changed routes in
+      the GLOBAL-RIB. The only exception are unchanged
       NLRIs or stale NLRIs, i.e., NLRI received with a less recent (numerically smaller)
       sequence number.
     </t>
