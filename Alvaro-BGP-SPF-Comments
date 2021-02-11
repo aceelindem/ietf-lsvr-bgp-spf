@@ -1,4 +1,8 @@
-	Dear authors:
+Hi Alvaro,
+
+Thank you for your extensive review. Please see inline.
+
+        Dear authors:
 
 	Thank you for the work you've put so far into this document!
 
@@ -42,6 +46,10 @@
 	to be answered (see comments in-line and some more questions/comments
 	below [**]).
 
+The authors don't really agree that this is a completely new link-state
+protocol. We've added to clarify the relationship to both the BGP base
+protocol and BGP-LS. 
+
 
 	I haven't read draft-ietf-lsvr-applicability yet -- if some of the
 	answers are there, please point me to it.  When I finish that document
@@ -55,6 +63,9 @@
 	given the opportunity to comment -- we can do that as this document
 	addresses some of my concerns.  [I'm putting this note here so we
 	don't forget.]
+
+It is better that LSR and IDR review the updated version as the changes are
+significant.
 
 
 	Thank you!!
@@ -74,6 +85,11 @@
 	section, similar to Â§3/rfc4271.  This would also serve as a place to
 	point back at what applies and what doesn't.
 
+We've added a "Document Overview" in section 1.3. This should suffice in giving
+the reader a preview of what is coming.
+
+
+
 
 	(1) Use of the BGP Base (rfc4271)
 
@@ -82,6 +98,9 @@
 	to the Adj-RIB-In, and there is a Local RIB.  The non-existence of an
 	Adj-RIB-Out implies changes.  [Note that it is obviously ok to not follow
 	the same structure -- what needs to be explained are the differences.]
+
+Since we have completely replaced the base BGP decision process, we don't use these
+terms. 
 
 
 	- Related to the Adj-RIB-Out not existing is the very unnatural and forced
@@ -93,6 +112,8 @@
 	advertisement timers (from Â§9.2.1.1).  The rest of Â§9.2.2, Â§9.3 and Â§9.4
 	don't seem to apply -- but do we need to replace them with anything?  Please
 	be explicit.
+
+We believe this is clear in the updated text. 
 
 
 	- About the attributes...  In Â§5.1 you mention that attributes that "would
@@ -116,10 +137,14 @@
 	that [RFC4760] reclassifies NEXT_HOP as what is effectively
 	discretionary.)
 
+We clarified the usage of the attributes in section 2. Error handling is covered in
+section 7.
+
 
 	- Are there any cases that would result in a BGP SPF-specific session reset?
 	Does the NOTIFICATION message need new error codes/sub-codes?
 
+Error handling is addressed in section 7.
 
 	- It seems that the FSM applies, are there any exceptions?
 
@@ -130,10 +155,14 @@
 	configure policies (for eBGP connections).  It is also important to clearly
 	define the concept of domain in the text.
 
+This is defined in the terminology section. 
+
 
 	- It seems that there is no concept of multiple flooding domains in BGP SPF.
 	Given the scenario of single-hop eBGP sessions, I'm assuming that if
 	multiple domains exist in the future they won't be determined by ASNs.
+
+Right - single BGP SPF domain in the base version of the protocol. 
 
 
 	- Route-reflectors are mentioned several times and in one of the deployment
@@ -141,14 +170,21 @@
 	"reflect" all the routes -- it is part of the synchronization requirement of
 	a link-state protocol.  You might need to redefine the terminology.
 
+I guess we could come up with different terminology and are open to suggestions. We
+still use the term route-reflector or controller in version 12.
+
 
 	- Optimal Route Reflection is also mentioned, but it cannot be realized
 	without loosing synchronization.
+
+This is removed. 
 
 
 	- Using a Confederation ID is mentioned, which seems ok.  I don't see an
 	advantage/reason for having Confederations in a BGP SPF network.  Is there
 	one?
+
+Confederations are no longer applicable. 
 
 
 	- Â§5 talks about outgoing policies.  Is ORF a valid tool to set those policies?
@@ -161,15 +197,21 @@
 	related to BGP-LS, but not the same.  IOW, you can define which parts of
 	rfc7752 apply (if any), beyond the encodings.
 
+We have added section 3 to address the relationship to BGP-LS.
+
 	- Note that rfc7752 treats the data as opaque, not offering any validation.
 	This document has to specify validation procedures for the TLVs used, along
 	with error correction actions, etc..
+
+We've done this for the applicable BGP-LS TLVs. 
 
 	- There are many BGP-LS TLVs defined, but only some will apply to BGP SPF.  We
 	need the document to be very clear about that.  Note that rfc7752 says that
 	"unrecognized types MUST be preserved and propagated".  Please make it clear
 	that any type not required in this document is considered unrecognized and
 	SHOULD NOT be included.
+
+We don't want to disallow TLVs which will be utilized in future extensions. 
 
 	- I'm assuming that this document uses the same format as in Figure 5/rfc7752
 	for the Link-State NLRI (but with the new SAFI), right?  Please explicitly
@@ -178,11 +220,17 @@
 	- Which NLRI Types are supported?  I guess only 1-4.  What should the receiver
 	to if a different type is received?
 
+We don't want to disallow NLRIs which will be utilized in future extensions. 
+
 	- Which Protocol-ID should be used for the NLRI?   Â§4 suggests 7 (BGP), but I
 	think that is not correct (see more there).  What should the receiver do
 	with a different value?
 
+We have clarified this in section 5.2.
+
 	- What should the Identifier (in the NLRI header) be set to?
+
+We follow RFC 7752.
 
 	- In a "traditional" link-state protocol, there are a number of LSAs that
 	define a node: router LSA, network LSA, etc.  Please describe how a node is
@@ -191,11 +239,16 @@
 	Â§4 (with forward references to where each part is discussed), or as a summary
 	to that section.
 
+We have defined Self-Originated NLRI in section 6.1.1. It seems this is sufficient and
+there is no single NLRI for a node. 
+
 	Examples would be very nice.
 
 	- What must be included as a Node Descriptor?  Â§4 talks about a possible
 	combination of different things (see comments/questions there).  It looks
 	like a TLV with an ID is mandatory (see my note about TLV 515), what else?
+
+This is described in section 5.2. 
 
 	- What must be included in a Link Descriptor?  Which TLVs are mandatory and
 	which ones are optional?  There are some rules in Â§3.2.2/rfc7752, do they
@@ -205,10 +258,14 @@
 
 	- When using the BGP-LS Attribute, which TLVs are mandatory and which are
 	optional for each NLRI?
+        
+This is included in throughout section 5.
 
 	- I haven't looked at the differences between rfc7752 and rfc7752bis and
 	whether they would have an impact of anything in this document.  Please do
 	so.
+
+We've incorporated the error handling from the RFC 7752 BIS document in section 7.
 
 
 	(3) Link-State
@@ -219,7 +276,8 @@
 	able to easily break synchronization is a vulnerability that should be
 	mentioned in the Security Considerations section.
 
-
+Hmmm... Of your high-level meta-comments, this one is a good point. We will discuss how
+to document this difference and whether an optional extension is needed. 
 
 
 	[Line numbers from idnits.]
@@ -231,6 +289,8 @@
 	is defining a new link state protocol -- yes, it reuses many parts of
 	BGP, but it is not just an extension to BGP.  Please use a title that
 	reflects this.
+
+Changed draft name.
 
 
 	...
@@ -249,6 +309,8 @@
 	As with the title, let's please position this specification for what
 	it is.
 
+We've reworked the abstract.
+
 
 	...
 	101	1.  Introduction
@@ -259,6 +321,8 @@
 	Include a roadmap of the document.  There are assumptions mentioned
 	without proper justification.  If I didn't know what you're trying to
 	do I wouldn't know what you're talking about.
+
+This is included in section 1.3.
 
 
 	103	   Many Massively Scaled Data Centers (MSDCs) have converged on
@@ -276,6 +340,8 @@
 	IOW, not applicable to this draft!  Note that depending on rfc7938
 	would make it Normative -- I'm not sure what in that document, which
 	is generic, would apply here.  Am I missing something?
+        
+RFC 7938 shouldn't be normative. We've clarified.
 
 
 	113	   [RFC4271] defines the Decision Process that is used to select routes
@@ -288,6 +354,8 @@
 
 	[] Direct copy from rfc4271...
 
+And there is a reference.
+
 
 	121	   [RFC7752] describes a mechanism by which link-state and TE
 	122	   information can be collected from networks and shared with external
@@ -296,6 +364,8 @@
 	125	   in [RFC7752] makes use of the Decision Process defined in [RFC4271].
 
 	[major] s/ within the BGP-LS/BGP-LS-SPF AFI/SAFI./ using the BGP-LS AFI.
+
+Changed to BGP-LS-SPF SAFI. 
 
 
 	127	   This document augments [RFC7752] by replacing its use of the existing
@@ -334,8 +404,12 @@
 	why you want to decompose it into phases vs. simply replacing the
 	whole thing.   I'll read further...
 
+We've reorganized the document to describe the relationship to the base BGP
+protocol and BGP-LS in separate sections. 
+
 
 	[nit] "This solution avails..."  Maybe start a new paragraph there.
+Fixed.
 
 
 	[major] "support fast convergence and the computation of Loop-Free
@@ -344,9 +418,13 @@
 	part of this document.  rfc5286 may apply as-is to the SPF defined
 	here -- please include that information as part of the specification.
 
+This is out of scope. 
+
 
 	[nit] "route-reflectors [RFC4456] or controllers."  From the client
 	point-of-view, is there a difference?
+
+No. 
 
 
 	145	   Support for Multiple Topology Routing (MTR) as described in [RFC4915]
@@ -356,6 +434,8 @@
 	transport?  IOW, we don't seem to need this paragraph as is.  It is
 	however important to mention which "base" link-state functionality is
 	not supported.
+
+We have made it clear that MTR is out of scope.
 
 
 	148	1.1.  BGP Shortest Path First (SPF) Motivation
@@ -375,12 +455,18 @@
 	applicability draft.  However, comparison is almost never a good
 	thing.
 
+This is a Data Center alternative to RFC 7938. We can remove it if you insist but
+we don't feel it is needed.
+
 
 	[minor] "For both alternatives, BGP offers the operational benefits of
 	a single routing protocol."  Do you explain somewhere how to run both
 	modes at the same time?  Mentioning a "single routing protocol" sounds
 	nice, but we really have two protocols potentially using the same
 	peering.  I have questions/concerns later about that.
+
+The draft makes it clear that this is by SAFI and the BGP-LS-SPF SAFI is
+given priority. 
 
 
 	157	   A primary advantage is that all BGP speakers in the BGP SPF routing
@@ -397,12 +483,18 @@
 	speakers in the BGP SPF routing domain/BGP SPF speakers in the routing
 	domain
 
+Good point. We've done this.
+
 
 	[nit] s/addition BGP paths/additional BGP paths
+
+Fixed.
 
 
 	[minor] "addition BGP paths or other extensions"  Did you mean to put
 	a reference to rfc7911?  Assuming that's what you meant.
+
+Added.
 
 
 	165	   With the simplified BGP decision process as defined in Section 5.1,
@@ -416,9 +508,13 @@
 	about replacing the whole Decision Process, not just parts of it, or
 	"simplifying" it.
 
+We didn't change this in -12. It is still a BGP decision process.
+
 
 	[major] What is a "BGP routing domain"?  It is used in several places,
 	but it is not defined anywhere.
+
+It is now defined.
 
 
 	[minor] "much more rapidly (equivalent to IGPs with the proper
@@ -426,6 +522,9 @@
 	("Faster and Improved!"), but it caveats the claim to "IGPs with the
 	proper implementation".  I would ask which are those, etc...but I
 	would prefer if you stick to the facts.
+
+Given that the best-path calculation doesn't have to be done before advertisement,
+we are sticking with this advantage.
 
 
 	170	   Another primary advantage is a potential reduction in NLRI
@@ -439,6 +538,7 @@
 	[minor] "BGP-LS Link NLRI"   To avoid confusion, should we be calling
 	this "BGP SPF Link NLRI"?
 
+We fixed this throughout. 
 
 	[] "This advantage will contribute to both faster convergence and
 	better scaling."  Nice for a marketing brochure.
@@ -471,6 +571,8 @@
 	Hmmm -- are you saying that the number of sessions and updates depends
 	on how the session is verified?  I can't wait to get to Â§2!
 
+Please suggest text for section 4.
+
 
 	[major] "Functions such as Optimized Route Reflection (ORR) are
 	supported without extension by virtue of the primary advantages."
@@ -486,6 +588,8 @@
 	"primary advantage...that all BGP speakers...will have a complete view
 	of the topology".
 
+We've removed ORR.
+
 
 	190	   Given that controllers are already consuming BGP-LS NLRI [RFC7752],
 	191	   reusing for the BGP-LS SPF leverages the existing controller
@@ -495,10 +599,10 @@
 	between rfc7752 and this document.  Can all the BGP-LS information be
 	reused?
 
-
 	[minor] "reusing for the BGP-LS SPF"  Reusing what?  The "BGP-LS SPF"
 	what?  Are we calling the new protocol "BGP SPF" or "BGP-LS SPF"..?
 
+We have added a section for this. 
 
 	194	   Another potential advantage of BGP SPF is that both IPv6 and IPv4 can
 	195	   be supported in the same address family using the same topology.
@@ -511,9 +615,13 @@
 	really referring to the transport of the information.  Please put a
 	forward reference to where this claim is specified.
 
+We will add this reference in the next revision. 
+
 
 	[minor] "Although not described in this version of the document..."
 	If not described, please don't mention them without a reference.
+
+These would be "future" documents. 
 
 
 	200	   Finally, the BGP SPF topology can be used as an underlay for other
@@ -523,6 +631,8 @@
 
 	[major] "similar to [RFC5549]"  Similar?  Please put a forward
 	reference to where this is specified/explained.
+
+We've removed. 
 
 
 	...
@@ -540,8 +650,12 @@
 	the applicability draft talks about operational/deployment
 	considerations when selecting the peering model.
 
+It is out of scope for this document. 
+
 
 	[nit] "only requirement"  More than one is listed.
+
+Fixed.
 
 
 	[major] "receive link-state NLRI on a timely basis"  Is "timely"
@@ -573,14 +687,19 @@
 	peering model in section 5.2.1 of [RFC7938] where there is a BGP session
 	on every link.
 
+Fixed as suggested.
+
 
 	[minor] "address family capability has been exchanged [RFC4790]"   A
 	forward reference to Section 3 would be better.  BTW, what is rfc4790?
 	;-)
+This was meant to be RFC 4760.        
 
 
 	[nit] "For the purposes of BGP SPF..."  Is redundant: this whole
 	document is talking about it.
+
+Removed.
 
 
 	235	2.2.  BGP Peering Between Directly Connected Network Nodes
@@ -604,6 +723,8 @@
 	[nit] "How this is accomplished is outside the scope of this
 	document."  This sentence is redundant...
 
+Removed.
+
 
 	[minor] "Link NLRI is advertised as long as a BGP session has been
 	established...and the corresponding link is considered is up and
@@ -612,8 +733,13 @@
 	"corresponding link" -- are there cases when the session would be up
 	but the link won't?
 
+Link discovery and liveliness are outside of BGP. The sessions used to advertise the
+BGP-LS-SPF link-state is independent. 
+
 
 	[major] The reference to rfc4790 is out of place.
+
+Fixed to RFC 4760.
 
 
 	[minor] "unless there are parallel links"  Related to the previous
@@ -621,9 +747,13 @@
 	link" being up/operational and the potential existence of multiple
 	links is somewhat at odds.
 
+How so? There is separate BGP-LS-SPF state for each link.
+
 
 	[nit] s/link is considered is up and considered operational/link is
 	considered is up and operational
+
+Fixed.
 
 
 	253	2.3.  BGP Peering in Route-Reflector or Controller Topology
@@ -639,14 +769,21 @@
 	[minor] "direct connection discovery"  I would assume that most of the
 	connections to a RR are not direct.
 
+Again, the BGP-LS-SPF link-state and the sessions with the controller or RR are
+indenpendent.
+
 
 	[major] "Liveliness detection is done using BFD"  Is this a
 	requirement?  Just like any other BGP session, BFD can be used, but it
 	doesn't have to, right?  If not required, please word this sentence
 	with BFD as an example.
 
+Fixed.
+
 
 	[nit] s/using BFD protocol/using the BFD protocol
+
+Fixed.
 
 
 	[nit] "...Link NLRI is advertised as long as the corresponding link is
@@ -656,6 +793,8 @@
 	all of it (session up, capability exchanged and link up) is obvious
 	and not needed.
 
+We are not establishing BGP sessions on all the links. 
+
 
 	263	   This peering model, known as sparse peering, allows for many fewer
 	264	   BGP sessions and, consequently, instances of the same NLRI received
@@ -664,9 +803,14 @@
 
 	[nit] s/many fewer/fewer
 
+Fixed.
 
 	[major] Isn't there greater risk in delaying information?  Maybe I
 	need to go read the other document...
+
+This is topology independent and, in any case, it will be delayed less than with
+base BGP given that it not required to run the best-path prior to readvertising the NLRI.
+
 
 
 	268	3.  BGP-LS Shortest Path Routing (SPF) SAFI
@@ -688,12 +832,18 @@
 	[minor] "Phase 3 decision functions in a backward compatible manner"
 	Again, with what?
 
+This is clarified.
+
 
 	[major] "SAFI TBD1"  Aren't there implementations already?  What SAFI
 	value are they using, a private one?
 
+Fixed all references.
+
 
 	[major] The reference to rfc4790 is completely out of place.
+
+This is removed.
 
 	[]
 	OLD>
@@ -707,6 +857,8 @@
 	they are both capable of properly processing such NLRI.  This is done with
 	AFI 16388 / SAFI TBDx for BGP-LS-SPF.
 
+Suggested text incorporated.
+
 
 	[major] Can the BGP SPF session also support other AFI/SAFI pairs?  If
 	so, what are the implications/limitations because of the peering
@@ -714,10 +866,14 @@
 	recommend/require the isolation of BGP SPF in it's own BGP session?
 	Why/why not?  IMHO, it should be required.
 
+We didn't cover this in the -12 version.
+
 
 	280	4.  Extensions to BGP-LS
 
 	[] Are we extending BGP-LS or just using parts of it?
+
+Section 5 in the new version.
 
 
 	282	   [RFC7752] describes a mechanism by which link-state and TE
@@ -731,6 +887,8 @@
 
 	[nit] s/using BGP protocol/using the BGP protocol
 
+Fixed.
+
 
 	[major] This document reuses the BGP-LS Attribute.  However, rfc7752
 	says that it "MUST be ignored for all other address families".  My
@@ -738,6 +896,10 @@
 	to the BGP-LS AFI, but the AFI/SAFI pairs defined there.  This
 	interpretation may be too strict -- please include a note related to
 	why it is ok to reuse the BGP-LS Attribute here.
+
+The premise of the protocol and the WG is that it is reused. We are using the BGP-LS
+AF but have a new SAFI. Hence, we don't violate RFC 7752.
+
 
 
 	291	   The BGP protocol will be used in the Protocol-ID field specified in
@@ -755,13 +917,18 @@
 	source protocol not set to Direct?  Note that the information
 	advertised doesn't come from a different protocol.
 
+We fixed and removed the reference.
+
 	>From rfc7752: "direct access to interface information and wants to
 	advertise a local link, then the Protocol-ID 'Direct' SHOULD be used."
 
+We fixed and removed the reference.
 
 	[minor] "The local and remote node descriptors for all NLRI..."   I'm
 	assuming you're talking about the Local Node Descriptors and Remote
 	Node Descriptors fields, right?  Please be specific.
+
+This is specified with each type of NLRI.
 
 
 	[major] Incorrect references.  s/BGP Router-ID (TLV
@@ -770,6 +937,8 @@
 	(TLV 512) [RFC7752] or the BGP Confederation Member (TLV 517)
 	[I-D.ietf-idr-bgpls-segment-routing-epe]
 
+Fixed or removed references.
+
 
 	[major] Even if it may be obvious to you, please specify when to use
 	TLV 512 and when to use TLV 517.
@@ -777,9 +946,13 @@
 	all the time (and include in it the Confederation ASN, if applicable)
 	-- is there a reason not to follow the same recommendation?
 
+We're only using TLV 512 now.
+
 
 	[minor] s/BGP Router ID/BGP Identifier
 	That's what rfc6286 uses. Note that the TLV name is ok.
+
+We now use BGP Identifier throughout. 
 
 
 	[major] "if the BGP Router-ID is known to be unique within the BGP
@@ -798,14 +971,20 @@
 	receiver know if what it got (say only TLV 516, for example) is what
 	is should have received?
 
+We've clarified this. 
+
 
 	[major] rfc7752 classifies the IGP Router-ID TLV (515) as mandatory.
 	Given that BGP SPF is a new IGP protocol, why isn't that used instead?
 	You can specify the content as the BGP ID.
 
+This is BGP SPF and we want to use the same BGP identifier as the base protocol.
+
 
 	[major] For everything specified here, what should a receiver do if
 	the information received is not what is expected.
+
+Malformed NLRI is handled in the Error Handling section. NLRI that
 
 
 	299	4.1.  Node NLRI Usage
@@ -816,6 +995,8 @@
 	[minor] "BGP Node NLRI"   rfc7752 uses "Node NLRI" -- are you using
 	BGP to try and differentiate?
 	[major] "will be"  Is this a requirement?  Should Normative language be used?
+
+We've changed to Node NLRI and normative language.
 
 
 	304	4.1.1.  Node NLRI Attribute SPF Capability TLV
@@ -832,9 +1013,13 @@
 	Note that we're not adding anything to the table in rfc7752 -- in the
 	best case we're getting a new TLV code point from a registry.
 
+Fixed.
+
 
 	[minor] s/The new attribute TLV will only be applicable/The new
 	attribute TLV is only applicable
+
+Fixed.
 
 
 	[nit] s/Protocol ID/Protocol-ID
@@ -843,13 +1028,19 @@
 	[] "BGP is specified in the Node NLRI Protocol ID"  See my comments
 	elsewhere about using BGP as the Protocol-ID.
 
+Fixed throughout.
+
 
 	[major] "The TBD TLV type will be defined by IANA."  I know IANA
 	hasn't assigned one yet, use TBDx instead.  Same question about
 	implementation -- there is no private use here...
 
+Fixed and early allocation of Arrcus implementation code points requested.
+
 
 	[major] s/[RFC8402]/[RFC8665]   This should be a new Normative reference.
+
+Fixed.
 
 
 	313	       0                   1                   2                   3
@@ -862,15 +1053,23 @@
 
 	[minor] Please add Figure numbers everywhere.
 
+Not done in this version.
+
 
 	[minor] Please indicate the Type; use TBDx to identify the different
 	values to be assigned.
 
+Based on these many comments, we've used the types that are requested.
+
 
 	[major] Please indicate somewhere that the Length should be.  In this case 1.
 
+Done.
+
 	[] The length indication is not present in any of the other TLVs
 	defined.  Please indicate the value there too.
+
+Done.
 
 
 	321	   The SPF Algorithm may take the following values:
@@ -883,6 +1082,8 @@
 	[major] There's no need to repeat the definitions from rfc8665,
 	especially given that only one value is supported.  Just say that!
 
+Discussion of strict SPF is removed.
+
 
 	[major] I don't know where any restriction on algorithm 1 is
 	documented (certainly not in
@@ -890,6 +1091,7 @@
 	If algorithm 1 is the only one supported, and maybe the only one for a
 	while (?), why does it need to be signaled?
 
+Discussion of strict SPF is removed.
 
 	340	   When computing the SPF for a given BGP routing domain, only BGP nodes
 	341	   advertising the SPF capability attribute will be included the
@@ -899,16 +1101,25 @@
 	same SFP Algorithm as the local node...so just advertising this TLV is
 	not enough.  At least add a forward reference to Â§5.
 
+Reference will be added in the next revision.
+
 
 	[major] Related...  If this is a mandatory TLV, please say so.
 	However, it seems that a default value (0) be assumed if not present?
 
 
+Clarified that it is mandatory.
+
+
 	[minor] s/SPF capability attribute/SPF Capability TLV
+
+Fixed.
 
 
 	[major] Where is the SPF algorithm specification?  How is the routing
 	table calculated from the BGP SPF information?
+
+I guess you are asking for the reference again? 
 
 
 	344	4.1.2.  BGP-LS Node NLRI Attribute SPF Status TLV
@@ -925,15 +1136,19 @@
 	Attribute with a Node NLRI.  Is that it?
 
 
+Well, RFC 7752 specifies attributes for each NLRI type. This is continuing in this
+tradition.
+
+
 	[major] "TLV to BGP-LS Node NLRI is defined"  By mentioning BGP-LS,
 	are you implying that this new TLV can be used by an rfc7752
 	implementation?  Or is the expectation that it will only be used by a
 	BGP SPF SAFI is in use?  Either way, please be explicit.  This type of
 	text is present in other sections.
 
-
 	[] Using BGP-LS sometimes is getting confusing.
 
+We use BGP-LS-SPF rather than BGP-LS throughout.
 
 	353	       0                   1                   2                   3
 	354	       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -956,6 +1171,9 @@
 
 	[] There are other places where the TLV format is not followed either.
 
+This is now fixed throughout. The engineer implementing BGP SPF ignored these problems but
+neglected to make the comment. 
+
 
 	361	       BGP Status Values: 0 - Reserved
 	362	                          1 - Node Unreachable with respect to BGP SPF
@@ -969,12 +1187,17 @@
 	specification in this new protocol document.  A forward reference
 	would be good.
 
+Forward reference added.
+
 
 	[minor] When does the status take effect?  Immediately?  Is there a
 	"graceful shutdown" concept?
 
 
 	[major] What should the receiver do if an unknown value is received?
+
+
+Error handling is not covered.
 
 
 	368	4.2.  Link NLRI Usage
@@ -998,6 +1221,8 @@
 	the default?  Why/when would a node choose to deviate from the
 	default?
 
+This is described as well as the applicability to the BGP SPF calcuation.
+
 
 	383	   The link IGP metric attribute TLV (TLV 1095) as well as any others
 	384	   required for non-SPF purposes SHOULD be advertised.  The metric value
@@ -1011,12 +1236,18 @@
 	[minor] s/link IGP metric attribute TLV/IGP Metric TLV
 	That's what rfc7752 calls it.
 
+Fixed.
+
 
 	[major] "TLV 1095...SHOULD be advertised"  When is it ok to not
 	advertise the metric?  IOW, why isn't it required?
 
+Fixed.
+
 
 	[nit] s/any others/any other
+
+Fixed.
 
 
 	[major] "others required for non-SPF purposes SHOULD be advertised"
@@ -1025,6 +1256,8 @@
 	purposes?  This phrase is also used in Â§4.3, but there's no
 	explanation as to why this new protocol would carry non-SPF stuff, or
 	what what may be.  Recommendation: leave the non-SPF part out.
+
+This is removed. 
 
 
 	[minor]
@@ -1035,6 +1268,8 @@
 
 	NEW>
 	The BGP SPF metric length is 4 octets.
+
+Suggested text incorporated..
 
 
 	[major] "Algorithms such as setting the metric inversely to the link
@@ -1069,6 +1304,7 @@
 	would be nice for this new protocol to be interoperable out of the
 	box.
 
+We've clarified this as requested but do not specify a default metric. 
 
 	392	4.2.1.  BGP-LS Link NLRI Attribute Prefix-Length TLVs
 
@@ -1079,10 +1315,14 @@
 
 	[?] Where do the prefixes come from?
 
+Clarified - "derived from the link descriptor addresses."
+
 
 	[major] rfc7752 defines the IP Reachability Information TLV, which is
 	mandatory and also includes the prefix length (and the prefix itself).
 	Why isn't that one reused?
+
+This is for Prefix NLRI. 
 
 
 	399	       0                   1                   2                   3
@@ -1096,6 +1336,8 @@
 
 	[minor] Indicate the different Types separately: TBD4 and TBD6, for example.
 
+Fixed.
+
 
 	407	        Prefix-length - A one-octet length restricted to 1-32 for IPv4
 	408	                        Link NLRI endpoint prefixes and 1-128 for IPv6
@@ -1103,6 +1345,8 @@
 
 	[major] What should the receiver do if the Prefix-length is invalid?
 	For example, if 44 is received for IPv4.
+
+Error handling is added.
 
 
 	411	4.2.2.  BGP-LS Link NLRI Attribute SPF Status TLV
@@ -1118,6 +1362,9 @@
 	("the link is considered up and available"), and the (other) SPF
 	Status TLV indicates something else, which one has priority?
 
+There interpretation of the status TLV is dependent on the NLRI type. We will discuss this
+further.
+
 
 	...
 	427	       BGP Status Values: 0 - Reserved
@@ -1127,12 +1374,16 @@
 
 	[major] What should the receiver do if an unknown value is received?
 
+Error handling is added.
+
 
 	432	4.3.  Prefix NLRI Usage
 
 	[minor] rfc7752 defines 2 Prefix NLRI types, the IPv4 Topology Prefix
 	NLRI and the IPv6 Topology Prefix NLRI.  I'm assuming that by "Prefix
 	NLRI" you mean both.  Please write that somewhere.
+
+Changed name of section.
 
 
 	434	   Prefix NLRI is advertised with a local node descriptor as described
@@ -1147,6 +1398,8 @@
 	That's the name of the field as defined in rfc7752.  Please be
 	consistent with all names.
 
+Fixed.
+
 	OLD>
 	Prefix NLRI is advertised with a local node descriptor as described
 	above and the prefix and length used as the descriptors (TLV 265) as
@@ -1157,15 +1410,23 @@
 	above (Section 4).  The Prefix Descriptors field includes the IP
 	Reachability Information TLV (TLV 265) as described in [RFC7752].
 
+Suggested text incorporated.
+
 
 	[minor] s/The prefix metric attribute TLV/The Prefix Metric TLV
+
+Will be included in next revision.
 
 
 	[major] "TLV 1155...SHOULD be advertised"  When is it ok to not
 	advertise the metric?  IOW, why isn't it required?
 
+Changed to MUST.
+
 
 	[nit] s/any others/any other
+
+Removed.
 
 
 	442	4.3.1.  BGP-LS Prefix NLRI Attribute SPF Status TLV
@@ -1182,6 +1443,8 @@
 	[major] What is the relationship of this TLV with the other SPF Status
 	TLVs?  Which one has priority?
 
+The TLV is NLRI specific has the same code point. We will discuss. 
+
 
 	...
 	458	       BGP Status Values: 0 - Reserved
@@ -1193,6 +1456,8 @@
 	to describe value 1.  Is there a difference in the meaning?  It would
 	be nice to be consistent.
 
+Updated. 
+
 
 	463	4.4.  BGP-LS Attribute Sequence-Number TLV
 
@@ -1203,6 +1468,8 @@
 	469	   of the Sequence Number TLV is described in Section 5.1.
 
 	[major] I assume that this TLV is mandatory for BGP SPF.  Please say so.
+
+Yes. 
 
 
 	...
@@ -1219,11 +1486,15 @@
 	[major] "sequence number is incremented"  Should this behavior be
 	Normative?  s/is/MUST ?
 
+Fixed.
+
 
 	[major] "for every version of BGP-LS NLRI originated"   There are 3
 	NLRI Types. If only one NLRI type is originated, should the Sequence
 	Number change for the others?  Does this imply that the other NLRIs
 	need to be updated too?
+
+No - each NLRI is separate. I think we need to clarify the packing.  
 
 
 	493	   When incrementing the sequence number for each self-originated NLRI,
@@ -1239,6 +1510,12 @@
 
 	[] "If by some chance the BGP Speaker is deployed long enough..."  I
 	love positive thinking. :-(
+
+This is the law of large numbers - it will never happen. We will remove this
+statement in the next revision. The range is 0 - 18446744073709551615. At one
+self-origination per milli-second, it will still takes 10's of millions of years.
+
+
 
 
 	504	5.  Decision Process with SPF Algorithm
@@ -1256,14 +1533,19 @@
 	[minor] s/best-path Decision process/Decision Process
 	rfc4271 doesn't use the term best-path.
 
+
 	[nit] "best-path" is used later to describe the BGP SPF process.  That
 	is ok, but you may want to consider "best route" too.
+
+These are fixed. I believe "best-path" is an artifact of a Cisco implementation.
 
 
 	[minor] "contains the local descriptor [RFC7752]"  I think you're
 	pointing at rfc7752 because that's where the formats are defined.  You
 	should (also) point at Â§4 where the contents of the descriptor are
 	explained.
+
+We've updated.
 
 
 	[minor] "...it will only be originated by a single BGP speaker in the
@@ -1277,10 +1559,14 @@
 	Descriptor [], it could be used to identify the originating BGP
 	speaker in the domain.
 
+We believe we've explained this better.
+
 
 	[minor] "selected Node NLRI and their Link/Prefix NLRI"  I assume
 	you'll explain later how they're selected...a forward reference would
 	be nice.
+
+Hopefully, the description will suffice.
 
 
 	526	   When BGP-LS-SPF NLRI is received, all that is required is to
@@ -1299,9 +1585,14 @@
 
 	[minor] s/When BGP-LS-SPF NLRI is received/When a BGP SPF UPDATE is received
 
+We dont' really believe this is an improvement. We use the base BGP update message. It is
+BGP-LS-SPF SAFI that is unique.
+
 
 	[] BGP SPF and BGP-LS-SPF are used throughout for apparently the same
 	thing.  Please be consistent.
+
+BGP-LS-SPF is used consistently.
 
 
 	[major] This paragraph sounds out of place to me.  It seems to
@@ -1309,13 +1600,20 @@
 	received...but you haven't explained the details yet.  Perhaps move
 	this to some place later.
 
+This is an overview of the process. It belongs where it is.
+
 
 	[] "...determine whether it is the best-path by examining the Node-ID
 	and sequence number..."  This phrase sounds incomplete/wrong, I'm sure
 	Â§5.1 will provide more details.
 
+Yes - this is an overview.
+
 
 	[minor] s/If the received best-path NLRI had changed/If the best-path changes
+
+
+No. That would be incorrect. 
 
 
 	[major] "BGP SPF calculation will be scheduled"  When?  s/will/MUST ??
@@ -1333,11 +1631,15 @@
 	the place to compare this protocol with others.  BTW, I'm assmuming
 	you consider BGP SPF an IGP, right?
 
+Not exactly. It is BGP SPF.
+
 
 	[major] Given that these are timers in rfc4271:
 	s/MinRouteAdvertisementIntervalTimer and MinASOriginationIntervalTimer
 	[RFC4271] are not applicable/MinRouteAdvertisementIntervalTimer and
 	MinASOriginationIntervalTimer [RFC4271] MUST be set to 0
+
+No - if there aren't applicable, they don't need to be set to anything.
 
 
 	[minor] s/SHOULD be triggered and dampened consistent with the SPF
@@ -1356,6 +1658,9 @@
 	out where rfc8405 would be applicable.
 
 
+This has been re-written.
+
+
 	540	   The Phase 3 decision function of the Decision Process [RFC4271] is
 	541	   also simplified since under normal SPF operation, a BGP speaker would
 	542	   advertise the NLRI selected for the SPF to all BGP peers with the
@@ -1370,6 +1675,8 @@
 
 	[major] "BGP speaker would advertise"  MUST??
 
+Fixed.
+
 
 	[major] "advertise the NLRI selected for the SPF"  Only that?  Â§5.1
 	seems to potentially eliminate some NLRI (I have questions about that
@@ -1380,11 +1687,15 @@
 
 	[minor] s/BGP peers with the BGP-LS/BGP-LS-SPF AFI/SAFI /BGP SPF peers
 
+This has been rewritten.
+
 
 	[minor] I'm not sure what you're trying to say in the last sentence.
 	When is policy ok?  What is the relationship between policy (which I
 	interpret as filtering routes) and the metrics (beyond obviously not
 	propagating anything)?
+
+This is removed.
 
 
 	547	5.1.  Phase-1 BGP NLRI Selection
@@ -1397,6 +1708,8 @@
 
 	[major] Does this set of rules apply per NLRI?  IOW, do they apply to all NLRIs?
 
+It applies to all NLRIs in the BGP-LS-SPF SAFI.
+
 
 	551	   1.  If the NLRI is received from the BGP speaker originating the NLRI
 	552	       (as determined by the comparing BGP Router ID in the NLRI Node
@@ -1407,6 +1720,8 @@
 
 	[minor] s/BGP Router ID/BGP Identifier/g
 	That's the name used in rfc6286
+
+Fixed throughout. 
 
 	[]
 	OLD>
@@ -1420,6 +1735,8 @@
 	This condition can be determined by comparing the BGP Identifiers in
 	the received Local Node Descriptor and OPEN message.
 
+Fixed.
+
 
 	[major] In the case where a prefix is multihomed to more than one BGP
 	SPF router...  Let's say that one of those routers is directly
@@ -1427,6 +1744,9 @@
 	receiver wouldn't take the advertisement (of a Link/Prefix NLRI) from
 	the non-connected speaker into account?  Even if the topology is such
 	that the metric is <=?
+
+No - these are different Prefix NLRI since they are originated by different
+BGP SPF routers.
 
 
 	558	   2.  If the Sequence-Number TLV is present in the BGP-LS Attribute,
@@ -1437,6 +1757,8 @@
 
 	[major] How can a route without the Sequence-Number TLV even be valid?
 
+Sequence number is now mandatory. 
+
 
 	564	   3.  The final tie-breaker is the NLRI from the BGP Speaker with the
 	565	       numerically largest BGP Router ID.
@@ -1446,8 +1768,13 @@
 	The route received from the BGP SPF speaker with the numerically larger BGP
 	Identifier is preferred.
 
+Fixed. 
+
 
 	[major] Is this the BGP ID of the directly connected peer, or the originator?
+
+We use the term "BGP Speaker" to make it clear that is the peer - for the NLRI selection
+of the same NLRI, the originator is, by definition, the same.
 
 
 	567	   When a BGP speaker completely loses its sequence number state, i.e.,
@@ -1464,15 +1791,21 @@
 
 	[nit] s/When BGP speaker/When a BGP SPF speaker
 
+This was missed and will be fixed in the next revision.
+
 
 	[minor] "stale NLRI will be replaced by the new NLRI and stale NLRI
 	will be discarded"   You mentioned 2 different actions for stale
 	routes.
 
+Fixed.
+
 
 	[major] "whether or not BGP graceful restart is deployed, [RFC4724]"
 	Does this mean that GR is not supported in BGP SPF?  It may be clearer
 	to simply say that.
+
+Removed.
 
 
 	579	   The modified SPF Decision Process performs an SPF calculation rooted
@@ -1487,6 +1820,8 @@
 	Maybe be more specific and point to the IGP metric attribute TLV (TLV
 	1095) and the prefix metric attribute TLV (TLV 1155).
 
+Added references.
+
 
 	[major] "ORIGIN, MULTI_EXIT_DISC, and LOCAL_PREF attributes are ignored"
 
@@ -1497,25 +1832,38 @@
 	And it doesn't eliminate them completely in case there's some use for
 	them in the future.
 
+We say they are ignored by the SPF algorithm. Any future usage would require
+a new document anyway.
 
 	[major] What about the AS_PATH?
+
+It is still used for loop detection. Keyur to respond.
 
 
 	[major] What about other attributes?  Not all influence the BGP
 	decision process -- do we need them?  The more unnecessary stuff that
 	is carried the more risk.
 
+We address all the RFC 4271 attributes but not any future attibutes. 
+
 
 	[] Please remove the sentence about the NEXT_HOP and focus all
 	discussion about it in Â§5.4.
+
+
+We missed this and it will be in the next revision.
 
 
 	[major] rfc4760 says that if only multi-protocol extensions are used
 	then an "UPDATE...SHOULD NOT carry the NEXT_HOP attribute".  If this
 	is one of the exceptions, please be explicit about it.
 
+We will add in next revision after discussion.
+
 
 	[minor] "the SPF or best-path"  I guess you meant simply the SPF calculation.
+
+We will change this in the next revision.
 
 
 	587	5.2.  Dual Stack Support
@@ -1540,6 +1888,8 @@
 	[minor] As mentioned in Â§1, we don't need to mention MTR again if it's
 	not supported.
 
+Reworked this section.
+
 
 	599	5.3.  SPF Calculation based on BGP-LS NLRI
 
@@ -1556,11 +1906,15 @@
 
 	[minor] s/BGP-LS domain/BGP SPF domain
 
+This will be changed in the next revision.
+
 	[major] "Variations and optimizations of the algorithm are valid as
 	long as it yields the same set of routes."  This sounds as if the
 	algorithm described here is not normative, just an example.  I expect
 	to see a default algorithm -- or at least one who's output describes
 	what MUST happen.
+
+Reworded in -12.
 
 
 	...
@@ -1579,6 +1933,8 @@
 	also existed; for example it looks like the LSNDB is equivalent to the
 	Adj-RIB-In.
 
+Reworded.
+
 
 	621	   o  Link State NLRI Database (LSNDB) - Database of BGP-LS NLRI that
 	622	      facilitates access to all Node, Link, and Prefix NLRI as well as
@@ -1591,9 +1947,14 @@
 	NLRI as well as all the Link and Prefix NLRI corresponding to a given
 	Node NLRI"
 
+Simplified.
+
 
 	[minor] "bi-directional connectivity...possible but of scope of this
 	document."  this is specified later in this section.
+
+Removed - an implementation can avoid the check during the calculation if it is
+done upon installation. However, that is an optimization.
 
 
 	628	   o  Candidate List - This is a list of candidate Node NLRI with the
@@ -1604,8 +1965,12 @@
 	[major] "list of candidate Node NLRI"  Where does this list come from?
 	Is it the outcome of the rules in Â§5.1?
 
+The NLRI selected during 5. are eligible to be added. Will add a reference in the next revision.
+
 
 	[major] "lowest cost"  How is this cost calculated?
+
+This is explained.
 
 
 	...
@@ -1616,8 +1981,15 @@
 
 	[major] Please define the "global RIB".
 
+Added to data structures.
+
 
 	[minor] "determine changes that need to be installed in"  ...or removed from
+
+
+Reworded.
+
+
 
 
 	...
@@ -1631,6 +2003,8 @@
 	650	       completed and the algorithm proceeds to step 6.
 
 	[minor] "removed from the candidate list"  When was that list initialized?
+
+Now initialized in step 1.
 
 
 	...
@@ -1676,6 +2050,8 @@
 	674	          next-hops.
 
 	[] see comment above...
+
+This entire section has been rewritten.
 
 
 	676	   5.  All the Link NLRI with the same Node Identifiers as the Current
@@ -1730,6 +2106,8 @@
 	[major] This same check needs to be done for the Endpoint Node, at the
 	link and node level.
 
+This entire section has been rewritten.
+
 
 	701	          +  All the Link NLRI corresponding the Endpoint Node NLRI will
 	702	             be searched for a back-link NLRI pointing to the current
@@ -1753,6 +2131,10 @@
 
 	This text may still be confusing (specially the part about the IP addresses)...
 
+This is rewritten with the checks specified explicitly. We since there are remote
+descriptors, we only support P2P links. We do support parallel P2P links with the
+subnet match. We may need to add text for parallel unnumbered links.
+
 
 	710	          +  If the Endpoint Node NLRI is not on the candidate list, it
 	711	             is inserted based on the link cost and BGP Identifier (the
@@ -1763,6 +2145,9 @@
 	Judging from the next two steps, it sounds as if the node is put in
 	the candidate list.  Why wouldn't this node be on the candidate list
 	already?  (see related question where the Candidate List is defined)
+
+
+This has been clarified. 
 
 
 	714	          +  If the Endpoint Node NLRI is already on the candidate list
@@ -1777,15 +2162,25 @@
 
 	[minor] "with a higher cost" than what?
 
+This has been clarified.
+
 
 	[minor] "removed and reinserted"  I'm not sure why this would happen.
 	See related questions when the Candidate List is defined.
+
+This can easily happen if you have process one node with high cost link to the candidate
+node followed by a node with a slighly higher direct cost but lower cost to the candidate
+node.
+
+
 
 
 	721	       *  Return to step 3 to process the next lowest cost Node NLRI on
 	722	          the candidate list.
 
 	[nit] Should this be its own step?
+
+Step 3 does this so it is not a separate step. 
 
 
 	724	   6.  The local RIB is examined and changes (adds, deletes,
@@ -1795,10 +2190,14 @@
 	adds.  Please be more specific about what is being compared and how
 	the adds, deletes, modifications are determined.
 
+This has been reworked.
+
 
 	727	5.4.  NEXT_HOP Manipulation
 
 	[minor] This sub-section doesn't seem to belong in the Decision Process section.
+
+Agreed it has been moved.
 
 
 	[major] rfc4760 says this:
@@ -1812,6 +2211,8 @@
 	specify rules that are not consistent with rfc4760.  The use of the
 	NEXT_HOP to export BGP SPF information should already be covered in
 	rfc7752.  It seems to me that this section is not needed.
+
+We have reworked this section.
 
 
 	729	   A BGP speaker that supports SPF extensions MAY interact with peers
@@ -1834,6 +2235,8 @@
 	Normative language doesn't belong here as this should already be
 	covered in rfc7752.
 
+This has been removed. 
+
 
 	736	   All BGP peers that support SPF extensions would locally compute the
 	737	   Loc-RIB next-hops as a result of the SPF process.  Consequently, the
@@ -1845,6 +2248,9 @@
 	process"  That's what I expected, but I don't see that part specified
 	in the SPF description.
 
+The next-hop calculation is there now. 
+
+
 
 	[major] "SHOULD set the NEXT_HOP address according to...[RFC4271]"
 	Why isn't this action required?  When would rfc4271 not be followed?
@@ -1854,6 +2260,10 @@
 	value is preserved but otherwise ignored", but the text here
 	recommends/requires a potential change.  Should the NEXT_HOP attribute
 	be ignored or used?  It seems to me that this section is unnecessary.
+
+We've removed it. The mixing of a BGP SPF Routing Domain and a base BGP Routing domain
+is more complex than just specifying the NEXT_HOP rules.
+
 
 
 	742	5.5.  IPv4/IPv6 Unicast Address Family Interaction
@@ -1871,8 +2281,12 @@
 
 	[nit] s/install routes/may install routes
 
+Fixed.
+
 
 	[minor] s/There will be no/There is no
+
+Fixed.
 
 
 	[major] "implementation specific redistribution mechanisms SHOULD be
@@ -1884,9 +2298,15 @@
 	information came from.
 
 
+Reworked this. 
+
+
 	[major] You don't say anything about redistribution into BGP SPF.  Is
 	that ok?  I don't think I saw the concept of an "external" route
 	anywhere...
+
+Redistribution has been removed and you are correct that there is no concept of an
+external route. This is an area that requires more specification.
 
 
 	755	   Given the fact that SPF algorithms are based on the assumption that
@@ -1899,34 +2319,53 @@
 
 	[nit] s/calculate the precisely/calculate precisely
 
+Fixed.
+
 
 	[nit] "precisely the same SPF tree and install the same set of routes"
 	Given that each node calculates SPF from its own perspective, the
 	result is not precisely the same...it is consistent, but not the same.
 	Just a nit.
 
+Fixed.
+
 
 	[minor] s/BGP-LS SPF IPv4/IPv6 routes/BGP SPF routes
+
+This is the BGP-LS-SPF SAFI.
 
 
 	[major] "RECOMMENDED...routes be given priority"  When is it ok to not
 	give higher priority?  IOW, why is this not required?
+
+Scheduling prioritization amongst address families is an implementation matter and
+shouldn't be dictated by the protocol.
+
 
 
 	[major] "routes be given priority"  Priority over what?  Over other
 	BGP-related routes?  Over other IGPs?  Wouldn't all IGPs want the same
 	thing?
 
+As for installation, this has always been a implementation choice. We recommend
+preference or admin distance lower for BGP-LS-SPF SAFI routes over other BGP
+routes. The IGP relationship is deployment dependent.
+
 
 	763	5.6.  NLRI Advertisement and Convergence
 
 	[minor] This section only talks about convergence, not advertisement.
+
+Advertisement actions are required for convergence. 
 
 
 	[major] Related to advertisement, when are the different NLRIs
 	advertised?  For Link NLRI, for example, I assume that changes in
 	cost/metric would trigger a new UPDATE, right?  What about the other
 	NLRI?
+
+NLRI are advertised when a changed or more recent version is received. See
+last paragraph section 6.
 
 
 	765	5.6.1.  Link/Prefix Failure Convergence
@@ -1942,11 +2381,16 @@
 	Link/Prefix NLRI be Withdrawn or should a metric of "infinity" be
 	used?  Is there even a concept of "infinity"?
 
+The Status TLV is used initially to avoid waiting for all copies of the NLRI to
+be withdrawn. The NLRI will subsequently be withdrawn.
+
 
 	[minor] "local link failures should always be given priority over
 	updates"  Should there be Normative language here somewhere?  This is
 	a change in behavior with respect to rfc4271 -- what if there are
 	other AFI/SAFIs negotiated over the same link/session?
+
+Fixed.
 
 
 	774	   An IGP such as OSPF [RFC2328] will stop using the link as soon as the
@@ -1966,18 +2410,29 @@
 	"normal" BGP, and the transport is opaque; IOW, the information is not
 	used for routing.
 
+Right - but I don't see how that impacts withdrawal. Anyway, we consistently refer to
+BGP-LS-SPF now.
+
 
 	[major] s/ originator...will advertise / originator...MUST/SHOULD (?) advertise
+
+Changed to SHOULD. 
 
 
 	[major] "a more recent version"  MUST/SHOULD increase the Sequence Number...
 
+There is SHOULD now. 
+
 
 	[nit] s/SPF Status TLV Section 4.2.2/SPF Status TLV (Section 4.2.2)
+
+Fixed. 
 
 
 	[major] "configurable period of time, e.g., 2-3 seconds"   Please
 	define a timer and set a default.
+
+We indicate this is implementation dependent. We could revise in the next revision. 
 
 
 	787	   Similarly, when a prefix becomes unreachable, a more recent version
@@ -1992,6 +2447,9 @@
 	796	   in the BGP-LS Prefix Attributes.
 
 	[] Same comments...
+
+
+Need to add "SHOULD" here in the next revision.
 
 
 	798	5.6.2.  Node Failure Convergence
@@ -2013,30 +2471,46 @@
 
 	[nit] s/by node/by a node
 
+Fixed.
+
 
 	[minor] "the most recent versions of BGP-LS NLRI may be withdrawn
 	while these versions are in-flight on longer paths"    I don't
 	understand what this means -- the "while these versions" part is
 	throwing me off.
 
+I mean that you've received the most recent version from the node that went down
+and you haven't received it from other nodes. 
+
 
 	[major] "SHOULD always be retained"  s/SHOULD always/SHOULD   When
 	would it be ok to not retain?  IOW, why is this not a requirement?
+
+We can change this "SHOULD". 
 
 
 	[minor] "BGP-LS SPF NLRI SHOULD always be retained"  I'm assuming you
 	exclusively mean Node NLRIs, and not all, right?  Also, I guess you
 	mean to say that when the NLRI changes it should be retained...
 
+I mean NLRI received from the adjacent node that went down. This is where the
+BGP implicit withdrawal is applicable. We can attempt to revise.
+
 
 	[minor] "brief configurable interval, e.g., 2-3 seconds"  Can we use
 	the same timer as before?
 
+We indicate this is implementation dependent. I guess will add these timers in
+the next revision (or a future revision).
 
 	[nit] s/BGP SPF Section 5.6.1/BGP SPF (Section 5.6.1)
 
+Fixed.
+
 
 	[nit] s/will failure/will fail
+
+Fixed.
 
 
 	815	5.7.  Error Handling
@@ -2059,6 +2533,8 @@
 	specify what to do if the different fields are not as expected, when
 	is a TLV considered malformed, what to do about it, etc..
 
+This entire section has been rewritten and expanded.
+
 
 	824	6.  IANA Considerations
 
@@ -2074,6 +2550,8 @@
 	(Section 3), and requests IANA to assign a value from the xxx range in the
 	Subsequent Address Family Identifiers (SAFI) Parameters registry.
 
+We've incorporated your suggestion.
+
 
 	830	   This document also defines five attribute TLVs for BGP-LS NLRI.  We
 	831	   request IANA to assign types for the SPF capability TLV, Sequence
@@ -2087,9 +2565,13 @@
 	with a common set of SPF Status values, but that is not explained
 	anywhere.
 
+That is the intent. We need to discuss NLRI packing. 
+
 
 	[minor] It would be very nice if a table was included to show the TLV
 	types and the name.
+
+This has been added.
 
 
 	836	7.  Security Considerations
@@ -2112,9 +2594,13 @@
 	If not, then the question about authentication will definitely come
 	up.
 
+We allow but will discuss.
+
 
 	[major] Please add pointers to the BGP Security Analysis documents;
 	rfc4272 and rfc6952.
+
+We've added this. 
 
 
 	[major] It is not clear whether rfc4724 is a requirement or not...
@@ -2162,6 +2648,9 @@
 
 	[Some of these are clearly related to the link-state nature of BGP SPF.]
 
+We may need more here but describing the consequences of every TLV is not done
+in other protocols. 
+
 	Note that there may not be mitigation for some of these rogue router
 	behaviors.  The use of the protocol in a limited domain may be the
 	only possible countermeasure.  But claiming that there are no new
@@ -2171,12 +2660,16 @@
 	[minor] rfc4593 could also be a good Informative reference about
 	generic threats, including some of what I mention above.
 
+This has been added.
+
 
 	[major] Route origin validation (and BGPSec) don't apply to BGP SPF.
 	Whatever door those mechanisms were meant to close are still open in
 	BGP SPF.  Specifically, there's no verification about the origination
 	of prefixes: anyone can advertise a prefix --- with the proper metric
 	it can result in erroneous traffic delivery.
+
+We will say BGPSec is not applicable in the next revision.
 
 
 	...
@@ -2191,6 +2684,8 @@
 	says that "All the parameters MUST be configurable", the "SHOULD" here
 	is in conflict.  It is not necessary to specify support for that again
 	here.
+
+We've changed this to a MUST consistent with RFC 8405.
 
 
 	853	8.2.  Operational Data
@@ -2209,6 +2704,8 @@
 
 	[] "SPF computations of each type"  There are multiple types??
 
+We have added (if supported). 
+
 
 	...
 	933	12.1.  Normative References
@@ -2219,6 +2716,8 @@
 	969	              July 2018, <https://www.rfc-editor.org/info/rfc8402>.
 
 	[major] This reference is used in error -- it is not needed.
+
+Removed.
 
 
 	...
@@ -2232,6 +2731,8 @@
 	[major] There is Normative language referring to this RFC, so the
 	reference should be Normative.
 
+Now normative.
+
 
 	1010	   [RFC4760]  Bates, T., Chandra, R., Katz, D., and Y. Rekhter,
 	1011	              "Multiprotocol Extensions for BGP-4", RFC 4760,
@@ -2240,6 +2741,8 @@
 
 	[major] This reference should be Normative.
 
+Now normative.
+
 
 	1015	   [RFC4790]  Newman, C., Duerst, M., and A. Gulbrandsen, "Internet
 	1016	              Application Protocol Collation Registry", RFC 4790,
@@ -2247,4 +2750,6 @@
 	1018	              <https://www.rfc-editor.org/info/rfc4790>.
 
 	[major] This reference is used in error; it is not needed.
+
+Removed.
 
