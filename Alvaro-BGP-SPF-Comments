@@ -1,6 +1,28 @@
 Hi Alvaro,
 
-Thank you for your extensive review. Please see inline.
+Thank you for your extensive review and comments. Now that the document
+is back in the WG, we have couple things to discuss in the WG:
+
+    1. NLRI packing - Well it is almost implied, I think we need to
+       limit a BGP Update to a single NLRI and BGP-LS Attribute.
+
+    2. Initial synchronization - we need to discuss this in the draft
+       and  potentially add an option to require this, such as the IS-IS
+       suppress adjacency option. I don't think we'd want to require
+       this as it would limit deployment. 
+
+    3. NEXT_HOP requiremeent - We now say we are following RFC 4760.
+       However, we need to be sure we are consistent throughout.
+
+    4. Potential attacks in "Security Consideratios".
+
+Also, given the sheer volume there are some easy one that we missed in
+-13 and will add in -14 
+
+Please see replies inline.
+
+Thanks,
+Acee, Keyur, Victor, and other Authors
 
         Dear authors:
 
@@ -1858,7 +1880,8 @@ We missed this and it will be in the next revision.
 	then an "UPDATE...SHOULD NOT carry the NEXT_HOP attribute".  If this
 	is one of the exceptions, please be explicit about it.
 
-We will add in next revision after discussion.
+We will add in next revision after discussion. We've added text about following
+RFC 4760 but need to address the NEXT_HOP. 
 
 
 	[minor] "the SPF or best-path"  I guess you meant simply the SPF calculation.
