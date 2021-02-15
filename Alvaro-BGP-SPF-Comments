@@ -14,7 +14,8 @@ is back in the WG, we have couple things to discuss in the WG:
     3. NEXT_HOP requiremeent - We now say we are following RFC 4760.
        However, we need to be sure we are consistent throughout.
 
-    4. Potential attacks in "Security Consideratios".
+    4. Single session requirement for BGP-LS. Right now we don't
+       prevent this. 
 
 Also, given the sheer volume there are some easy one that we missed in
 -13 and will add in -14 
@@ -2672,12 +2673,15 @@ We've added this.
 	[Some of these are clearly related to the link-state nature of BGP SPF.]
 
 We may need more here but describing the consequences of every TLV is not done
-in other protocols. 
+in IGPs either. 
 
 	Note that there may not be mitigation for some of these rogue router
 	behaviors.  The use of the protocol in a limited domain may be the
 	only possible countermeasure.  But claiming that there are no new
 	vulnerabilities is just wrong.
+
+Right - there are not mitigations in the IGPs if a router is compromised
+        but still has valid authentication credentials. 
 
 
 	[minor] rfc4593 could also be a good Informative reference about
