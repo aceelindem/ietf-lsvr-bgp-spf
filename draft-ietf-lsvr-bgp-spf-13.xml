@@ -1373,23 +1373,27 @@ the GLOBAL-RIB. For each route in the LOC-RIB:
     advertise a more recent version with an increased Sequence Number TLV for 
     the BGP-LS-SPF Link NLRI including the SPF Status TLV
     (<xref target="link-status-tlv"/>) indicating the link
-    is down with respect to BGP SPF. After some configurable period of time, which is 
-    an implementation dependent, e.g., 2-3 seconds,
-    the BGP-LS-SPF Link NLRI can be withdrawn with no consequence.
+    is down with respect to BGP SPF.
+    The configurable LinkStatusDownAdvertise timer
+    controls the interval that the BGP-LS-LINK NLRI is advertised with SPF Status indicating
+    the link is down prior to withdrawal.
     If the link becomes available
     in that period, the originator of the BGP-LS-SPF LINK NLRI SHOULD advertise a more recent
     version of the BGP-LS-SPF Link NLRI without the SPF Status TLV in the BGP-LS Link Attributes.
+    The suggested default value for the LinkStatusDownAdvertise timer is 2 seconds.
   </t>
   <t>
     Similarly, when a prefix becomes unreachable, a more recent version of the BGP-LS-SPF
     Prefix NLRI SHOULD be advertised with the SPF Status TLV (<xref target="prefix-status-tlv"/>)
     indicating the prefix is unreachable in the BGP-LS Prefix Attributes and the prefix will be
-    considered unreachable with respect to BGP SPF.  After some configurable period of time,
-    which is implementation dependent, e.g., 2-3 seconds,
-    the BGP-LS-SPF Prefix NLRI can be withdrawn with no consequence.
+    considered unreachable with respect to BGP SPF.
+    The configurable PrefixStatusDownAdvertise timer
+    controls the interval that the BGP-LS-Prefix NLRI is advertised with SPF Status indicating
+    the prefix is unreachable prior to withdrawal.
     If the prefix becomes reachable in that period, the originator of the BGP-LS-SPF Prefix NLRI
     SHOULD advertise a more recent version of the BGP-LS-SPF Prefix NLRI without the
     SPF Status TLV in the BGP-LS Prefix Attributes.
+    The suggested default value for the PrefixStatusDownAdvertise timer is 2 seconds.
   </t>
 </section>
 <section anchor="node-failure" title="Node Failure Convergence">
@@ -1399,13 +1403,15 @@ the GLOBAL-RIB. For each route in the LOC-RIB:
     failure is detected. If fast failure detection such as BFD is utilized, and the node is 
     on the fastest converging path, the most recent versions of BGP-LS-SPF NLRI may be 
     withdrawn. This will result into an older version of the NLRI being used until the 
-    new versions arrive and, potentially, unnecessary route flaps. Therefore, BGP-LS-SPF 
-    NLRI SHOULD always be retained before being implicitly withdrawn for a configurable
-    implementation-dependent interval, e.g., 2-3 seconds. 
+    new versions arrive and, potentially, unnecessary route flaps.
+    The configurable NLRIImplicitWithdrawalDelay timer
+    controls the interval that NLRI is retained prior to implicit withdrawal after a BGP
+    SPF speaker has transitioned out of Established state.
     This will not delay convergence since the adjacent nodes will detect the
     link failure and advertise a more recent NLRI indicating the link is down with respect to
     BGP SPF (<xref target="failure-converge"/>) and the BGP SPF calculation will fail the
     bi-directional connectivity check <xref target="BGP-SPF"/>.
+    The suggested default value for the NLRIImplicitWithdrawalDelay timer is 2 seconds.
   </t>
 </section>
 </section>
