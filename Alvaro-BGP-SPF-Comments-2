@@ -1,0 +1,130 @@
+	     [minor] "IPv6 and IPv4 can be supported in the same address family"
+	     This sounds as if you're calling IPv4/IPv6 the same AF...when you're
+	     really referring to the transport of the information.  Please put a
+	     forward reference to where this claim is specified.
+
+	We will add this reference in the next revision.
+
+Added in -13.
+
+
+	     [minor] "IPv6 and IPv4 can be supported in the same address family"
+	     This sounds as if you're calling IPv4/IPv6 the same AF...when you're
+	     really referring to the transport of the information.  Please put a
+	     forward reference to where this claim is specified.
+
+
+	We will add this reference in the next revision.
+
+Added in -13.
+
+
+	     [major] Â§5 talks about SPF running only for nodes that advertised the
+	     same SFP Algorithm as the local node...so just advertising this TLV is
+	     not enough.  At least add a forward reference to Â§5.
+
+	Reference will be added in the next revision.
+
+Added in -13.
+
+
+	     [minor] s/The prefix metric attribute TLV/The Prefix Metric TLV
+
+	Will be included in next revision.
+
+Fixed in -13.
+
+
+	     [] "If by some chance the BGP Speaker is deployed long enough..."  I
+	     love positive thinking. :-(
+
+	This is the law of large numbers - it will never happen. We will remove this
+	statement in the next revision. The range is 0 - 18446744073709551615. At one
+	self-origination per milli-second, it will still takes 10's of millions of years.
+
+Removed in -13.
+
+	     [nit] s/When BGP speaker/When a BGP SPF speaker
+
+	This was missed and will be fixed in the next revision.
+
+This was already fixed in -12.
+
+
+	     [] Please remove the sentence about the NEXT_HOP and focus all
+	     discussion about it in Â§5.4.
+
+
+	We missed this and it will be in the next revision.
+
+This is removed and a reference was added. 
+
+
+	     [minor] "the SPF or best-path"  I guess you meant simply the SPF calculation.
+
+	We will change this in the next revision.
+
+This was already fixed in -12.
+
+
+	     [minor] s/BGP-LS domain/BGP SPF domain
+
+	This will be changed in the next revision.
+
+Fixed in -13.
+
+	     [major] "list of candidate Node NLRI"  Where does this list come from?
+	     Is it the outcome of the rules in Â§5.1?
+
+	The NLRI selected during 5. are eligible to be added. Will add a reference in the next revision.
+
+Added in -13.
+
+
+	     [major] "configurable period of time, e.g., 2-3 seconds"   Please
+	     define a timer and set a default.
+
+	We indicate this is implementation dependent. We could revise in the next revision.
+
+Timers are added in -13.
+
+
+	     787	   Similarly, when a prefix becomes unreachable, a more recent version
+	     788	   of the BGP-LS Prefix NLRI will be advertised with the SPF Status TLV
+	     789	   Section 4.3.1 indicating the prefix is unreachable in the BGP-LS
+	     790	   Prefix Attributes and the prefix will be considered unreachable with
+	     791	   respect to BGP SPF.  After some configurable period of time, e.g.,
+	     792	   2-3 seconds, the BGP-LS Prefix NLRI can be withdrawn with no
+	     793	   consequence.  If the prefix becomes reachable in that period, the
+	     794	   originator of the BGP-LS Prefix NLRI will simply advertise a more
+	     795	   recent version of the BGP-LS Prefix NLRI without the SPF Status TLV
+	     796	   in the BGP-LS Prefix Attributes.
+
+	     [] Same comments...
+
+
+	Need to add "SHOULD" here in the next revision.
+
+
+Changed in -13.
+
+
+	     [minor] "brief configurable interval, e.g., 2-3 seconds"  Can we use
+	     the same timer as before?
+
+	We indicate this is implementation dependent. I guess will add these timers in
+	the next revision (or a future revision).
+
+Timers added in -13.
+
+
+	     [major] Route origin validation (and BGPSec) don't apply to BGP SPF.
+	     Whatever door those mechanisms were meant to close are still open in
+	     BGP SPF.  Specifically, there's no verification about the origination
+	     of prefixes: anyone can advertise a prefix --- with the proper metric
+	     it can result in erroneous traffic delivery.
+
+	 We will say BGPSec is not applicable in the next revision.
+
+
+This was already fixed in -12.
