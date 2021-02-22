@@ -369,7 +369,7 @@ advantages.
   notion that BGP SPF is an independent protocol. The BGP peering models, as well as the
   their respective trade-offs are then discussed in
   <xref target="peering-models"/>. The remaining sections, which make up the bulk of the
-  document, define the protocol enhancements necessary to support BGP SPF. The BGP-LS extensions 
+  document, define the protocol enhancements necessary to support BGP SPF. The BGP-LS extensions
   to support BGP SPF are
   defined in <xref target="protocol-extend"/>. The replacement of the base BGP decision process
   with the SPF computation is specified in <xref target="bgp-decision"/>. Finally, BGP SPF error
@@ -495,7 +495,7 @@ advantages.
     nodes but the sessions may be between loopback addresses (i.e.,
     two-hop sessions) and the direct connection
     discovery and liveliness detection for the interconnecting links are
-    independent of the BGP protocol. 
+    independent of the BGP protocol.
     the scope of this document. For example, liveliness detection could be
     done using the BFD protocol <xref target="RFC5880"/>. Precisely how discovery
     and liveliness detection is accomplished is outside the scope of this document.
@@ -642,7 +642,7 @@ advantages.
   direct will be considered malformed. For Prefix NLRI, the specified Protocol-ID
   MUST be the origin of the prefix. The local and remote node descriptors for all NLRI MUST
   include the BGP Identifier (TLV 516) and the AS Number (TLV 512)
-  <xref target="RFC7752"/>. The BGP Confederation Member (TLV 517) 
+  <xref target="RFC7752"/>. The BGP Confederation Member (TLV 517)
   <xref target="RFC7752"/> is not appliable and SHOULD not be included. If TLV 517
   is included, it will be ignored.
 </t>
@@ -685,7 +685,7 @@ advertising the SPF capability TLV with same SPF algorithm
 will be included in the Shortest Path Tree (SPT) <xref target="BGP-SPF"/>.
 An implementation MAY optionally
 log detection of a BGP node that has either not advertised the SPF capability TLV
-or is advertising the SPF capability TLV with an algorithm type other than 0. 
+or is advertising the SPF capability TLV with an algorithm type other than 0.
 </t>
 </section>
 <section anchor="node-status-tlv" title="BGP-LS-SPF Node NLRI Attribute SPF Status TLV">
@@ -743,7 +743,7 @@ An implementation MAY log this condition for further analysis.
     <xref target="peering-models"/>.
 </t>
 <t>
-  Link NLRI is advertised with unique local and remote node descriptors 
+  Link NLRI is advertised with unique local and remote node descriptors
   dependent on the IP addressing. For IPv4 links, the
   link's local IPv4 (TLV 259) and remote IPv4 (TLV 260) addresses will be used.
   For IPv6 links, the local IPv6 (TLV 261) and remote IPv6 (TLV 262) addresses
@@ -972,8 +972,8 @@ The TLV type 1184 will be assigned by IANA.
 
 <t>
   The Sequence-Number TLV is mandatory for BGP-LS-SPF NLRI. If the Sequence-Number TLV
-  is not received then the corresponding Link NLRI is considered as malformed and 
-  MUST be handled as 'Treat-as-withdraw'. An implementation MAY log an error for 
+  is not received then the corresponding Link NLRI is considered as malformed and
+  MUST be handled as 'Treat-as-withdraw'. An implementation MAY log an error for
   further analysis.
 </t>
 </section>
@@ -982,15 +982,15 @@ The TLV type 1184 will be assigned by IANA.
 <t>
   All BGP peers that support SPF extensions would locally compute the Loc-RIB Next-Hop
   as a result of the SPF process. Consequently, the Next-Hop is always ignored on
-  receipt. The Next-Hop address MUST be encoded as described in <xref target="RFC4760"/>. 
-  BGP speakers MUST interpret the Next-Hop address of 
-  MP_REACH_NLRI attribute as an IPv4 address whenever the length of the Next-Hop address 
+  receipt. The Next-Hop address MUST be encoded as described in <xref target="RFC4760"/>.
+  BGP speakers MUST interpret the Next-Hop address of
+  MP_REACH_NLRI attribute as an IPv4 address whenever the length of the Next-Hop address
   is 4 octets, and as a IPv6 address whenever the length of the Next-Hop address is
   16 octets.
 </t>
 <t>
   <xref target="RFC4760"/> modifies the rules of NEXT_HOP attribute whenever the
-  multiprotocol extensions for BGP-4 are enabled. BGP speakers MUST set the 
+  multiprotocol extensions for BGP-4 are enabled. BGP speakers MUST set the
   NEXT_HOP attribute according to the rules specified in <xref target="RFC4760"/> as
   the BGP-LS-SPF routing information is carried within the multiprotocol extensions for
   BGP-4.
@@ -1086,8 +1086,8 @@ would influence the BGP decision process defined in <xref target="RFC4271"/> inc
 ORIGIN, MULTI_EXIT_DISC, and
 LOCAL_PREF attributes are ignored by the SPF algorithm. The NEXT_HOP attribute
 is discussed in <xref target="NEXT-HOP"/>.
-The AS_PATH and AS4_PATH <xref target="RFC6793"/> attributes 
-are preserved and used for loop detection <xref target="RFC4271"/>. They are ignored 
+The AS_PATH and AS4_PATH <xref target="RFC6793"/> attributes
+are preserved and used for loop detection <xref target="RFC4271"/>. They are ignored
 during the SPF computation for BGP-LS-SPF NRLIs.
 </t>
 <section anchor="Self-Origin" title="BGP Self-Originated NLRI">
@@ -1140,7 +1140,7 @@ prefixes.
   The router will use BGP-LS-SPF Node, Link, and Prefix NLRI to compute routes using the
   following algorithm. This calculation yields the set of routes associated
   with the BGP SPF Routing Domain.  A router calculates the shortest-path tree using itself
-  as the root. Optimizations to the BGP-LS-SPF algorithm are possible but MUST yield 
+  as the root. Optimizations to the BGP-LS-SPF algorithm are possible but MUST yield
   the same set of routes. The algorithm below supports Equal Cost Multi-Path (ECMP)
   routes. Weighted Unequal Cost Multi-Path routes are out of scope. The organization
   of this section owes heavily to section 16 of <xref target="RFC2328"/>.
@@ -1158,7 +1158,7 @@ The following abstract data structures are defined in order to specify the algor
 <t>
   Global Routing Information Base (GLOBAL-RIB) - This is Routing Information Base (RIB)
   containing the current routes that are installed in the router's forwarding plane.
-  This is commonly referred to in networking parlance as "the RIB". 
+  This is commonly referred to in networking parlance as "the RIB".
 </t>
 <t>
   Link State NLRI Database (LSNDB) - Database of BGP-LS-SPF NLRI that facilitates access to
@@ -1199,7 +1199,7 @@ The following abstract data structures are defined in order to specify the algor
 </t>
 <t>
   All the Prefix NLRI with the same Node Identifiers as the Current-Node will be considered
-  for installation. The next-hop(s) for these Prefix NLRI are inherited from the Current-Node. 
+  for installation. The next-hop(s) for these Prefix NLRI are inherited from the Current-Node.
   The cost for each prefix is the metric advertised in the Prefix Attribute Prefix Metric
   TLV (1155) added to the cost to reach the Current-Node. The following will be done for
   each Prefix NLRI (referred to as the Current-Prefix):
@@ -1244,16 +1244,16 @@ The following abstract data structures are defined in order to specify the algor
   for installation. Each link will be examined and will be referred to in the following text
   as the Current-Link. The cost of the Current-Link is the advertised IGP Metric TLV (1095)
   from the Link NLRI BGP-LS attribute added to the cost to reach the Current-Node.
-  If the Current-Node is for the local BGP Router, 
+  If the Current-Node is for the local BGP Router,
   the next-hop for the link will be a direct next-hop pointing to the corresponding local
   interface. For any other Current-Node, the next-hop(s) for the Current-Link will be inherited
   from the Current-Node. The following will be done for each link:
   <list style="letters">
     <t>
       The prefix(es) associated with the Current-Link are installed into the
-      LOC-RIB using the same rules as were used for Prefix NLRI in the previous steps. Optionally, 
+      LOC-RIB using the same rules as were used for Prefix NLRI in the previous steps. Optionally,
       in deployments where BGP-SPF routers have limited routing table capacity, installation of
-      these subnets can be suppressed. Suppression will have an operational impact as the 
+      these subnets can be suppressed. Suppression will have an operational impact as the
       IPv4/IPv6 link endpoint addresses will not be reachable and tools such as traceroute
       will display addresses that are not reachable.
     </t>
@@ -1283,7 +1283,7 @@ The following abstract data structures are defined in order to specify the algor
           Node Descriptors matching the Current-Node and Link Descriptors matching the
           Current-Link (e.g., sharing a common IPv4 or IPv6 subnet). If both these conditions
           are satisfied for one of the Remote-Node's links, the bi-directional connectivity
-          check succeeds and the Remote-Node may be processed further. The 
+          check succeeds and the Remote-Node may be processed further. The
           Remote-Node's Link NLRI providing bi-directional connectivity
           will be referred to as the Remote-Link. If no Remote-Link is found, the next
           link for the Current-Node is examined in Step 5.
@@ -1300,14 +1300,14 @@ The following abstract data structures are defined in order to specify the algor
 	  are inherited from the Current-Link.
         </t>
         <t>
-          If the Remote-Node NLRI is already on the CAN-LIST with a higher cost, it 
+          If the Remote-Node NLRI is already on the CAN-LIST with a higher cost, it
           must be removed and reinserted with the Remote-Node cost based on the
 	  Current-Link (as calculated in the previous step). The
           next-hop(s) for the Remote-Node are inherited from the Current-Link.
         </t>
         <t>
           If the Remote-Node NLRI is already on the CAN-LIST with the same cost, it need
-          not be reinserted on the CAN-LIST. However, the Current-Link's next-hop(s) 
+          not be reinserted on the CAN-LIST. However, the Current-Link's next-hop(s)
           must be merged into the current set of next-hops for the Remote-Node.
         </t>
         <t>
@@ -1344,14 +1344,14 @@ the GLOBAL-RIB. For each route in the LOC-RIB:
     While the BGP-LS-SPF address family and the IPv4/IPv6 unicast address families MAY install routes
     into the same device routing tables, they will operate independently much the same as OSPF and
     IS-IS would operate today (i.e., "Ships-in-the-Night" mode). There is no implicit
-    route redistribution between the BGP address families. 
+    route redistribution between the BGP address families.
   </t>
   <t>
     It is RECOMMENDED that BGP-LS-SPF IPv4/IPv6 route computation and
     installation be given scheduling priority by default over other BGP address families
     as these address families are considered as underlay SAFIs. Similarly, it is RECOMMENDED that
     the route preference or administrative distance give active route installation preference
-    to BGP-LS-SPF IPv4/IPv6 routes over BGP routes from other AFI/SAFIs. 
+    to BGP-LS-SPF IPv4/IPv6 routes over BGP routes from other AFI/SAFIs.
     However, this preference MAY be overridden by an operator-configured policy.
   </t>
 </section>
@@ -1370,7 +1370,7 @@ the GLOBAL-RIB. For each route in the LOC-RIB:
     the Router-LSA for one side of the link is received. With a BGP advertisement,
     the link would continue to be used until the last copy of the BGP-LS-SPF Link NLRI
     is withdrawn. In order to avoid this delay, the originator of the Link NLRI SHOULD
-    advertise a more recent version with an increased Sequence Number TLV for 
+    advertise a more recent version with an increased Sequence Number TLV for
     the BGP-LS-SPF Link NLRI including the SPF Status TLV
     (<xref target="link-status-tlv"/>) indicating the link
     is down with respect to BGP SPF.
@@ -1399,11 +1399,13 @@ the GLOBAL-RIB. For each route in the LOC-RIB:
 <section anchor="node-failure" title="Node Failure Convergence">
   <t>
     With BGP without graceful restart <xref target="RFC4724"/>, all the NLRI advertised
-    by a node are implicitly withdrawn when a session 
-    failure is detected. If fast failure detection such as BFD is utilized, and the node is 
-    on the fastest converging path, the most recent versions of BGP-LS-SPF NLRI may be 
-    withdrawn. This will result into an older version of the NLRI being used until the 
+    by a node are implicitly withdrawn when a session
+    failure is detected. If fast failure detection such as BFD is utilized, and the node is
+    on the fastest converging path, the most recent versions of BGP-LS-SPF NLRI may be
+    withdrawn. This will result into an older version of the NLRI being used until the
     new versions arrive and, potentially, unnecessary route flaps.
+    For the BGP-LS-SPF SAFI, NLRI SHOULD NOT be implicitly withdrawn immediately
+    to prevent such unnecessary route flaps.
     The configurable NLRIImplicitWithdrawalDelay timer
     controls the interval that NLRI is retained prior to implicit withdrawal after a BGP
     SPF speaker has transitioned out of Established state.
@@ -1416,7 +1418,7 @@ the GLOBAL-RIB. For each route in the LOC-RIB:
 </section>
 </section>
 </section>
-   
+
 <section anchor="error-handling" title="Error Handling">
 <t>
 This section describes the Error Handling actions, as described in
@@ -1577,7 +1579,7 @@ implementation MAY log an error for further analysis.
    Note that the 'Attribute Discard' action results in the loss of all
    TLVs in the BGP-LS Attribute and not the removal of a specific
    malformed TLV.  The removal of specific malformed TLVs may give a
-   wrong indication to a BGP-LS-SPF speaker that the specific information 
+   wrong indication to a BGP-LS-SPF speaker that the specific information
    is being deleted or is not available.
 </t>
 
