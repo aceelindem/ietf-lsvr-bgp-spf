@@ -33,7 +33,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-16" ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" tocInclude="true" tocDepth="4" symRefs="true" sortRefs="true" version="3" consensus="true">
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-17" ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" tocInclude="true" tocDepth="4" symRefs="true" sortRefs="true" version="3" consensus="true">
   <!-- xml2rfc v2v3 conversion 3.12.1 -->
   <!-- category values: std, bcp, info, exp, and historic
     ipr values: full3667, noModification3667, noDerivatives3667
@@ -45,7 +45,7 @@
   <front>
     <title abbrev="BGP Link-State SPF Routing">
     BGP Link-State Shortest Path First (SPF) Routing</title>
-    <seriesInfo name="Internet-Draft" value="draft-ietf-lsvr-bgp-spf-16"/>
+    <seriesInfo name="Internet-Draft" value="draft-ietf-lsvr-bgp-spf-17"/>
     <!-- add 'role="editor"' below for the editors if appropriate -->
 
     <!-- Another author who claims to be an editor -->
@@ -57,7 +57,7 @@
       </address>
     </author>
     <author fullname="Acee Lindem" initials="A" surname="Lindem">
-      <organization>Cisco Systems</organization>
+      <organization></organization>
       <address>
         <postal>
           <street>301 Midenhall Way</street>
@@ -66,7 +66,7 @@
           <code>27513</code>
           <country>USA</country>
         </postal>
-        <email>acee@cisco.com</email>
+        <email>acee.ietf@gmail.com</email>
       </address>
     </author>
     <author fullname="Shawn Zandi" initials="S" surname="Zandi">
