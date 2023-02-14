@@ -292,11 +292,12 @@ when, and only when, they appear in all capitals, as shown here.</t>
   Due to the changes to the decision
   process, there are mechanisms and encodings that are no longer applicable.
   While not necessarily required for computation, the ORIGIN, AS_PATH,
-  MULTI_EXIT_DISC, LOCAL_PREF, and NEXT_HOP path attributes are mandatory and will
-  be validated. The ATOMIC_AGGEGATE, and AGGREGATOR are not applicable within the
-  context of BGP SPF and SHOULD NOT be advertised. However, if they are advertised,
-  they will be accepted, validated,
-  and propagated consistent with the BGP protocol.
+  MULTI_EXIT_DISC, LOCAL_PREF, and NEXT_HOP path attributes are mandatory 
+  <xref target="RFC4271" format="default"/> and will
+  be validated. Unless explicitly specified in the context of BGP SPF, all other
+  attributes SHOULD NOT be advertised. However, if they are
+  advertised, they will be accepted, validated, and propagated
+  consistent with the BGP protocol.
 </t>
 <t>
   Section 9 of <xref target="RFC4271" format="default"/> defines the decision process that
@@ -347,9 +348,9 @@ when, and only when, they appear in all capitals, as shown here.</t>
   The BGP SPF extensions reuse the Node, Link, and Prefix NLRI defined
   in <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>.  The usage of the BGP-LS
   NLRI, attributes, and attribute extensions is described in
-  <xref target="NLRI-Use" format="default"/>. The usage of others BGP-LS attributes is not precluded and is,
-  in fact, expected. However, the details are beyond the scope of this document and will be
-  specified in future documents.
+  <xref target="NLRI-Use" format="default"/>. The usage of others BGP-LS attribute TLVs is not
+  precluded and is, in fact, expected. However, the details are beyond the scope
+  of this document and will be specified in future documents.
 </t>
 <t>
   Support for Multiple Topology Routing (MTR) similar to the OSPF MTR computation described in
@@ -455,7 +456,8 @@ when, and only when, they appear in all capitals, as shown here.</t>
   The BGP-LS-SPF (AFI 16388 / SAFI 80) <xref target="RFC4760" format="default"/> is allocated by IANA
   as specified in the <xref target="IANA" format="default"/>.
   In order for two BGP SPF speakers to exchange BGP SPF NLRI, they MUST exchange
-  the Multiprotocol Extensions Capability <xref target="RFC5492" format="default"/> <xref target="RFC4760" format="default"/>
+  the Multiprotocol Extensions Capability <xref target="RFC5492" format="default"/>
+  <xref target="RFC4760" format="default"/>
   to ensure that they are both capable of properly processing such NLRI.  This is done with
   AFI 16388 / SAFI 80 for BGP-LS-SPF advertised within the BGP SPF Routing Domain.
   The BGP-LS-SPF SAFI is used to carry
@@ -481,9 +483,9 @@ when, and only when, they appear in all capitals, as shown here.</t>
   discarded with appropriate error logging.
 </t>
 <t>
-  <xref target="I-D.ietf-idr-rfc7752bis" format="default"/> defines certain NLRI TLVs as a mandatory TLVs. These TLVs
-  are considered mandatory for the BGP-LS-SPF SAFI as well. All the other TLVs are considered
-  as an optional TLVs.
+  <xref target="I-D.ietf-idr-rfc7752bis" format="default"/> defines certain NLRI TLVs
+  as a mandatory TLVs. These TLVs are considered mandatory for the BGP-LS-SPF SAFI as
+  well. All the other TLVs are considered as an optional TLVs.
 </t>
 <t>
   Given that there is a single BGP-LS Attribute for all the BGP-LS-SPF NLRI in a
@@ -791,7 +793,7 @@ to BGP SPF
     the prefix and length. The Prefix Descriptors field includes the IP Reachability
     Information TLV (TLV 265) as described in <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>.
     The Prefix Metric attribute TLV (TLV 1155) MUST be advertised.
-    The IGP Route Tag TLV (TLV 1153) MAY be advertised. The usage of other
+    The IGP Route Tag TLV (TLV 1153) MAY be advertised. The usage of other BGP-LS
     attribute TLVs is beyond the scope of this document. For loopback prefixes, the metric
     should be 0. For non-loopback prefixes, the setting of the metric is a local matter and
     beyond the scope of this document.
@@ -893,7 +895,7 @@ to BGP SPF
 <section anchor="NEXT-HOP" numbered="true" toc="default">
   <name>NEXT_HOP Manipulation</name>
   <t>
-    All BGP peers that support SPF extensions would locally compute the LOC-RIB Next-Hop
+    All BGP peers that support SPF extensions would locally compute the Local-RIB Next-Hop
     as a result of the SPF process. Consequently, the Next-Hop is always ignored on
     receipt. The Next-Hop address MUST be encoded as described in <xref target="RFC4760" format="default"/>.
     BGP SPF speakers MUST interpret the Next-Hop address of
@@ -919,7 +921,7 @@ to BGP SPF
     of preference for each route received from a BGP SPF speaker's peer. The Phase 2 decision
     function is invoked on completion of the Phase 1 decision function and is responsible
     for choosing the best route out of all those available for each
-    distinct destination, and for installing each chosen route into the LOC-RIB.
+    distinct destination, and for installing each chosen route into the Local-RIB.
     The combination of the Phase 1 and 2 decision functions is characterized as
     a Path Vector algorithm.
   </t>
@@ -1063,11 +1065,11 @@ to BGP SPF
     </t>
     <ul spacing="normal">
       <li>
-        Local Route Information Base (LOC-RIB) - This routing table contains reachability information
+        Local Route Information Base (Local-RIB) - This routing table contains reachability information
         (i.e., next hops) for all prefixes (both IPv4 and IPv6) as well as BGP-LS-SPF node
         reachability. Implementations may choose to implement this with separate RIBs for each
-        address family and/or Prefix versus Node reachability. It is synonymous with the Loc-RIB
-        specified in <xref target="RFC4271" format="default"/>.
+        address family and/or Prefix versus Node reachability. While slightly different in scope and
+        semantics, It is analogous to the Loc-RIB specified in <xref target="RFC4271" format="default"/>.
       </li>
       <li>
         Global Routing Information Base (GLOBAL-RIB) - This is Routing Information Base (RIB)
@@ -1090,13 +1092,13 @@ to BGP SPF
     <t>The algorithm is comprised of the steps below:
   </t>
   <ol spacing="normal" type="1"><li>
-    The current LOC-RIB is invalidated, and the CAN-LIST is initialized to empty.
-    The LOC-RIB is rebuilt during the course of the SPF computation.  The existing routing entries
+    The current Local-RIB is invalidated, and the CAN-LIST is initialized to empty.
+    The Local-RIB is rebuilt during the course of the SPF computation.  The existing routing entries
     are preserved for comparison to determine changes that need to be made to the GLOBAL-RIB in
     step 6.
   </li>
   <li>
-    The computing router's Node NLRI is updated in the LOC-RIB with a cost of 0 and the Node NLRI
+    The computing router's Node NLRI is updated in the Local-RIB with a cost of 0 and the Node NLRI
     is also added to the CAN-LIST. The next-hop list is set to the internal loopback next-hop.
       </li>
       <li>
@@ -1126,38 +1128,38 @@ to BGP SPF
             NLRI is examined in Step 4.
           </li>
           <li>
-            If the Current-Prefix's corresponding prefix is in the LOC-RIB and the
-            LOC-RIB cost is less than the Current-Prefix's metric,
+            If the Current-Prefix's corresponding prefix is in the Local-RIB and the
+            Local-RIB cost is less than the Current-Prefix's metric,
             the Current-Prefix does not contribute to the route and the next Prefix NLRI is
             examined in Step 4.
           </li>
           <li>
-            If the Current-Prefix's corresponding prefix is not in the LOC-RIB,
+            If the Current-Prefix's corresponding prefix is not in the Local-RIB,
             the prefix is installed with the Current-Node's next-hops
-            installed as the LOC-RIB route's next-hops and the metric being updated. If the
+            installed as the Local-RIB route's next-hops and the metric being updated. If the
             IGP Route Tag TLV (1153) is
             included in the Current-Prefix's NLRI Attribute, the tag(s) are installed in the
-            current LOC-RIB route's tag(s).
+            current Local-RIB route's tag(s).
           </li>
           <li>
-            If the Current-Prefix's corresponding prefix is in the LOC-RIB and the cost is less
-            than the LOC-RIB route's metric, the prefix is installed with the Current-Node's next-hops
-            replacing the LOC-RIB route's next-hops and the metric being updated and any route tags
+            If the Current-Prefix's corresponding prefix is in the Local-RIB and the cost is less
+            than the Local-RIB route's metric, the prefix is installed with the Current-Node's next-hops
+            replacing the Local-RIB route's next-hops and the metric being updated and any route tags
             removed. If the IGP Route Tag TLV (1153) is
             included in the Current-Prefix's NLRI Attribute, the tag(s) are installed in the
-            current LOC-RIB route's tag(s).
+            current Local-RIB route's tag(s).
           </li>
           <li>
-            If the Current-Prefix's corresponding prefix is in the LOC-RIB and the cost
-            is the same as the LOC-RIB route's metric, the Current-Node's next-hops will be merged
-            with LOC-RIB route's next-hops. If the number of merged next-hops exceeds the
+            If the Current-Prefix's corresponding prefix is in the Local-RIB and the cost
+            is the same as the Local-RIB route's metric, the Current-Node's next-hops will be merged
+            with Local-RIB route's next-hops. If the number of merged next-hops exceeds the
             Equal-Cost Multi-Path (ECMP) limit, the number of next-hops is reduced with
             next-hops on numbered links preferred over next-hops on unnumbered links.
             Among next-hops on numbered links, the next-hops with
             the highest IPv4 or IPv6 addresses are preferred. Among next-hops on unnumbered links,
             the next-hops with the highest Remote Identifiers are preferred <xref target="RFC5307" format="default"/>.
             If the IGP Route Tag TLV (1153) is
-            included in the Current-Prefix's NLRI Attribute, the tag(s) are merged into the LOC-RIB
+            included in the Current-Prefix's NLRI Attribute, the tag(s) are merged into the Local-RIB
             route's current tags.
           </li>
         </ul>
@@ -1175,7 +1177,7 @@ to BGP SPF
 </t>
 <ol spacing="normal" type="a"><li>
   The prefix(es) associated with the Current-Link are installed into the
-  LOC-RIB using the same rules as were used for Prefix NLRI in the previous steps. Optionally,
+  Local-RIB using the same rules as were used for Prefix NLRI in the previous steps. Optionally,
   in deployments where BGP-SPF routers have limited routing table capacity, installation of
   these subnets can be suppressed. Suppression will have an operational impact as the
   IPv4/IPv6 link endpoint addresses will not be reachable and tools such as traceroute
@@ -1253,8 +1255,8 @@ to BGP SPF
 </li>
 <li>
   <t>
-    The LOC-RIB is examined and changes (adds, deletes, modifications) are installed into
-    the GLOBAL-RIB. For each route in the LOC-RIB:
+    The Local-RIB is examined and changes (adds, deletes, modifications) are installed into
+    the GLOBAL-RIB. For each route in the Local-RIB:
 </t>
 <ul spacing="normal">
   <li>
@@ -1267,7 +1269,7 @@ to BGP SPF
 </li>
 <li>
   If the route was not installed during the current BGP SPF computation, remove the route
-  from both the GLOBAL-RIB and the LOC-RIB.
+  from both the GLOBAL-RIB and the Local-RIB.
 </li>
 </ul>
 </li>
@@ -1595,7 +1597,7 @@ its sub-TLVs in the BGP-LS Attribute valid?
   in <xref target="RFC4272" format="default"/> and <xref target="RFC6952" format="default"/> also applies to this document.
   The analysis of Generic Threats to Routing Protocols done in <xref target="RFC4593" format="default"/>
   is also worth noting. As the modifications described in this document for
-  BGP SPF apply to IPv4 Unicast and IPv6 Unicast as undelay SAFIs in a single
+  BGP SPF apply to IPv4 Unicast and IPv6 Unicast as underlay SAFIs in a single
   BGP SPF Routing Domain, the BGP
   security solutions described in <xref target="RFC6811" format="default"/> and <xref target="RFC8205" format="default"/>
   are somewhat constricted as they are meant to apply for inter-domain BGP where
@@ -1603,6 +1605,16 @@ its sub-TLVs in the BGP-LS Attribute valid?
   in this document are typically advertised between EBGP or IBGP speakers under a single
   administrative domain.
 </t>
+<t>
+  The BGP SPF protocol and the BGP-LS-SPF SAFI inherit the encoding from BGP-LS
+  <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>, and consequently, inherit
+  the security considerations for BGP-LS. Additionally, given that the BGP SPF protocol
+  is used to install IPv4 and IPv6 Unicast routes, the BGP SPF protocol is vulnerable to
+  attacks to the routing control plane that aren't applicable to BGP-LS. One notable
+  Denial-of-Service attack, would be to include malformed BGP attributes in a replicated
+  BGP Update, causing the receiving peer to treat the advertised BGP-LS-SPF to a
+  withdrawal <xref target="RFC7606" format="default"/>. 
+ </t>
 <t>
   In the context of the BGP peering associated with this document, a
   BGP speaker MUST NOT accept updates from a peer that is not within
@@ -1644,6 +1656,17 @@ its sub-TLVs in the BGP-LS Attribute valid?
   be done for all routers and the same reference bandwidth should be used to derive the
   inversely proportional metric. Failure to do so will not result in correct routing based on
   link metric.
+</t>
+</section>
+<section anchor="Adjacency-EoR-Required" numbered="true" toc="default">
+<name>Adjacency End-of-RIB (EOR) Marker Requirement</name>
+<t>
+  Depending of the peering model, topology, and convergence requirements, an 
+  End-of-RIB (EoR) Marker marker <xref target="RFC4724"/> for the BGP-LS-SPF
+  SAFI MAY be required from the peer prior to advertising a BGP-LS Link NLRI
+  for the peer. If configuration is supported, this SHOULD be configurable at
+  the BGP SPF instance level and SHOULD be configured consistently throughout
+  the BGP SPF routing domain.
 </t>
 </section>
 <section anchor="spf-backoff-config" numbered="true" toc="default">
@@ -1743,25 +1766,7 @@ cy098d@att.com
 <!--  *****BACK MATTER ***** -->
 
 <back>
-  <!-- References split into informative and normative -->
-
-  <!-- There are 2 ways to insert reference entries from the citation libraries:
-       1. define an ENTITY at the top, and use "ampersand character"RFC2629;
-       here (as shown)
-       2. simply use a PI
-       "less than character"?rfc include="reference.RFC.2119.xml"?> here
-       (for I-Ds:
-       include="reference.I-D.narten-iana-considerations-rfc2434bis.xml")
-
-Both are cited textually in the same manner: by using xref elements.
-If you use the PI option, xml2rfc will, by default, try to find included
-files in the same directory as the including file. You can also define
-the XML_LIBRARY environment variable
-with a value containing a set of directories to search.  These can be
-either in the local
-filing system or remote ones accessed by http (http://domain/dir/... ).-->
-
-  <references><name>References</name>
+<references><name>References</name>
   <references><name>Normative References</name>
   <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.2119.xml"/>
   <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.4271.xml"/>
