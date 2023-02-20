@@ -33,7 +33,9 @@ most I-Ds might want to use.
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-19" ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" tocInclude="true" tocDepth="4" symRefs="true" sortRefs="true" version="3" consensus="true">
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-20"
+     ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" tocInclude="true"
+     tocDepth="4" symRefs="true" sortRefs="true" version="3" consensus="true">
   <!-- xml2rfc v2v3 conversion 3.12.1 -->
   <!-- category values: std, bcp, info, exp, and historic
        ipr values: full3667, noModification3667, noDerivatives3667
@@ -45,7 +47,7 @@ most I-Ds might want to use.
   <front>
     <title abbrev="BGP Link-State SPF Routing">
     BGP Link-State Shortest Path First (SPF) Routing</title>
-    <seriesInfo name="Internet-Draft" value="draft-ietf-lsvr-bgp-spf-19"/>
+    <seriesInfo name="Internet-Draft" value="draft-ietf-lsvr-bgp-spf-20"/>
     <!-- add 'role="editor"' below for the editors if appropriate -->
 
     <!-- Another author who claims to be an editor -->
@@ -365,7 +367,7 @@ when, and only when, they appear in all capitals, as shown here.</t>
 <!-- for BGP-LS relationship section -->
 
 <section anchor="peering-models" numbered="true" toc="default">
-<name>BGP Peering Models</name>
+<name>BGP SPF Peering Models</name>
 <t>
   Depending on the topology, scaling, capabilities of the BGP SPF speakers, and redundancy
   requirements, various peering models are supported. The only requirements are that all BGP
@@ -380,11 +382,20 @@ when, and only when, they appear in all capitals, as shown here.</t>
   interconnecting the nodes in the BGP SPF routing domain. Once the single-hop BGP session has been
   established and the BGP-LS-SPF AFI/SAFI capability has been exchanged
   <xref target="RFC4760" format="default"/> for the corresponding session, then the link is considered up from
-  a BGP SPF perspective and the corresponding BGP-LS-SPF Link NLRI is advertised. Depending on the topology and
-  convergence requirements, it MAY be required that BGP End-of-RIB (EoR) marker <xref target="RFC4724"/> is
-  received for the BGP-LS-SPF SAFI prior to advertisement. This is analogous to the IGP requirement that the
-  Link State Databases be synchronized prior to advertisement of the router link. Enforcement of requiring
-  the EoR constraint SHOULD be configurable. 
+  a BGP SPF perspective and the corresponding BGP-LS-SPF Link NLRI is advertised.
+</t>
+<t>
+  An End-of-RIB (EoR) Marker <xref target="RFC4724"/> for the BGP-LS-SPF
+  SAFI MAY be expected prior to advertising any BGP-LS NLRI received from the peer.
+  This option SHOULD be configurable at the BGP SPF instance level and
+  should be enabled consistently throughout the BGP SPF routing domain.
+</t>
+<t>
+  A failure to consistently configure the use of the EoR marker can
+  result in transient micro-loops and dropped traffic due to incomplete
+  forwarding state.
+</t>
+<t>
   If the session goes down, the corresponding Link NLRI will be withdrawn. Topologically,
   this would be equivalent to the peering model in <xref target="RFC7938" format="default"/> where there
   is a BGP session on every link in the data center switch fabric.  The content of the Link NLRI
@@ -437,7 +448,7 @@ when, and only when, they appear in all capitals, as shown here.</t>
   discussed in greater detail in <xref target="I-D.ietf-lsvr-applicability" format="default"/>.
 </t>
 <t>
-  The controller MAY use constraints to determine
+  The controller may use constraints to determine
   when to advertise BGP-LS-SPF NLRI for BGP-LS peers. For example, a controller
   may defer advertisement until the EoR marker has been received from both BGP peers and
   both have received each others NLRI. These constraints are outside the scope of this
@@ -1464,6 +1475,16 @@ to BGP SPF
   session.  Alternately, the router MUST perform 'session reset' when
   the session is only being used for BGP-LS-SPF or when its 'AFI/SAFI
   disable' action is not possible.
+</t>
+<t>
+  In common deployment scenarios, the unicast routes installed during
+  BGP-LS-SPF AFI/SAFI SPF computation will serve as the
+  underlay for other BGP AFI/SAFIs.
+  To avoid errors encountered in other AFI/SAFIs from impacting
+  the BGP-LS-SPF AFI/SAFI or vice-versa, isolation mechanisms such as
+  separate BGP instances or separate BGP sessions (e.g., using different
+  addresses for peering) for BGP SPF Link-State information distribution
+  SHOULD be used.
 </t>
 </section>
 <section anchor="bgpspf-attribute" numbered="true" toc="default">
