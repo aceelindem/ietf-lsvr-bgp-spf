@@ -570,7 +570,7 @@ when, and only when, they appear in all capitals, as shown here.</t>
 <t>
   When computing the SPF for a given BGP routing domain, only BGP nodes
   advertising the SPF capability TLV with same SPF algorithm
-  will be included in the Shortest Path Tree (SPT) <xref target="BGP-SPF" format="default"/>.
+  will be included in the SPF computation <xref target="BGP-SPF" format="default"/>.
   An implementation MAY optionally
   log detection of a BGP node that has either not advertised the SPF capability TLV
   or is advertising the SPF capability TLV with an algorithm type other than 0.
@@ -587,8 +587,6 @@ when, and only when, they appear in all capitals, as shown here.</t>
   If the SPF Status TLV is not included with the Node NLRI, the node is considered to be up
   and is available for transit traffic. The SPF status is acted upon with the execution of
   the next SPF calculation (refer to <xref target="BGP-SPF" format="default"/>).
-  A single TLV type will be shared by the BGP-LS-SPF Node, Link, and Prefix NLRI.
-  The TLV type is 1184.
 </t>
 <artwork align="left" name="" type="" alt=""><![CDATA[
 0                   1                   2                   3
@@ -599,30 +597,25 @@ when, and only when, they appear in all capitals, as shown here.</t>
 | SPF Status    |
 +-+-+-+-+-+-+-+-+
 
-BGP Status Values: 0 - Reserved
-1 - Node Unreachable with respect to BGP SPF
-2 - Node does not support transit with respect
-to BGP SPF
-3-254 - Undefined
-255 - Reserved
+SPF Status Values: 0 - Reserved
+                   1 - Node Unreachable with respect to BGP SPF
+                   2 - Node does not support transit with respect
+                       to BGP SPF
+                   3-254 - Undefined
+                   255 - Reserved
 
 ]]></artwork>
 <t>
   The BGP-LS-SPF Node Attribute SPF Status TLV, Link Attribute SPF Status TLV,
-  and Prefix Attribute SPF Status TLV use the same TLV Type (1184). This implies
-  that a BGP Update cannot contain multiple NLRI with differing status.
-  If the BGP-LS-SPF Status TLV is advertised and the advertised value is not defined
-  for all NLRI included in the BGP update, then the SPF Status TLV is ignored
-  and not used in SPF computation but is still announced to other BGP SPF speakers.
-  An implementation MAY log an error for further analysis.
+  and Prefix Attribute SPF Status TLV use the same TLV Type (1184).
 </t>
 <t>
   If a BGP SPF speaker received the Node NLRI but
   the SPF Status TLV is not received, then any previously received information is
   considered as implicitly withdrawn and the update is propagated to other BGP SPF speakers.
   A BGP SPF speaker receiving a BGP Update containing
-  a SPF Status TLV in the BGP-LS attribute <xref target="I-D.ietf-idr-rfc7752bis" format="default"/> with a value
-  that is outside the range of defined values SHOULD be processed and announced to other
+  a SPF Status TLV in the BGP-LS attribute <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>
+  with a value that is undefined values SHOULD be advertised to other
   BGP SPF speakers. However, a BGP SPF speaker MUST NOT use the Status TLV in its SPF computation.
   An implementation MAY log this condition for further analysis.
 </t>
@@ -641,30 +634,26 @@ to BGP SPF
   For IPv6 links, the local IPv6 (TLV 261) and remote IPv6 (TLV 262) addresses
   will be used. For unnumbered links, the link local/remote identifiers (TLV 258)
   will be used. For links supporting having both IPv4 and IPv6 addresses, both sets
-  of descriptors MAY be included in the same Link NLRI. The link identifiers are
-  described in table 5 of <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>.
+  of descriptors MAY be included in the same Link NLRI. The link descriptors are
+  described in table 4 of <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>.
 </t>
 <t>
-  For a link to be used in Shortest Path Tree (SPT) for a given address family,
+  For a link to be used in SPF computation for a given address family,
   i.e., IPv4 or IPv6, both routers connecting the link MUST have an address in the
   same subnet for that address family. However, an IPv4 or IPv6 prefix associated
   with the link MAY be installed without the corresponding address on the other
   side of link.
 </t>
 <t>
-  The link IGP metric attribute TLV (TLV 1095) MUST be advertised. If a BGP SPF speaker
-  receives a Link NLRI without an IGP metric attribute TLV, then it SHOULD consider
+  The IGP metric attribute TLV (TLV 1095) MUST be advertised. If a BGP SPF speaker
+  receives a Link NLRI without an IGP metric attribute TLV, then it MUST consider
   the received NLRI as a malformed and the receiving BGP SPF speaker MUST handle such
   malformed NLRI as 'Treat-as-withdraw' <xref target="RFC7606" format="default"/>.
-  The BGP SPF metric length is 4 octets. A cost is associated with the output side of each
-  router interface.  This cost is configurable by the system administrator.  The
-  lower the cost, the more likely the interface is to be used to forward data traffic.
-  One possible default for metric would be to give each interface a cost of 1
+  The BGP SPF metric length is 4 octets. A metric is associated with the output side of each
+  router interface.  This metric is configurable by the system administrator.  The
+  lower the metric, the more likely the interface is to be used to forward data traffic.
+  One possible default for metric would be to give each interface a metric of 1
   making it effectively a hop count.
-  Algorithms such as setting the metric inversely to the link speed as supported in some
-  IGP implementations MAY be supported. However, this is beyond the scope
-  of this document. Refer to <xref target="link-metric-config" format="default"/> for
-  operational guidance.
 </t>
 <t>
   The usage of other link attribute TLVs is beyond the scope of this document.
@@ -687,8 +676,8 @@ to BGP SPF
   +-+-+-+-+-+-+-+-+
 
   Prefix-length - A one-octet length restricted to 1-32 for IPv4
-  Link NLRI endpoint prefixes and 1-128 for IPv6
-  Link NLRI endpoint prefixes.
+                  Link NLRI endpoint prefixes and 1-128 for IPv6
+                  Link NLRI endpoint prefixes.
   ]]></artwork>
   <t>
     The Prefix-Length TLV is only relevant to Link NLRIs. The Prefix-Length TLVs MUST be
@@ -735,18 +724,18 @@ to BGP SPF
   +-+-+-+-+-+-+-+-+
 
   BGP Status Values: 0 - Reserved
-  1 - Link Unreachable with respect to BGP SPF
-  2-254 - Undefined
-  255 - Reserved
+                     1 - Link Unreachable with respect to BGP SPF
+                     2-254 - Undefined
+                     255 - Reserved
 
   ]]></artwork>
   <t>
     The BGP-LS-SPF Node Attribute SPF Status TLV, Link Attribute SPF Status TLV,
     and Prefix Attribute SPF Status TLV use the same TLV Type (1184). This implies
     that a BGP Update cannot contain multiple NLRI with differing status.
-    If the BGP-LS-SPF Status TLV is advertised and the advertised value is not defined
-    for all NLRI included in the BGP update, then the SPF Status TLV is ignored
-    and not used in SPF computation but is still announced to other BGP SPF speakers.
+    If the BGP-LS-SPF Status TLV is advertised and the advertised value is not defined,
+    then the SPF Status TLV is ignored
+    and not used in SPF computation but is still advertised to other BGP SPF speakers.
     An implementation MAY log an error for further analysis.
   </t>
   <t>
@@ -755,7 +744,7 @@ to BGP SPF
     considered as implicitly withdrawn and the update is propagated to other BGP SPF speakers.
     A BGP SPF speaker receiving a BGP Update containing
     an SPF Status TLV in the BGP-LS attribute <xref target="I-D.ietf-idr-rfc7752bis" format="default"/> with a value
-    that is outside the range of defined values SHOULD be processed and announced to other
+    that is undefined SHOULD be advertised to other
     BGP SPF speakers. However, a BGP SPF speaker MUST NOT use the Status TLV in its SPF computation.
     An implementation MAY log this information for further analysis.
   </t>
@@ -794,17 +783,17 @@ to BGP SPF
     +-+-+-+-+-+-+-+-+
 
     BGP Status Values: 0 - Reserved
-    1 - Prefix Unreachable with respect to SPF
-    2-254 - Undefined
-    255 - Reserved
+                       1 - Prefix Unreachable with respect to SPF
+                       2-254 - Undefined
+                       255 - Reserved
     ]]></artwork>
     <t>
       The BGP-LS-SPF Node Attribute SPF Status TLV, Link Attribute SPF Status TLV,
       and Prefix Attribute SPF Status TLV use the same TLV Type (1184). This implies
       that a BGP Update cannot contain multiple NLRI with differing status.
-      If the BGP-LS-SPF Status TLV is advertised and the advertised value is not defined
-      for all NLRI included in the BGP update, then the SPF Status TLV is ignored
-      and not used in SPF computation but is still announced to other BGP SPF speakers.
+      If the BGP-LS-SPF Status TLV is advertised and the advertised value is not defined,
+      then the SPF Status TLV is ignored
+      and not used in SPF computation but is still advertised to other BGP SPF speakers.
       An implementation MAY log an error for further analysis.
     </t>
     <t>
@@ -813,7 +802,7 @@ to BGP SPF
       considered as implicitly withdrawn and the update is propagated to other BGP SPF speakers.
       A BGP SPF speaker receiving a BGP Update containing
       an SPF Status TLV in the BGP-LS attribute <xref target="I-D.ietf-idr-rfc7752bis" format="default"/> with a value
-      that is outside the range of defined values SHOULD be processed and announced to other
+      that is undefined SHOULD be advertised to other
       BGP SPF speakers. However, a BGP SPF speaker MUST NOT use the Status TLV in its
       SPF computation. An implementation MAY log this information for further analysis.
     </t>
@@ -1080,7 +1069,7 @@ to BGP SPF
   The Node NLRI with the lowest cost is removed from the candidate list for processing.
   If the BGP-LS Node attribute doesn't include an SPF Capability TLV
   (refer to <xref target="node-spf-cap-tlv" format="default"/>),
-  the Node NLRI is ignored and the next lowest cost  Node NLRI is selected
+  the Node NLRI is ignored and the next lowest cost Node NLRI is selected
   from candidate list. The
   If the BGP-LS Node attribute includes an SPF Status TLV
   (refer to <xref target="node-spf-cap-tlv" format="default"/>)
@@ -1105,7 +1094,7 @@ to BGP SPF
 </li>
 <li>
   If the Current-Prefix's corresponding prefix is in the Local-RIB and the
-  Local-RIB cost is less than the Current-Prefix's metric,
+  Local-RIB metric is less than the Current-Prefix's metric,
   the Current-Prefix does not contribute to the route and the next Prefix NLRI is
   examined in Step 4.
 </li>
@@ -1160,7 +1149,7 @@ to BGP SPF
   will display addresses that are not reachable.
 </li>
 <li>
-  If the Current-Node NLRI attributes includes the SPF status TLV
+  If the Current-Node NLRI attributes includes the SPF Status TLV
   (refer to <xref target="node-status-tlv" format="default"/>) and the status
   indicates that the Node doesn't support transit, the next link for the Current-Node is
   processed in Step 5.
@@ -1644,11 +1633,16 @@ its sub-TLVs in the BGP-LS Attribute valid?
 </t>
 </section>
 <section anchor="link-metric-config" numbered="true" toc="default">
-<name>Link Metric Configuration</name>
+  <name>Link Metric Configuration</name>
+<t>
+  Algorithms such as setting the metric inversely to the link speed as
+  supported in some IGP implementations MAY be supported. However, the
+  details of how the metric is computed are beyond the scope of this document. 
+</t>
 <t>
   Within a BGP SPF Routing Domain, the IGP metrics for all advertised links SHOULD be configured or
   defaulted consistently. For example, if a default metric is used for one router's links, then a
-  similar metric should be used for all router's links. Similarly, if the link cost is
+  similar metric should be used for all router's links. Similarly, if the link metric is
   derived from using the inverse of the link bandwidth on one router, then this SHOULD
   be done for all routers and the same reference bandwidth should be used to derive the
   inversely proportional metric. Failure to do so will not result in correct routing based on

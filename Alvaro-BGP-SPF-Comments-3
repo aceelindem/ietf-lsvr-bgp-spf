@@ -387,11 +387,15 @@ Fixed.
 
         [nit] s/BGP Status/SPF Status
 
+Fixed.
+
 
         [major] Should IANA manage the assignment of these values?  For this
         TLV, the values defined for each NLRI are slightly different, so I'm
         assuming there will really be 3 registries -- or one with different
         columns...
+
+Revisit
 
 
 
@@ -406,6 +410,8 @@ Fixed.
 
         [nit] The first sentence is duplicated from above.
 
+It is not really duplicated as it is stated differently. I have removed the statement above.
+
 
         [major] "This implies that a BGP Update cannot contain multiple NLRI
         with differing status."
@@ -415,11 +421,15 @@ Fixed.
         associated with a specific node must have the same status.  Is that
         it?
 
+Now this can be removed. 
+
 
         [major] "for all NLRI included in the BGP update"
 
         Again, each UPDATE will have a different NLRI, so I'm assuming you
         mean "the NLRI's associated with a specific node".
+
+This can be removed since there is a single NLRI per update.
 
 
         [major] "the advertised value is not defined"
@@ -427,10 +437,14 @@ Fixed.
         Is this action only followed when the value is undefined/unknown, or
         also if they're different?
 
+There is only one value advertised. 
+
         Are there any cases where the status can be different?  Can a link be
         taken out of service even if the (resf of) the node is available?  Can
         a prefix on a link be taken out of service even if the (resf of) the
         link is available?
+
+Yes - we don't want to wait for all instances of the NLRI to be withdrawn. 
 
 
         [major] "the SPF Status TLV is ignored and not used in SPF computation
@@ -440,8 +454,12 @@ Fixed.
         the NLRI is not used for SPF; i.e. it implies unreachable.  Or did you
         really mean that the TLV is ignored; i.e. the node is reachable?
 
+No - it is only the invalid SPF Status TLV that isn't used. 
+
         BTW, I've been assuming that the UPDATES are propagated ("flooded")
         without change to guarantee synchronization.
+
+Yes.
 
 
         [] The Normative text below repeats some of what is above.
@@ -463,6 +481,8 @@ Fixed.
 
         The UPDATE is propagated anyway, right?
 
+Yes - as specified, only the SPF Status TLV is not used. 
+
 
         [] The Normative text in this paragraph is a restatement of what was
         in the last one.
@@ -470,9 +490,13 @@ Fixed.
 
         [minor] Is "outside the range of defined values" the same as undefined
         or unknown?  Is so, s/outside the range of defined values/unknown
+        
+I've removed the general statement and kept it for the Node NLRI.        
 
 
         [] These comments apply to the other sections describing the Status TLV.
+
+Fixed
 
 
 
@@ -491,6 +515,8 @@ Fixed.
         [] In rfc7752bis Table 5 is "Prefix Descriptor TLVs".  Also, I think
         you may want to point at "link descriptors", not "link identifiers".
 
+Fixed. 
+
 
 
         618	   For a link to be used in Shortest Path Tree (SPT) for a given address
@@ -508,6 +534,10 @@ Fixed.
         have an address, but then there's an option to only use one.  Is there
         a difference between using the link in the SPT and "installing" an
         address?
+
+Yes - it should be clear. Installation and "used in the Shortest Path Tree (SPT)" are two
+very different things. For consistency, I changed "Shortest Path Tree (SPF)" to
+"SPF Computation".
 
 
 
@@ -529,11 +559,15 @@ Fixed.
         [minor] s/link IGP metric attribute TLV/IGP Metric TLV/g
         That's what rfc7752 calls it.
 
+Fixed. 
+
 
         [major] "SHOULD consider the received NLRI as a malformed NLRI"
 
         When is it ok to not consider the NLRI as malformed?  Why is this
         behavior recommended and not required?
+
+Changed to "MUST".
 
 
         [minor] "...a Link NLRI without an IGP metric attribute TLV...MUST
@@ -543,17 +577,23 @@ Fixed.
         TLV.  On the other, there's a section later on which covers some of
         the other TLVs.  Please be consistent.
 
+Revisit.
+
 
         [minor] s/Like OSPF [RFC2328], a cost is associated with the output
         side of each router interface./The metric is associated with the
         output side of each router interface.
-
+        
+Fixed. 
 
         [minor] The TLV talks about a "metric", but the description is about
         "cost"...and in some cases both are used: "default for metric would be
         to give each interface a cost of 1".   Other sections, like §10.1.1
         also have similar consistency issues.  Please pick one and stick to
         it.
+
+Fixed. Note that "cost" is used in the description of the SPF computation for
+the cost to reach the current node in the SPT. 
 
 
         [major] Please keep configuration-related guidance in one place --
@@ -566,6 +606,8 @@ Fixed.
            is beyond the scope of this document.
 
         BTW, the OSPF MIB is not related to BGP SPF, please don't use it as a reference.
+
+Fixed.
 
 
         [?] About the metric default being out of scope...  Interoperability
