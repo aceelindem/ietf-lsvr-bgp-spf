@@ -620,6 +620,8 @@ Fixed.
            Setting a default metric of 1 is RECOMMENDED.  An implementation is
            expected to document any changes in this setting.
 
+We don't do this for the IGPs. 
+
 
 
         ...
@@ -635,6 +637,8 @@ Fixed.
 
         rfc7606 talks about attribute discard, which is not the same as
         discarding a TLV.  There are similar comments in §7.
+
+Change to consider the NLRI is malformed. 
 
         The next two paragraphs say the same thing.
 
@@ -663,7 +667,7 @@ Fixed.
         679	   considered as malformed and MUST be handled as 'Treat-as-withdraw'.
         680	   An implementation MAY log an error for further analysis.
 
-
+Fixed. 
 
         ...
         726	5.2.3.  IPv4/IPv6 Prefix NLRI Usage
@@ -689,7 +693,7 @@ Fixed.
 
         As suggested in §5.2.2, this could be part of the RECOMMENDED default settings.
 
-
+Moved to the management considerations. 
 
         ...
         781	5.2.4.  BGP-LS Attribute Sequence-Number TLV
@@ -701,14 +705,17 @@ Fixed.
         787	   Attribute TLV will contain an 8-octet sequence number.  The usage of
         788	   the Sequence Number TLV is described in Section 6.1.
 
-        [nit] s/mandatory for BGP-LS-SPF/mandatory for the BGP-LS-SPF
-
+        [nit] s/mandatory for BGP-LS-SPF/mandatory for the BGP-LS-SPF/
+        
+In this context of all the NLRI, I'm not sure "the" is needed. 
 
         [nit] Phrases in the future, such as "will contain" are used in many
         places in this document (there are 75 instances of the word "will"),
         but the specification should be in the present tense ("the TLV
         contains").  Just a nit, maybe something the RFC Editor can address,
         but it would be nice if you did.
+
+Fixed. 
 
 
 
@@ -726,6 +733,8 @@ Fixed.
 
         Only the Link NLRI?  Or all the NLRIs?
 
+All NLRI. 
+
 
 
         824	5.3.  NEXT_HOP Manipulation
@@ -735,6 +744,9 @@ Fixed.
         s/Next-Hop/Next Hop/g
 
         That way the word could be distinguished from the "next-hop" calculated by SPF.
+
+Fixed.
+
 
 
         826	   All BGP peers that support SPF extensions would locally compute the
@@ -802,6 +814,8 @@ Fixed.
         needed.  Also, the requirement can cause confusion as rfc4760 doesn't
         specify what to set the value to.
 
+Revisit
+
 
 
         841	6.  Decision Process with SPF Algorithm
@@ -815,11 +829,15 @@ Fixed.
 
         [nit] s/Global RIB/GLOBAL-RIB
 
+Fixed.
+
 
 
         888	6.1.  BGP NLRI Selection
 
         [minor] s/BGP NLRI Selection/BGP SPF NLRI Selection
+
+Fixed.
 
 
 
@@ -830,6 +848,9 @@ Fixed.
         paragraph and the bullets below.  Maybe remind people that this first
         step is about selecting the advertisements that will be used in the
         calculation.
+
+In this section, we are listing rules for NLRI selection, not documenting steps in the
+calculation. 
 
 
 
@@ -849,6 +870,8 @@ Fixed.
         [] These steps mix "route" and "NLRI".  At this point we're not
         talking about "routes" (which haven't been calculated), but about NLRI
         advertisements, so maybe using NLRI consistently helps.
+
+Fixed. 
 
 
 
@@ -873,6 +896,8 @@ Fixed.
            The adjacent BGP SPF speaker updates their NLRI advertisements
            and the BGP routing domain converges as they are propagated.
 
+Fixed. 
+
 
 
         917	   The modified SPF Decision Process performs an SPF calculation rooted
@@ -887,6 +912,8 @@ Fixed.
         926	   during the SPF computation for BGP-LS-SPF NRLIs.
 
         [minor] s/rooted at the BGP SPF speaker/rooted at the local BGP SPF speaker
+
+Fixed. 
 
 
 
@@ -905,6 +932,8 @@ Fixed.
 
         [nit] s/If a self-originated/If self-originated
 
+Fixed. 
+
 
 
         941	   *  If self-originated NLRI is received and the sequence number is the
@@ -920,6 +949,8 @@ Fixed.
         [major] All 3 conditions say that something "will be" done.  Can they
         be made Normative (MUST?)?
 
+This is an algorithm description, I'm not sure it should normative. I've update this
+to be in the present tense consistent with out comments.
 
 
         ...
@@ -941,6 +972,8 @@ Fixed.
 
         Nice, but there's no need to mention OSPF.
 
+Removed.
+
 
 
         982	   The following abstract data structures are defined in order to
@@ -959,6 +992,8 @@ Fixed.
 
         Not needed.
 
+Removed.
+
 
 
         993	   *  Global Routing Information Base (GLOBAL-RIB) - This is Routing
@@ -968,6 +1003,8 @@ Fixed.
 
         [nit] s/This is Routing Information Base (RIB) containing/This is a
         Routing Information Base (RIB) containing
+
+Fixed using "the". 
 
 
 
@@ -983,7 +1020,7 @@ Fixed.
 
         [nit] Delete "Section 6.3" as this is that section.
 
-
+Fixed.
 
         ...
         1022	   3.  The Node NLRI with the lowest cost is removed from the candidate
@@ -1001,6 +1038,8 @@ Fixed.
         [nit] s/candidate list/CAN-LIST/g
         For consistency.
 
+Fixed.
+
 
         [major] "If the BGP-LS Node attribute doesn't include an SPF
         Capability TLV (Section 5.2.1.1, the Node NLRI is ignored and the next
@@ -1011,6 +1050,8 @@ Fixed.
         with the local BGP SPF speaker's SPF capability TLV value."  You don't
         need to repeat here.
 
+Removed.
+
 
         [?] "The If the BGP-LS Node attribute includes an SPF Status TLV
         (Section 5.2.1.1) indicating the node is unreachable, the Node NLRI is
@@ -1020,7 +1061,12 @@ Fixed.
         Why aren't all the NLRI with an SPT Status TLV indicating unreachable
         taken out of consideration upfront (in §6.1)?
 
+Because that would require an additional pass of the NLRI. 
+
+
         s/5.2.1.1/5.2.1.2
+
+Fixed.
 
 
 
@@ -1044,6 +1090,8 @@ Fixed.
            [I-D.ietf-idr-rfc7752bis].
 
         This requirement is consistent with rfc6286 to uniquely identify a BGP node.
+Fixed.
+      
 
 
 
@@ -1065,6 +1113,8 @@ Fixed.
         [minor] "next-hops will be merged"
 
         Perhaps something like: the next-hops will be added to ...
+        
+This is common terminology when describing ECMP computation. 
 
 
         [minor] This is the only place that talks about an "(ECMP) limit",
@@ -1086,6 +1136,8 @@ Fixed.
            case such as limit is encountered.  Weighted Unequal Cost Multi-Path
            routes are out of scope as well.
 
+Ok. 
+
 
 
         1081	   5.  All the Link NLRI with the same Node Identifiers as the Current-
@@ -1105,6 +1157,8 @@ Fixed.
         interface."
 
         Similar text should also exist in step 4.
+
+Similar text added for the inherited prefix. 
 
 
 
