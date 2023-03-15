@@ -659,7 +659,7 @@ SPF Status Values: 0 - Reserved
 <t>
   The usage of other link attribute TLVs is beyond the scope of this document.
 </t>
-<section numbered="true" toc="default">
+<section anchor="prefix-length-tlvs" numbered="true" toc="default">
   <name>BGP-LS-SPF Link NLRI Attribute Prefix-Length TLVs</name>
   <t>
     Two BGP-LS Attribute TLVs of the BGP-LS-SPF Link NLRI are defined to advertise the prefix length
@@ -799,7 +799,7 @@ SPF Status Values: 0 - Reserved
     </t>
   </section>
 </section>
-<section numbered="true" toc="default">
+<section anchor="sequence-number-tlv" numbered="true" toc="default">
   <name>BGP-LS Attribute Sequence-Number TLV</name>
   <t>
     A BGP-LS Attribute TLV of the BGP-LS-SPF NLRI types is defined to assure the most
@@ -1049,7 +1049,7 @@ SPF Status Values: 0 - Reserved
   The current Local-RIB is invalidated, and the CAN-LIST is initialized to empty.
   The Local-RIB is rebuilt during the course of the SPF computation.  The existing routing entries
   are preserved for comparison to determine changes that need to be made to the GLOBAL-RIB in
-  step 6.
+  step 6. These routes are referred to as stale routes.
 </li>
 <li>
   The computing router's Node NLRI is updated in the Local-RIB with a cost of 0 and the Node NLRI
@@ -1126,24 +1126,25 @@ SPF Status Values: 0 - Reserved
     interface. For any other Current-Node, the next-hop(s) for the Current-Link is inherited
     from the Current-Node. The following is done for each link:
 </t>
-<ol spacing="normal" type="a"><li>
+<ol spacing="normal" type="a">
+<li>
+  If the Current-Link's NLRI attribute includes an SPF Status TLV indicating the link is
+  down, the BGP-LS-SPF Link NLRI is considered down and the next link
+  for the Current-Node is examined in Step 5.
+</li>
+<li>
   The prefix(es) associated with the Current-Link are installed into the
   Local-RIB using the same rules as were used for Prefix NLRI in the previous steps. Optionally,
   in deployments where BGP-SPF routers have limited routing table capacity, installation of
   these subnets can be suppressed. Suppression has an operational impact as the
-  IPv4/IPv6 link endpoint addresses is not be reachable and tools such as traceroute
-  will display addresses that are not reachable.
+  IPv4/IPv6 link prefixes and link endpoint addresses are not be reachable resulting in tools such
+  as traceroute will display addresses that are not reachable.
 </li>
 <li>
   If the Current-Node NLRI attributes includes the SPF Status TLV
   (refer to <xref target="node-status-tlv" format="default"/>) and the status
   indicates that the Node doesn't support transit, the next link for the Current-Node is
   processed in Step 5.
-</li>
-<li>
-  If the Current-Link's NLRI attribute includes an SPF Status TLV indicating the link is
-  down, the BGP-LS-SPF Link NLRI is considered down and the next link
-  for the Current-Node is examined in Step 5.
 </li>
 <li>
   <t>
@@ -1164,8 +1165,9 @@ SPF Status Values: 0 - Reserved
   common IPv4 or IPv6 subnet. For unnumbered links to match, the Current Link's
   Local Identifier MUST match the Remote Node Link's Remote Identifier and the
   Current Link's Remote Identifier MUST the Remote Node Link's Local
-  Identifier <xref target="RFC5307" format="default"/>. If these conditions
-  are satisfied for one of the Remote-Node's links, the bi-directional connectivity
+  Identifier (see TLV 258 <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>).
+  If these conditions are satisfied for one of the Remote-Node's links,
+  the bi-directional connectivity
   check succeeds and the Remote-Node may be processed further. The
   Remote-Node's Link NLRI providing bi-directional connectivity
   is referred to as the Remote-Link. If no Remote-Link is found, the next
@@ -1220,7 +1222,7 @@ SPF Status Values: 0 - Reserved
 </li>
 <li>
   If the route was not installed during the current BGP SPF computation, remove the route
-  from both the GLOBAL-RIB and the Local-RIB.
+  from the GLOBAL-RIB.
 </li>
 </ul>
 </li>
@@ -1229,18 +1231,15 @@ SPF Status Values: 0 - Reserved
 <section numbered="true" toc="default">
 <name>IPv4/IPv6 Unicast Address Family Interaction</name>
 <t>
-  While the BGP-LS-SPF address family and the IPv4/IPv6 unicast address families MAY install routes
-  into the same device routing tables, they operate independently much the same as multiple IGPs
-  would operate today (i.e., "Ships-in-the-Night" mode). There is no implicit
-  route redistribution between the BGP address families.
+  While the BGP-LS-SPF address family and the BGP unicast address families may install routes
+  into the same device routing tables, they operate independently (i.e., "Ships-in-the-Night" mode).
+  There is no implicit route redistribution between the BGP-LS-SPF address family and the BGP 
+  unicast address families.
 </t>
 <t>
   It is RECOMMENDED that BGP-LS-SPF IPv4/IPv6 route computation and
   installation be given scheduling priority by default over other BGP address families
-  as these address families are considered as underlay SAFIs. Similarly, it is RECOMMENDED that
-  the route preference or administrative distance give active route installation preference
-  to BGP-LS-SPF IPv4/IPv6 routes over BGP routes from other AFI/SAFIs.
-  However, this preference MAY be overridden by an operator-configured policy.
+  as these address families are considered as underlay SAFIs.
 </t>
 </section>
 <section anchor="NLRI-Advertise" numbered="true" toc="default">
@@ -1255,8 +1254,7 @@ SPF Status Values: 0 - Reserved
   and optimal convergence.
 </t>
 <t>
-  An IGP stops using the link as soon as
-  the link-state update for one side of the link is received. With a BGP advertisement,
+  With a BGP advertisement,
   the link would continue to be used until the last copy of the BGP-LS-SPF Link NLRI
   is withdrawn. In order to avoid this delay, the originator of the Link NLRI SHOULD
   advertise a more recent version with an increased Sequence Number TLV for
@@ -1266,8 +1264,9 @@ SPF Status Values: 0 - Reserved
   The configurable LinkStatusDownAdvertise timer
   controls the interval that the BGP-LS-LINK NLRI is advertised with SPF Status indicating
   the link is down prior to withdrawal.
-  If the link becomes available
-  in that period, the originator of the BGP-LS-SPF LINK NLRI SHOULD advertise a more recent
+  If BGP-LS-SPF Link NLRI has been advertised with the SPF Status
+  TLV and the link becomes available
+  in that period, the originator of the BGP-LS-SPF LINK NLRI MUST advertise a more recent
   version of the BGP-LS-SPF Link NLRI without the SPF Status TLV in the BGP-LS Link Attributes.
   The suggested default value for the LinkStatusDownAdvertise timer is 2 seconds.
 </t>
@@ -1280,8 +1279,9 @@ SPF Status Values: 0 - Reserved
   The configurable PrefixStatusDownAdvertise timer
   controls the interval that the BGP-LS-Prefix NLRI is advertised with SPF Status indicating
   the prefix is unreachable prior to withdrawal.
-  If the prefix becomes reachable in that period, the originator of the BGP-LS-SPF Prefix NLRI
-  SHOULD advertise a more recent version of the BGP-LS-SPF Prefix NLRI without the
+  If the BGP-LS-SPF Prefix has been advertised with the SPF Status TLV and the prefix
+  becomes reachable in that period, the originator of the BGP-LS-SPF Prefix NLRI
+  MUST advertise a more recent version of the BGP-LS-SPF Prefix NLRI without the
   SPF Status TLV in the BGP-LS Prefix Attributes.
   The suggested default value for the PrefixStatusDownAdvertise timer is 2 seconds.
 </t>
@@ -1289,17 +1289,17 @@ SPF Status Values: 0 - Reserved
 <section anchor="node-failure" numbered="true" toc="default">
 <name>Node Failure Convergence</name>
 <t>
-  With BGP without graceful restart <xref target="RFC4724" format="default"/>, all the NLRI advertised
-  by a node are implicitly withdrawn when a session
+  By default <xref target="RFC4271"/>, all the NLRI advertised
+  by a node are withdrawn when a session
   failure is detected. If fast failure detection such as BFD is utilized, and the node is
   on the fastest converging path, the most recent versions of BGP-LS-SPF NLRI may be
-  withdrawn. This results in an older version of the NLRI being used until the
-  new versions arrive and, potentially, unnecessary route flaps.
-  For the BGP-LS-SPF SAFI, NLRI SHOULD NOT be implicitly withdrawn immediately
-  to prevent such unnecessary route flaps.
+  withdrawn. This results in an older version of the NLRI received on a different path
+  being used until the new versions arrive and, potentially, unnecessary route flaps.
+  For the BGP-LS-SPF SAFI, NLRI received from the failing node SHOULD NOT be implicitly
+  withdrawn immediately to prevent such unnecessary route flaps.
   The configurable NLRIImplicitWithdrawalDelay timer
-  controls the interval that NLRI is retained prior to implicit withdrawal after a BGP
-  SPF speaker has transitioned out of Established state.
+  controls the interval that NLRI from the failed node is retained prior to implicit
+  withdrawal after a BGP SPF speaker has transitioned out of Established state.
   This does delay convergence since the adjacent nodes detect the
   link failure and advertise a more recent NLRI indicating the link is down with respect to
   BGP SPF (refer to <xref target="failure-converge" format="default"/>) and the
@@ -1498,54 +1498,52 @@ its sub-TLVs in the BGP-LS Attribute valid?
 <section anchor="IANA" numbered="true" toc="default">
 <name>IANA Considerations</name>
 <t>
-  This document defines the use of SAFI (80) for BGP SPF operation
-  (refer to <xref target="SAFI" format="default"/>), and requests IANA
-  to assign the value from the
-  First Come First Serve (FCFS) range in the
-  Subsequent Address Family Identifiers (SAFI) Parameters registry.
+  IANA has assigned value 80 for BGP-LS-SPF from the First Come First
+  Served range in the Subsequent Address Family Identifiers (SAFI)
+  Parameters registry.  IANA is requested to update the registration
+  to reference only to this document.
 </t>
 <t>
-  This document also defines five attribute TLVs of BGP-LS-SPF NLRI.
-  We request IANA to assign types for the SPF capability TLV,
+  IANA has assigned five attribute TLVs of BGP-LS-SPF NLRI.
+  These types include the SPF capability TLV,
   Sequence Number TLV, IPv4 Link Prefix-Length TLV, IPv6 Link Prefix-Length TLV,
-  and SPF Status TLV
-  from the "BGP-LS Node Descriptor, Link Descriptor, Prefix Descriptor,
-  and Attribute TLVs" Registry.
+  and SPF Status TLV from the "BGP-LS NLRI and Attribute TLVs" Registry.
 </t>
 <table anchor="tab.iana-attr" align="center">
 <name>NLRI Attribute TLVs</name>
 <thead>
   <tr>
-<th align="left">Attribute TLV</th>
-<th align="left">Suggested Value</th>
-<th align="left">NLRI Applicability</th>
+<th align="left">TLV Code Point</th>
+<th align="left">Description</th>
+<th align="left">Reference</th>
 </tr>
 </thead>
 <tbody>
   <tr>
-<td align="left">SPF Capability</td>
 <td align="left">1180</td>
-<td align="left">Node</td>
+<td align="left">SPF Capability</td>
+<td align="left"><xref target="node-spf-cap-tlv"/></td>
 </tr>
 <tr>
-<td align="left">SPF Status</td>
 <td align="left">1184</td>
-<td align="left">Node, Link, Prefix</td>
+<td align="left">SPF Status</td>
+<td align="left"><xref target="node-status-tlv"/>, <xref target="link-status-tlv"/>,
+and <xref target="prefix-status-tlv"/></td>
 </tr>
 <tr>
-<td align="left">IPv4 Link Prefix Length</td>
 <td align="left">1182</td>
-<td align="left">Link</td>
+<td align="left">IPv4 Link Prefix Length</td>
+<td align="left"><xref target="prefix-length-tlvs"/></td>
 </tr>
 <tr>
-<td align="left">IPv6 Link Prefix Length</td>
 <td align="left">1183</td>
-<td align="left">Link</td>
+<td align="left">IPv6 Link Prefix Length</td>
+<td align="left"><xref target="prefix-length-tlvs"/></td>
 </tr>
 <tr>
-<td align="left">Sequence Number</td>
 <td align="left">1181</td>
-<td align="left">Node, Link, Prefix</td>
+<td align="left">Sequence Number</td>
+<td align="left"><xref target="sequence-number-tlv"/></td>
 </tr>
 </tbody>
 </table>
@@ -1770,7 +1768,6 @@ cy098d@att.com
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.4593.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.4724.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.5286.xml"/>
-<xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.5307.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.5880.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.6952.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.7911.xml"/>

@@ -1193,6 +1193,8 @@ Similar text added for the inherited prefix.
         This is where the "prefix(es) associated with the Current-Link" come
         from, right?
 
+Yes. This is added in 5.2.2.1.
+
         I see how a Prefix can be advertised "without" a Link: associated to
         the loopback, for example.  Or how a prefix is associated with a link:
         it's the address on the link.
@@ -1201,9 +1203,14 @@ Similar text added for the inherited prefix.
         NLRI.  Is that the intent here?  What if the information is not the
         same?
 
+Then that would be two separate prefixes. 
+
         I guess that the length of the prefix can de different -- for example,
         /30 for the link and /24 for the prefix.  These would be different
         prefixes.  Is the other way around (a more specific Prefix NLRI) ok?
+
+If the implementation allows it. Some do not allow for overlapping prefixes. 
+
 
         The Link NLRI is required to use the IGP Metric TLV (1095) to
         advertise the metric, while the Prefix NLRI uses the Prefix Metric
@@ -1211,12 +1218,21 @@ Similar text added for the inherited prefix.
         be compared.  What if a prefix is advertised in both NLRIs with
         different metric (by the same node)?
 
+If a prefix is advertised, it should be local to the router. This would seem to
+be an error to have the same prefix with different prefix lengths. 
+
+
         The second part of the paragraph talks about "link endpoint
         addresses", which I take to be host routes.  If these (host routes)
         are the prefixes we're talking about here, please be clear about it.
+
+
         I wonder why the Attribute Prefix-Length TLVs are needed and whether
         it matters (or makes sense) if the prefix length is set to anything
         other than 32/128.
+
+We would not have added the Prefix-Length TLV if we hadn't meant non-host prefixes
+to be associated with the link.
 
 
 
@@ -1227,6 +1243,8 @@ Similar text added for the inherited prefix.
 
         [?] In this case, should any associated prefixes be considered or not (step a)?
 
+These prefixes are local and are accessible. 
+
 
 
         1107	       c.  If the Current-Link's NLRI attribute includes an SPF Status
@@ -1235,6 +1253,7 @@ Similar text added for the inherited prefix.
         1110	           examined in Step 5.
 
         [major] This step should be examined before a (and any prefixes are installed).
+Moved.        
 
 
 
@@ -1272,17 +1291,29 @@ Similar text added for the inherited prefix.
         pointing at an IS-IS specification, let's use "(see TLV 258
         [rfc7752bis])".
 
+Fixed.
 
         [major] "the Remote-Node may be processed further"
 
         What does this mean?  Does it mean that we now process the Remote Node
         NLRI starting in Step 3, or simply that we move on?
 
+
+This is defined right above.
+
+          The Current-Link's Remote Node NLRI is accessed (i.e., the
+           Node NLRI with the same Node identifiers as the Current-
+           Link's Remote Node Descriptors).  If it exists, it is
+           referred to as the Remote-Node and the algorithm proceeds as
+           follows:
+
         s/If these conditions are satisfied for one of the Remote-Node's
         links, the bi-directional connectivity check succeeds and the
         Remote-Node may be processed further./If these conditions are
         satisfied for one of the Remote-Node's links, the bi-directional
         connectivity check succeeds.
+
+I think the text is better without removal of the last clause.
 
 
 
@@ -1295,6 +1326,8 @@ Similar text added for the inherited prefix.
         Local-RIB."
 
         It is was not installed then it is not in the Local-RIB.
+
+Fixed.
 
 
 
@@ -1310,9 +1343,13 @@ Similar text added for the inherited prefix.
         regardless of the protocol?  This paragraph doesn't make any sense to
         me.
 
+I'm not sure how you didn't understand this given the context but I've rewritten it.
+
         Also, s/MAY/may because it is stating a fact.  No need to even mention
         OSPF/IS-IS as different address families already operate
         independently.
+
+Removed.
 
 
 
@@ -1335,6 +1372,8 @@ Similar text added for the inherited prefix.
         the effect?  What should an operator consider when deciding to change
         the configuration?  The answers could belong in a subsection of §10.1.
 
+This what one would expect that the BGP-LS-SPF routes are preferred when the are used in
+the underlay. However, it would be strange for this to make a difference.
 
 
         ...
@@ -1360,6 +1399,8 @@ Similar text added for the inherited prefix.
 
         Don't compare with other protocols.
 
+I can remove this.
+
 
         [major] "With a BGP advertisement, the link would continue to be used
         until the last copy of the BGP-LS-SPF Link NLRI is withdrawn."
@@ -1368,6 +1409,9 @@ Similar text added for the inherited prefix.
         Node...so if only one side was withdrawn it would still not find the
         link.  What did I miss?
 
+What if the other side hasn't detected that it is down yet? Or what if it is due to an
+administrative change and the link is still up? 
+
 
         [major] "In order to avoid this delay, the originator of the Link NLRI
         SHOULD advertise..."
@@ -1375,12 +1419,16 @@ Similar text added for the inherited prefix.
         When is it ok to not advertise?  Why is this behavior recommended and
         not required?
 
+Because the link will be detected down without it. 
+
 
         [major] "If the link becomes available in that period, the originator
         of the BGP-LS-SPF LINK NLRI SHOULD advertise..."
 
         When is it ok to not advertise?  Why is this behavior recommended and
         not required?
+
+I changed this one to a MUST if the BGP-LS-SPF Link NLRI has been advertised.
 
 
         [major] The combination of the SHOULDs above results in no specific
@@ -1390,11 +1438,16 @@ Similar text added for the inherited prefix.
 
         The text above also doesn't mention when the Link NLRI should be withdrawn.
 
+Revisit.
+
 
         [?] Just wondering...  Does using the Status TLV vs withdrawing the
         Link NLRI result in any type of performance improvement?  It seems
         (from the SPF description) that not having a link or finding a Status
         TLV is roughly the same.
+
+In a BGP domain, you will most likely have multiple copies of the Link NLRI. This way
+you'll converge when you receive the first with Down status. 
 
 
 
@@ -1412,6 +1465,9 @@ Similar text added for the inherited prefix.
         1237	   default value for the PrefixStatusDownAdvertise timer is 2 seconds.
 
         [] Same comment/questions as above.
+        
+Same answers.
+
 
 
 
@@ -1450,6 +1506,8 @@ Similar text added for the inherited prefix.
            By default [rfc4271], all the NLRI advertised by a node are
            withdrawn when a session failure is detected.
 
+Changed.
+
 
         [?] I had to read this several times:
 
@@ -1479,12 +1537,18 @@ Similar text added for the inherited prefix.
         first 2 mentions you mean "Node NLRI" and "Link NLRI" for the last
         one...but I shouldn't have to guess.
 
+This refers to the copy of NLRI received from the failing node. It may be the most
+recent copy.
+
 
         [major] "NLRI SHOULD NOT be implicitly withdrawn immediately"
 
         When is it ok to withdraw it?  Why is this a recommendation and not a
         requirement?
 
+
+Again, it is not mandatory for convergence. As you note above, it is somewhat of a
+cornercase. 
 
 
         ...
@@ -1778,6 +1842,8 @@ Similar text added for the inherited prefix.
            Parameters registry.  IANA is requested to update the registration
            to reference only [This Document].
 
+Fine with me. 
+
 
 
         1414	   This document also defines five attribute TLVs of BGP-LS-SPF NLRI.
@@ -1788,6 +1854,8 @@ Similar text added for the inherited prefix.
 
         [] Same comment.  Note that rfc7752bis renames the registry to "BGP-LS
         NLRI and Attribute TLVs".
+
+Fixed.
 
 
 
@@ -1814,6 +1882,8 @@ Similar text added for the inherited prefix.
         If you want to keep a summary table of the TLVs described in this
         document, please put it in a different section.  For example, see
         §9/rfc7752bis.
+
+Fixed although I don't see the requirement to keep the IANA information the same. 
 
 
 
