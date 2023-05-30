@@ -599,7 +599,7 @@ when, and only when, they appear in all capitals, as shown here.</t>
 +-+-+-+-+-+-+-+-+
 
 SPF Status Values: 0 - Reserved
-                   1 - Node Unreachable with respect to BGP SPF
+                   1 - Node unreachable with respect to BGP SPF
                    2 - Node does not support transit with respect
                        to BGP SPF
                    3-254 - Undefined
@@ -1497,17 +1497,23 @@ its sub-TLVs in the BGP-LS Attribute valid?
 </section>
 <section anchor="IANA" numbered="true" toc="default">
 <name>IANA Considerations</name>
+<section numbered="true" toc="default">
+  <name>BGP-LS-SPF Allocation in SAFI Parameters Registry</name>
 <t>
   IANA has assigned value 80 for BGP-LS-SPF from the First Come First
-  Served range in the Subsequent Address Family Identifiers (SAFI)
-  Parameters registry.  IANA is requested to update the registration
+  Served range in the "Subsequent Address Family Identifiers (SAFI)
+  Parameters" registry.  IANA is requested to update the registration
   to reference only to this document.
 </t>
+</section>
+<section numbered="true" toc="default">
+  <name>BGP-LS-SPF Assignments to BGP-LS NLRI and Attribute TLV Registry</name>
 <t>
-  IANA has assigned five attribute TLVs of BGP-LS-SPF NLRI.
-  These types include the SPF capability TLV,
+  IANA has assigned five TLVs for BGP-LS-SPF NLRI in the "BGP-LS NLRI and Attribute
+  TLV" registry. 
+  These TLV types include the SPF capability TLV,
   Sequence Number TLV, IPv4 Link Prefix-Length TLV, IPv6 Link Prefix-Length TLV,
-  and SPF Status TLV from the "BGP-LS NLRI and Attribute TLVs" Registry.
+  and SPF Status TLV.
 </t>
 <table anchor="tab.iana-attr" align="center">
 <name>NLRI Attribute TLVs</name>
@@ -1547,6 +1553,78 @@ and <xref target="prefix-status-tlv"/></td>
 </tr>
 </tbody>
 </table>
+</section>
+<section numbered="true" toc="default">
+  <name>BGP-LS-SPF Node NLRI Attribute SPF Status TLV Status Registry</name>
+  <t>
+    IANA is requested to create the "BGP-LS-SPF Node NLRI Attribute SPF Status TLV Status" Registry
+    for status values. The allocation of the unsigned 8-bit status are defined in the table below:
+  </t>
+  <figure>
+    <name>BGP-LS-SPF Node NLRI Attribute SPF Status TLV Status Registry Assignments</name>
+    <artwork name="" type="" align="left" alt=""><![CDATA[
+    +-------------+-----------------------------------+
+    | Range       | Assignment Policy                 |
+    +-------------+-----------------------------------+
+    | 0           | Reserved (Not to be assigned)     |
+    |             |                                   |
+    | 1           | Node unreachable with respect to  |
+    |             | BGP SPF                           |
+    | 2           | Node does not support transit     |
+    |             | with respect to BGP SPF           |
+    | 3-254       | Unassigned (IETF Review)          |
+    |             |                                   |
+    | 255         | Reserved (Not to be assigned)     |
+    +-----------+-------------------------------------+
+    ]]></artwork>
+</figure>
+</section>
+<section numbered="true" toc="default">
+  <name>BGP-LS-SPF Link NLRI Attribute SPF Status TLV Status Registry</name>
+  <t>
+    IANA is requested to create the "BGP-LS-SPF Link NLRI Attribute SPF Status TLV Status" Registry
+    for status values. The allocation of the unsigned 8-bit status are defined in the table below:
+  </t>
+  <figure>
+    <name>BGP-LS-SPF Link NLRI Attribute SPF Status TLV Status Registry Assignments</name>
+    <artwork name="" type="" align="left" alt=""><![CDATA[
+    +-------------+-----------------------------------+
+    | Range       | Assignment Policy                 |
+    +-------------+-----------------------------------+
+    | 0           | Reserved (Not to be assigned)     |
+    |             |                                   |
+    | 1           | Link unreachable with respect to  |
+    |             | BGP SPF                           |
+    | 2-254       | Unassigned (IETF Review)          |
+    |             |                                   |
+    | 255         | Reserved (Not to be assigned)     |
+    +-----------+-------------------------------------+
+    ]]></artwork>
+</figure>
+</section>
+<section numbered="true" toc="default">
+  <name>BGP-LS-SPF Prefix NLRI Attribute SPF Status TLV Status Registry</name>
+  <t>
+    IANA is requested to create the "BGP-LS-SPF Prefix NLRI Attribute SPF Status TLV Status" Registry
+    for status values. The allocation of the unsigned 8-bit status are defined in the table below:
+  </t>
+  <figure>
+    <name>BGP-LS-SPF Prefix NLRI Attribute SPF Status TLV Status Registry Assignments</name>
+    <artwork name="" type="" align="left" alt=""><![CDATA[
+    +-------------+-----------------------------------+
+    | Range       | Assignment Policy                 |
+    +-------------+-----------------------------------+
+    | 0           | Reserved (Not to be assigned)     |
+    |             |                                   |
+    | 1           | Prefix unreachable with respect   |
+    |             | to BGP SPF                        |
+    | 2-254       | Unassigned (IETF Review)          |
+    |             |                                   |
+    | 255         | Reserved (Not to be assigned)     |
+    +-----------+-------------------------------------+
+    ]]></artwork>
+</figure>
+</section>
 </section>
 <section anchor="Security" numbered="true" toc="default">
 <name>Security Considerations</name>
