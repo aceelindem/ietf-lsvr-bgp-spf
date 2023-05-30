@@ -33,7 +33,7 @@ most I-Ds might want to use.
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-22"
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-23"
      ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" tocInclude="true"
      tocDepth="4" symRefs="true" sortRefs="true" version="3" consensus="true">
   <!-- xml2rfc v2v3 conversion 3.12.1 -->
@@ -285,7 +285,7 @@ when, and only when, they appear in all capitals, as shown here.</t>
   Due to the changes to the decision
   process, there are mechanisms and encodings that are no longer applicable.
   While not necessarily required for computation, the ORIGIN, AS_PATH,
-  MULTI_EXIT_DISC, LOCAL_PREF, and NEXT_HOP path attributes are mandatory
+  LOCAL_PREF (IBGP), and NEXT_HOP path attributes are mandatory
   <xref target="RFC4271" format="default"/> and are validated. Unless explicitly
   specified in the context of BGP SPF, all other
   attributes SHOULD NOT be advertised. However, if they are
@@ -406,7 +406,7 @@ when, and only when, they appear in all capitals, as shown here.</t>
   This is much like the previous peering model only peering is between
   loopback addresses and the interconnecting links can be unnumbered. However,
   since there are BGP sessions between every directly-connected node in the
-  BGP SPF routing domain, there is only a reduction in BGP sessions when there
+  BGP SPF routing domain, there is a reduction in BGP sessions when there
   are parallel links between nodes. Hence, this peering model is RECOMMENDED
   over the single-hop peering model <xref target="single-hop-peering"/>.
 </t>
@@ -439,7 +439,7 @@ when, and only when, they appear in all capitals, as shown here.</t>
   The controller may use constraints to determine
   when to advertise BGP-LS-SPF NLRI for BGP-LS peers. For example, a controller
   may defer advertisement until the EoR marker has been received from both BGP peers and
-  both have received each others NLRI. These constraints are outside the scope of this
+  both have received each other's NLRI. These constraints are outside the scope of this
   document and, since they are internal to the controller, need not be standardized.
 </t>
 </section>
@@ -550,8 +550,8 @@ when, and only when, they appear in all capitals, as shown here.</t>
   in <xref target="RFC8665" format="default"/>.
 </t>
 <artwork align="left" name="" type="" alt=""><![CDATA[
-0                   1                   2                   3
-0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 |              Type (1180)      |     Length - (1 Octet)        |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -590,8 +590,8 @@ when, and only when, they appear in all capitals, as shown here.</t>
   the next SPF calculation (refer to <xref target="BGP-SPF" format="default"/>).
 </t>
 <artwork align="left" name="" type="" alt=""><![CDATA[
-0                   1                   2                   3
-0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 |   Type (1184)                 |       Length (1 Octet)        |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -668,8 +668,8 @@ SPF Status Values: 0 - Reserved
     Link NLRI as defined in <xref target="BGP-SPF" format="default"/>.
   </t>
   <artwork align="left" name="" type="" alt=""><![CDATA[
-  0                   1                   2                   3
-  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   0                   1                   2                   3
+   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
   |IPv4 (1182) or IPv6 Type (1183)|          Length (1 Octet)     |
   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -687,8 +687,8 @@ SPF Status Values: 0 - Reserved
     an error for further analysis.
   </t>
   <t>
-    The maximum prefix-length is 32 bits for an IPv4 Prefix-Length TLV
-    A prefix-length field and 128 bits for an IPv6 Prefix-Length TLV. A prefix-length field
+    The maximum prefix-length is 32 bits for an IPv4 Prefix-Length TLV and  128 bits
+    for an IPv6 Prefix-Length TLV. A prefix-length field
     indicating a larger value is in error and the the corresponding Link NLRI is
     considered as malformed and MUST be handled as 'Treat-as-withdraw'
     <xref target="RFC7606" format="default"/>. An implementation MAY log. An
@@ -698,8 +698,8 @@ SPF Status Values: 0 - Reserved
 <section anchor="link-status-tlv" numbered="true" toc="default">
   <name>BGP-LS-SPF Link NLRI Attribute SPF Status TLV</name>
   <t>
-    A BGP-LS Attribute TLV of the BGP-LS-SPF Link NLRI is defined to indicate the status of
-    the link with respect to the BGP SPF calculation. This is used to expedite
+    This BGP-LS-SPF Attribute TLV of the BGP-LS-SPF Link NLRI is defined to
+    indicate the status of the link with respect to the BGP SPF calculation. This is used to expedite
     convergence for link failures as discussed in <xref target="failure-converge" format="default"/>. If the
     SPF Status TLV is not included with the Link NLRI, the link is considered
     up and available. The SPF status is acted upon with the execution of the
@@ -708,8 +708,8 @@ SPF Status Values: 0 - Reserved
     The TLV type is 1184.
   </t>
   <artwork align="left" name="" type="" alt=""><![CDATA[
-  0                   1                   2                   3
-  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   0                   1                   2                   3
+   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
   |   Type (1184)                 |      Length (1 Octet)         |
   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -765,8 +765,8 @@ SPF Status Values: 0 - Reserved
       The TLV type is 1184.
     </t>
     <artwork align="left" name="" type="" alt=""><![CDATA[
-    0                   1                   2                   3
-    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+     0                   1                   2                   3
+     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
     |   Type (1184)                 |      Length (1 Octet)         |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -810,8 +810,8 @@ SPF Status Values: 0 - Reserved
     is described in <xref target="Phase-1" format="default"/>.
   </t>
   <artwork align="left" name="" type="" alt=""><![CDATA[
-  0                   1                   2                   3
-  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   0                   1                   2                   3
+   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
   |   Type (1181)                 |      Length (8 Octets)        |
   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -821,9 +821,9 @@ SPF Status Values: 0 - Reserved
   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
   ]]></artwork>
   <t>
-    Sequence Number
+    Sequence Number:
     The 64-bit strictly-increasing sequence number MUST be incremented for every
-    self-originated version of BGP-LS-SPF NLRI. BGP SPF speakers implementing this specification
+    self-originated version of a BGP-LS-SPF NLRI. BGP SPF speakers implementing this specification
     MUST use available mechanisms to preserve the sequence number's strictly increasing property
     for the deployed life of the BGP SPF speaker (including cold restarts).
     One mechanism for accomplishing this would be to use the high-order 32 bits of the
@@ -841,7 +841,7 @@ SPF Status Values: 0 - Reserved
   </t>
   <t>
     If the Sequence-Number TLV
-    is not received then the corresponding NLRI is considered as malformed and
+    is not received, then the corresponding NLRI is considered as malformed and
     MUST be handled as 'Treat-as-withdraw'. An implementation MAY log an error for
     further analysis.
   </t>
@@ -850,7 +850,7 @@ SPF Status Values: 0 - Reserved
 <section anchor="NEXT-HOP" numbered="true" toc="default">
   <name>NEXT_HOP Attribute Manipulation</name>
   <t>
-    All BGP peers that support SPF extensions would locally compute the Local-RIB Next-Hop
+    All BGP peers that support SPF extensions will locally compute the Local-RIB Next-Hop
     as a result of the SPF process. Consequently, the Next Hop Attribute is always ignored on
     receipt. The Next Hop address MUST be encoded as described in <xref target="RFC4760" format="default"/>.
     BGP SPF speakers MUST interpret the Next Hop address of
@@ -884,7 +884,7 @@ SPF Status Values: 0 - Reserved
     The SPF based Decision process replaces the BGP Decision process described in
     <xref target="RFC4271" format="default"/>. This process starts with selecting only those Node NLRI whose
     SPF capability TLV matches with the local BGP SPF speaker's SPF capability TLV value.
-    Since Link-State NLRI always contains the local node descriptor
+    Since Link-State NLRI always contains the local node descriptor as described in
     <xref target="NLRI-Use" format="default"/>, each NLRI is uniquely originated by a single
     BGP SPF speaker in the BGP SPF routing domain (the BGP node matching the NLRI's Node
     Descriptors). Instances of the same NLRI originated by multiple BGP SPF speakers would be
@@ -926,7 +926,7 @@ SPF Status Values: 0 - Reserved
 <ol spacing="normal" type="1"><li>
   NLRI originated by directly connected BGP SPF peers are preferred.
   This condition can be determined by comparing the BGP Identifiers in
-  the received Local Node Descriptor and OPEN message. This rule assures that
+  the received Local Node Descriptor and the BGP OPEN message. This rule assures that
   stale NLRI is updated even if a BGP-LS router loses its sequence number state due to a
   cold-start.
 </li>
@@ -942,7 +942,7 @@ SPF Status Values: 0 - Reserved
   When a BGP SPF speaker completely loses its sequence number state, i.e., due to a cold start, or
   in the unlikely possibility that 64-bit sequence number wraps, the BGP routing domain will
   still converge. This is due to the fact that BGP SPF speakers adjacent to the router
-  always accepts self-originated NLRI from the associated speaker as more recent (rule # 1). When a
+  always accept self-originated NLRI from the associated speaker as more recent (rule # 1). When a
   BGP SPF speaker reestablishes a connection with its peers, any existing sessions are taken
   down and stale NLRI are replaced. The adjacent BGP SPF speakers update their NLRI
   advertisements and advertise to their neighbors until the BGP routing domain has converged.
@@ -1066,7 +1066,7 @@ SPF Status Values: 0 - Reserved
 </li>
 <li>
   <t>
-    All the Prefix NLRI with the same Local Node Descriptors as the Current-Node is considered
+    All the Prefix NLRI with the same Local Node Descriptors as the Current-Node are considered
     for installation. The next-hop(s) for these Prefix NLRI are inherited from the Current-Node.
     If the Current-Node is for the local BGP Router, the next-hop for the prefix is a direct
     next-hop.  The cost for each prefix is the metric advertised in the Prefix Attribute
@@ -1117,13 +1117,13 @@ SPF Status Values: 0 - Reserved
 </li>
 <li>
   <t>
-    All the Link NLRI with the same Node Identifiers as the Current-Node is considered
+    All the Link NLRI with the same Node Identifiers as the Current-Node are considered
     for installation. Each link is examined and is referred to in the following text
     as the Current-Link. The cost of the Current-Link is the advertised IGP Metric TLV (1095)
     from the Link NLRI BGP-LS attribute added to the cost to reach the Current-Node.
     If the Current-Node is for the local BGP Router,
     the next-hop for the link is a direct next-hop pointing to the corresponding local
-    interface. For any other Current-Node, the next-hop(s) for the Current-Link is inherited
+    interface. For any other Current-Node, the next-hop(s) for the Current-Link are inherited
     from the Current-Node. The following is done for each link:
 </t>
 <ol spacing="normal" type="a">
