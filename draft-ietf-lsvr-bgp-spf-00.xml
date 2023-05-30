@@ -231,7 +231,7 @@ according to policy.
 <t>
 <xref target="RFC7752"/> describes a mechanism by which link-state and TE information can
 be collected from networks and shared with external components using BGP.
-This is achieved by defining NLRI carried within BGP-LS AFI and BGP-LS
+This is achieved by defining NLRIs carried within BGP-LS AFI and BGP-LS
 SAFIs. The BGP-LS extensions defined in <xref target="RFC7752"/> makes use of the 
 Decision Process defined in <xref target="RFC4271"/>. 
 </t>
@@ -304,7 +304,7 @@ Additionally, a controller could inject topology that
 is learned outside the BGP routing domain.
 </t>
 <t>
-Given that controllers are already consuming BGP-LS NLRI 
+Given that controllers are already consuming BGP-LS NLRIs 
 <xref target="RFC7752"/>, reusing for the BGP-LS SPF leverages the 
 existing controller implementations. 
 </t>
@@ -313,7 +313,7 @@ Another potential advantage of BGP SPF is that both IPv6 and IPv4 can be
 supported in the same address family using the same topology. Although not
 described in this version of the document, multi-topology extensions can
 be used to support separate IPv4, IPv6, unicast, and multicast topologies
-while sharing the same NLRI. 
+while sharing the same NLRIs. 
 </t> 
 <t>
 Finally, the BGP SPF topology can be used as an underlay for other BGP 
@@ -336,7 +336,7 @@ as next-hops can be deployed similar to  <xref target="RFC5549"/>.
 <t>
 Depending on the requirements, scaling, and capabilities of the BGP speakers, various
 peering models are supported. The only requirement is that all BGP speakers in the
-BGP SPF routing domain receive link-state NLRI on a timely basis, run an SPF calculation, 
+BGP SPF routing domain receive link-state NLRIs on a timely basis, run an SPF calculation, 
 and update their data plane appropriately. The content of the Link NLRI is described 
 in <xref target="Link-NLRI"/>.
 </t>
@@ -399,17 +399,17 @@ advertised as long as the corresponding link is up and considered operational.
   <xref target="RFC7752"/> describes a mechanism by which link-state and TE
   information can be collected from networks and shared with external components
   using BGP protocol. It contains two parts: definition of a new BGP NLRI
-   that describes links, nodes, and prefixes comprising IGP link-state
-   information and definition of a new BGP path attribute (BGP-LS
-   attribute) that carries link, node, and prefix properties and
-   attributes, such as the link and prefix metric or auxiliary 
-   Router-IDs of nodes, etc.
+  that describes links, nodes, and prefixes comprising IGP link-state
+  information and definition of a new BGP path attribute (BGP-LS
+  attribute) that carries link, node, and prefix properties and
+  attributes, such as the link and prefix metric or auxiliary 
+  Router-IDs of nodes, etc.
 </t>
 
 <t>
 The BGP protocol will be used in the Protocol-ID field specified in
 table 1 of <xref target="I-D.ietf-idr-bgpls-segment-routing-epe"/>. 
-The local and remote node descriptors for all NLRI will be the BGP Router-ID (TLV 516) 
+The local and remote node descriptors for all NLRIs will be the BGP Router-ID (TLV 516) 
 and either the AS Number (TLV 512) <xref target="RFC7752"/> or the BGP Confederation
 Member (TLV 517) <xref target="I-D.ietf-idr-bgpls-segment-routing-epe"/>. 
 However, if the BGP Router-ID is known to be unique within the BGP Routing domain,
@@ -456,14 +456,14 @@ The criteria for advertisement of Link NLRI are discussed in
 <xref target="peering-models"/>.
 </t>
 <t>
-Link NLRI is advertised with local and remote node descriptors as described 
-above and unique link identifiers dependent on the addressing. For IPv4 links, the 
-links local IPv4 (TLV 259) and remote IPv4 (TLV 260) addresses will be used. 
-For IPv6 links, the local IPv6 (TLV 261) and remote IPv6 (TLV 262) addresses
-will be used. For unnumbered links, the link local/remote identifiers (TLV 258)
-will be used. For links supporting having both IPv4 and IPv6 addresses, both sets
-of descriptors may be included in the same Link NLRI. The link identifiers are 
-described in table 5 of <xref target="RFC7752"/>.
+  Link NLRI is advertised with local and remote node descriptors as described 
+  above and unique link identifiers dependent on the addressing. For IPv4 links, the 
+  links local IPv4 (TLV 259) and remote IPv4 (TLV 260) addresses will be used. 
+  For IPv6 links, the local IPv6 (TLV 261) and remote IPv6 (TLV 262) addresses
+  will be used. For unnumbered links, the link local/remote identifiers (TLV 258)
+  will be used. For links supporting having both IPv4 and IPv6 addresses, both sets
+  of descriptors may be included in the same Link NLRI. The link identifiers are 
+  described in table 5 of <xref target="RFC7752"/>.
 </t>
 <t>
 The link IGP metric attribute TLV (TLV 1095) as well as any others required for non-SPF 
@@ -484,7 +484,7 @@ the setting of the metric is beyond the scope of this document.
 </section>
 <section title="BGP-LS Attribute Sequence-Number TLV">
 <t>
-A new BGP-LS Attribute TLV to BGP-LS NLRI types is defined to assure the most
+A BGP-LS Attribute TLV type is added to BGP-LS NLRI types to assure the most
 recent version of a given NLRI is used in the SPF computation. 
 The TBD TLV type will be defined by IANA. The new BGP-LS
 Attribute TLV will contain an 8 octet sequence number. The usage of the Sequence Number TLV
@@ -544,12 +544,12 @@ also known as a Path vector algorithm.
 </t>
 <t>
 The SPF based Decision process replaces the BGP Bestpath Decision process described in 
-<xref target="RFC4271"/>. This process starts with selecting only those Node NLRI whose 
+<xref target="RFC4271"/>. This process starts with selecting only those Node NLRIs whose 
 SPF capability TLV matches with the local BGP speaker's SPF capability TLV value. 
 Since Link-State NLRI always contains the local descriptor 
 <xref target="RFC7752"/>, it will only 
 be originated by a single BGP speaker in the BGP routing domain. 
-These selected Node NLRI and their Link/Prefix NLRI are used to build a directed
+These selected Node NLRIs and their Link/Prefix NLRIs are used to build a directed
 graph during the SPF computation. The best paths for BGP prefixes
 are installed as a result of the SPF process. 
 </t>

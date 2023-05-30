@@ -470,7 +470,7 @@ when, and only when, they appear in all capitals, as shown here.</t>
 <t>
   The NLRI and conprising TLVs MUST be processed as specified in
   section 5.1 <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>. TLVs specified as
-  mandatory in <xref target="I-D.ietf-idr-rfc7752bis" format="default"/> are 
+  mandatory in <xref target="I-D.ietf-idr-rfc7752bis" format="default"/> are
   considered mandatory for the BGP-LS-SPF SAFI as
   well. If a mandatory TLV is not specified, the NLRI is not used in the
   BGP SPF route calculation. All the other TLVs are considered as an optional TLVs.
@@ -1233,7 +1233,7 @@ SPF Status Values: 0 - Reserved
 <t>
   While the BGP-LS-SPF address family and the BGP unicast address families may install routes
   into the same device routing tables, they operate independently (i.e., "Ships-in-the-Night" mode).
-  There is no implicit route redistribution between the BGP-LS-SPF address family and the BGP 
+  There is no implicit route redistribution between the BGP-LS-SPF address family and the BGP
   unicast address families.
 </t>
 <t>
@@ -1613,8 +1613,8 @@ and <xref target="prefix-status-tlv"/></td>
 <name>SPF Algorithm Consistency</name>
 <t>
   Within a BGP SPF Routing Domain, all routers MUST use the same SPF algorithm
-  (refer to <xref target="node-spf-cap-tlv"/>). This is the responsibility of the 
-  administration for the routing domain. 
+  (refer to <xref target="node-spf-cap-tlv"/>). This is the responsibility of the
+  administration for the routing domain.
 </t>
 </section>
 <section anchor="link-metric-config" numbered="true" toc="default">
@@ -1627,7 +1627,7 @@ and <xref target="prefix-status-tlv"/></td>
   <t>
     Algorithms such as setting the metric inversely to the link speed as
     supported in some IGP implementations MAY be supported. However, the
-    details of how the metric is computed are beyond the scope of this document. 
+    details of how the metric is computed are beyond the scope of this document.
   </t>
   <t>
    Within a BGP SPF Routing Domain, the IGP metrics for all advertised links SHOULD be configured or
