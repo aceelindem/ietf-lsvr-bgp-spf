@@ -1560,24 +1560,37 @@ and <xref target="prefix-status-tlv"/></td>
     IANA is requested to create the "BGP-LS-SPF Node NLRI Attribute SPF Status TLV Status" Registry
     for status values. The allocation of the unsigned 8-bit status are defined in the table below:
   </t>
-  <figure>
-    <name>BGP-LS-SPF Node NLRI Attribute SPF Status TLV Status Registry Assignments</name>
-    <artwork name="" type="" align="left" alt=""><![CDATA[
-    +-------------+-----------------------------------+
-    | Range       | Assignment Policy                 |
-    +-------------+-----------------------------------+
-    | 0           | Reserved (Not to be assigned)     |
-    |             |                                   |
-    | 1           | Node unreachable with respect to  |
-    |             | BGP SPF                           |
-    | 2           | Node does not support transit     |
-    |             | with respect to BGP SPF           |
-    | 3-254       | Unassigned (IETF Review)          |
-    |             |                                   |
-    | 255         | Reserved (Not to be assigned)     |
-    +-----------+-------------------------------------+
-    ]]></artwork>
-</figure>
+<table anchor="tab.iana-node-status" align="center">
+   <name>BGP-LS-SPF Node NLRI Attribute SPF Status TLV Status Registry Assignments</name>
+   <thead>
+     <tr>
+       <th align="left">Range</th>
+       <th align="left">Assignment Policy</th>
+      </tr>
+     </thead>
+    <tbody>
+     <tr>
+       <td align="left">0</td>
+       <td align="left">Reserved (Not to be assigned)</td>
+     </tr>
+     <tr>
+       <td align="left">1</td>
+       <td align="left">Node unreachable with respect to BGP SPF</td>
+     </tr>
+     <tr>
+       <td align="left">2</td>
+       <td align="left">Node does not supprot transit traffic with respect to BGP SPF</td>
+     </tr>
+     <tr>
+       <td align="left">3-254</td>
+       <td align="left">Unassigned (IETF Review)</td>
+     </tr>
+     <tr>
+       <td align="left">255</td>
+       <td align="left">Reserved (Not to be assigned)</td>
+     </tr>
+   </tbody>
+</table>
 </section>
 <section numbered="true" toc="default">
   <name>BGP-LS-SPF Link NLRI Attribute SPF Status TLV Status Registry</name>
@@ -1585,22 +1598,33 @@ and <xref target="prefix-status-tlv"/></td>
     IANA is requested to create the "BGP-LS-SPF Link NLRI Attribute SPF Status TLV Status" Registry
     for status values. The allocation of the unsigned 8-bit status are defined in the table below:
   </t>
-  <figure>
-    <name>BGP-LS-SPF Link NLRI Attribute SPF Status TLV Status Registry Assignments</name>
-    <artwork name="" type="" align="left" alt=""><![CDATA[
-    +-------------+-----------------------------------+
-    | Range       | Assignment Policy                 |
-    +-------------+-----------------------------------+
-    | 0           | Reserved (Not to be assigned)     |
-    |             |                                   |
-    | 1           | Link unreachable with respect to  |
-    |             | BGP SPF                           |
-    | 2-254       | Unassigned (IETF Review)          |
-    |             |                                   |
-    | 255         | Reserved (Not to be assigned)     |
-    +-----------+-------------------------------------+
-    ]]></artwork>
-</figure>
+<table anchor="tab.iana-link-status" align="center">
+   <name>BGP-LS-SPF Link NLRI Attribute SPF Status TLV Status Registry Assignments</name>
+   <thead>
+     <tr>
+       <th align="left">Range</th>
+       <th align="left">Assignment Policy</th>
+      </tr>
+     </thead>
+    <tbody>
+     <tr>
+       <td align="left">0</td>
+       <td align="left">Reserved (Not to be assigned)</td>
+     </tr>
+     <tr>
+       <td align="left">1</td>
+       <td align="left">Link unreachable with respect to BGP SPF</td>
+     </tr>
+     <tr>
+       <td align="left">3-254</td>
+       <td align="left">Unassigned (IETF Review)</td>
+     </tr>
+     <tr>
+       <td align="left">255</td>
+       <td align="left">Reserved (Not to be assigned)</td>
+     </tr>
+   </tbody>
+</table>
 </section>
 <section numbered="true" toc="default">
   <name>BGP-LS-SPF Prefix NLRI Attribute SPF Status TLV Status Registry</name>
@@ -1608,22 +1632,33 @@ and <xref target="prefix-status-tlv"/></td>
     IANA is requested to create the "BGP-LS-SPF Prefix NLRI Attribute SPF Status TLV Status" Registry
     for status values. The allocation of the unsigned 8-bit status are defined in the table below:
   </t>
-  <figure>
-    <name>BGP-LS-SPF Prefix NLRI Attribute SPF Status TLV Status Registry Assignments</name>
-    <artwork name="" type="" align="left" alt=""><![CDATA[
-    +-------------+-----------------------------------+
-    | Range       | Assignment Policy                 |
-    +-------------+-----------------------------------+
-    | 0           | Reserved (Not to be assigned)     |
-    |             |                                   |
-    | 1           | Prefix unreachable with respect   |
-    |             | to BGP SPF                        |
-    | 2-254       | Unassigned (IETF Review)          |
-    |             |                                   |
-    | 255         | Reserved (Not to be assigned)     |
-    +-----------+-------------------------------------+
-    ]]></artwork>
-</figure>
+<table anchor="tab.iana-prefix-status" align="center">
+   <name>BGP-LS-SPF Prefix NLRI Attribute SPF Status TLV Status Registry Assignments</name>
+   <thead>
+     <tr>
+       <th align="left">Range</th>
+       <th align="left">Assignment Policy</th>
+      </tr>
+     </thead>
+    <tbody>
+     <tr>
+       <td align="left">0</td>
+       <td align="left">Reserved (Not to be assigned)</td>
+     </tr>
+     <tr>
+       <td align="left">1</td>
+       <td align="left">Prefix unreachable with respect to BGP SPF</td>
+     </tr>
+     <tr>
+       <td align="left">3-254</td>
+       <td align="left">Unassigned (IETF Review)</td>
+     </tr>
+     <tr>
+       <td align="left">255</td>
+       <td align="left">Reserved (Not to be assigned)</td>
+     </tr>
+   </tbody>
+</table>
 </section>
 </section>
 <section anchor="Security" numbered="true" toc="default">
