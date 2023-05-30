@@ -725,7 +725,7 @@ SPF Status Values: 0 - Reserved
   <t>
     The BGP-LS-SPF Node Attribute SPF Status TLV, Link Attribute SPF Status TLV,
     and Prefix Attribute SPF Status TLV use the same TLV Type (1184). This implies
-    that a BGP Update cannot contain multiple NLRI with differing status.
+    that a BGP Update cannot contain multiple NLRI.
     If the BGP-LS-SPF Status TLV is advertised and the advertised value is not defined,
     then the SPF Status TLV is ignored
     and not used in SPF computation but is still advertised to other BGP SPF speakers.
@@ -781,7 +781,7 @@ SPF Status Values: 0 - Reserved
     <t>
       The BGP-LS-SPF Node Attribute SPF Status TLV, Link Attribute SPF Status TLV,
       and Prefix Attribute SPF Status TLV use the same TLV Type (1184). This implies
-      that a BGP Update cannot contain multiple NLRI with differing status.
+      that a BGP Update cannot contain multiple NLRI.
       If the BGP-LS-SPF Status TLV is advertised and the advertised value is not defined,
       then the SPF Status TLV is ignored
       and not used in SPF computation but is still advertised to other BGP SPF speakers.
