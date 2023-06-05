@@ -395,7 +395,7 @@ Fixed.
         assuming there will really be 3 registries -- or one with different
         columns...
 
-Revisit
+Added registries.
 
 
 
@@ -577,7 +577,9 @@ Changed to "MUST".
         TLV.  On the other, there's a section later on which covers some of
         the other TLVs.  Please be consistent.
 
-Revisit.
+This has been shortened. However, the authors feel that semantic checks specific
+to a TLV are best with that TLV while error handling in general is addressed
+in a separate section. 
 
 
         [minor] s/Like OSPF [RFC2328], a cost is associated with the output
@@ -814,7 +816,7 @@ Fixed.
         needed.  Also, the requirement can cause confusion as rfc4760 doesn't
         specify what to set the value to.
 
-Revisit
+Removed.
 
 
 
@@ -1436,9 +1438,16 @@ I changed this one to a MUST if the BGP-LS-SPF Link NLRI has been advertised.
         that BGP SPF is a link state protocol, I would expect the link up/down
         notifications to happen immediately.
 
-        The text above also doesn't mention when the Link NLRI should be withdrawn.
+Please suggest text.
 
-Revisit.
+         The text above also doesn't mention when the Link NLRI should be withdrawn.
+
+Upon expiration of the LinkStatusDown timer.
+
+                   The configurable  LinkStatusDownAdvertise timer controls the
+                   interval that the BGP-LS-LINK NLRI is advertised with SPF
+                   Status indicating the link is down prior to withdrawal.
+
 
 
         [?] Just wondering...  Does using the Status TLV vs withdrawing the
