@@ -33,7 +33,7 @@ most I-Ds might want to use.
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-24"
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-25"
      ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" tocInclude="true"
      tocDepth="4" symRefs="true" sortRefs="true" version="3" consensus="true">
   <!-- xml2rfc v2v3 conversion 3.12.1 -->
@@ -1465,36 +1465,6 @@ Attribute) been verified as per <xref target="RFC7606" format="default"/>?
 its sub-TLVs in the BGP-LS Attribute valid?
 </li>
 </ol>
-<t>
-  When the detected error allows for the router to skip the malformed
-  BGP-LS Attribute and continue processing of the rest of the update
-  message (e.g., when the BGP-LS Attribute length and the total Path
-  Attribute Length are correct but some TLV/sub-TLV length within the
-  BGP-LS Attribute is invalid), then it MUST handle such malformed BGP-
-  LS Attribute as 'Attribute Discard'.  In other cases, when the error
-  in the BGP-LS Attribute encoding results in the inability to process
-  the BGP update message, then the handling is the same as described
-  above for malformed NLRI.
-</t>
-<t>
-  Note that the 'Attribute Discard' action results in the loss of all
-  TLVs in the BGP-LS Attribute and not the removal of a specific
-  malformed TLV.  The removal of specific malformed TLVs may give a
-  wrong indication to a BGP SPF speaker that the specific information
-  is being deleted or is not available.
-</t>
-<t>
-  When a BGP SPF speaker receives an update message with Link-State NLRI(s)
-  in the MP_REACH_NLRI but without the BGP-LS-SPF Attribute, it is most
-  likely an indication that a BGP SPF speaker preceding it has performed
-  the 'Attribute Discard' fault handling.  An implementation SHOULD
-  preserve and propagate the Link-State NLRIs in such an update message
-  so that the BGP SPF speaker can detect the loss of link-state
-  information for that object and not assume its deletion/withdrawal.
-  This also makes it possible for a network operator to trace back to
-  the BGP SPF speaker which actually detected a problem with the BGP-LS
-  Attribute.
-</t>
 <t>
   An implementation SHOULD log an error for further analysis for problems
   detected during syntax validation.
