@@ -33,7 +33,7 @@ most I-Ds might want to use.
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-23"
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-24"
      ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" tocInclude="true"
      tocDepth="4" symRefs="true" sortRefs="true" version="3" consensus="true">
   <!-- xml2rfc v2v3 conversion 3.12.1 -->
@@ -620,6 +620,12 @@ SPF Status Values: 0 - Reserved
   BGP SPF speakers. However, a BGP SPF speaker MUST NOT use the Status TLV in its SPF computation.
   An implementation MAY log this condition for further analysis.
 </t>
+<t>
+  If the BGP-LS-SPF Status TLV is advertised and the advertised value is not defined,
+  then the SPF Status TLV is ignored
+  and not used in SPF computation but is still advertised to other BGP SPF speakers.
+  An implementation MAY log an error for further analysis.
+</t>
 </section>
 </section>
 <section anchor="Link-NLRI" numbered="true" toc="default">
@@ -726,10 +732,6 @@ SPF Status Values: 0 - Reserved
     The BGP-LS-SPF Node Attribute SPF Status TLV, Link Attribute SPF Status TLV,
     and Prefix Attribute SPF Status TLV use the same TLV Type (1184). This implies
     that a BGP Update cannot contain multiple NLRI.
-    If the BGP-LS-SPF Status TLV is advertised and the advertised value is not defined,
-    then the SPF Status TLV is ignored
-    and not used in SPF computation but is still advertised to other BGP SPF speakers.
-    An implementation MAY log an error for further analysis.
   </t>
   <t>
     If a BGP SPF speaker received the Link NLRI but
@@ -740,6 +742,12 @@ SPF Status Values: 0 - Reserved
     that is undefined SHOULD be advertised to other
     BGP SPF speakers. However, a BGP SPF speaker MUST NOT use the Status TLV in its SPF computation.
     An implementation MAY log this information for further analysis.
+  </t>
+  <t>
+    If the BGP-LS-SPF Status TLV is advertised and the advertised value is not defined,
+    then the SPF Status TLV is ignored
+    and not used in SPF computation but is still advertised to other BGP SPF speakers.
+    An implementation MAY log an error for further analysis.
   </t>
 </section>
 </section>
@@ -782,10 +790,6 @@ SPF Status Values: 0 - Reserved
       The BGP-LS-SPF Node Attribute SPF Status TLV, Link Attribute SPF Status TLV,
       and Prefix Attribute SPF Status TLV use the same TLV Type (1184). This implies
       that a BGP Update cannot contain multiple NLRI.
-      If the BGP-LS-SPF Status TLV is advertised and the advertised value is not defined,
-      then the SPF Status TLV is ignored
-      and not used in SPF computation but is still advertised to other BGP SPF speakers.
-      An implementation MAY log an error for further analysis.
     </t>
     <t>
       If a BGP SPF speaker received the Prefix NLRI but
@@ -1322,50 +1326,73 @@ SPF Status Values: 0 - Reserved
 <t>
   When a BGP SPF speaker receives a BGP Update containing a malformed Node NLRI
   SPF Status TLV in the BGP-LS Attribute <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>,
-  it MUST ignore the received TLV and MUST NOT pass it to other BGP peers as
-  specified in <xref target="RFC7606" format="default"/>.
-  When discarding an associated Node NLRI with a malformed TLV,
-  a BGP SPF speaker SHOULD log an error for further analysis.
+  the corresponding Node NLRI is
+  considered as malformed and MUST be handled as 'Treat-as-withdraw'. An
+  implementation SHOULD log an error (subject to rate-limiting) for further analysis.
 </t>
 <t>
   When a BGP SPF speaker receives a BGP Update containing a malformed Link NLRI
   SPF Status TLV in the BGP-LS Attribute <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>,
-  it MUST ignore the received TLV and MUST NOT pass it to other BGP peers as
-  specified in <xref target="RFC7606" format="default"/>.
-  When discarding an associated Link NLRI with a malformed TLV,
-  a BGP SPF speaker SHOULD log an error for further analysis.
+  the corresponding Link NLRI is
+  considered as malformed and MUST be handled as 'Treat-as-withdraw'. An
+  implementation SHOULD log an error (subject to rate-limiting) for further analysis.
 </t>
 <t>
   When a BGP SPF speaker receives a BGP Update containing a malformed Prefix NLRI
   SPF Status TLV in the BGP-LS Attribute <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>,
-  it MUST ignore the received TLV and MUST NOT pass it to other BGP peers as
-  specified in <xref target="RFC7606" format="default"/>.
-  When discarding an associated Prefix NLRI with a malformed TLV,
-  a BGP SPF speaker SHOULD log an error for further analysis.
+  the corresponding Prefix NLRI is
+  considered as malformed and MUST be handled as 'Treat-as-withdraw'. An
+  implementation SHOULD log an error (subject to rate-limiting) for further analysis.
 </t>
 <t>
   When a BGP SPF speaker receives a BGP Update containing a malformed SPF Capability TLV
   in the Node NLRI BGP-LS Attribute <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>,
-  it MUST ignore the received TLV and the Node NLRI and MUST NOT pass it to other
-  BGP peers as specified in <xref target="RFC7606" format="default"/>.
-  When discarding a Node NLRI with a malformed TLV, a BGP SPF speaker SHOULD log an error for
-  further analysis.
+  the corresponding Node NLRI is
+  considered as malformed and MUST be handled as 'Treat-as-withdraw'. An
+  implementation SHOULD log an error (subject to rate-limiting) for further analysis.
 </t>
 <t>
   When a BGP SPF speaker receives a BGP Update containing a malformed IPv4 Prefix-Length TLV
   in the Link NLRI BGP-LS Attribute <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>,
-  it MUST ignore the received TLV and the Node NLRI and MUST NOT pass it to other
-  BGP peers as specified in <xref target="RFC7606" format="default"/>. The corresponding Link NLRI is
+  the corresponding Link NLRI is
   considered as malformed and MUST be handled as 'Treat-as-withdraw'. An
-  implementation MAY log an error for further analysis.
+  implementation SHOULD log an error (subject to rate-limiting) for further analysis.
 </t>
 <t>
   When a BGP SPF speaker receives a BGP Update containing a malformed IPv6 Prefix-Length TLV
   in the Link NLRI BGP-LS Attribute <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>,
-  it MUST ignore the received TLV and the Node NLRI and MUST NOT pass it to other BGP peers as
-  specified in <xref target="RFC7606" format="default"/>. The corresponding Link NLRI is
-  considered as malformed and MUST be handled as 'Treat-as-withdraw'. An
-  implementation MAY log an error for further analysis.
+  the corresponding Link NLRI is considered as malformed and MUST be handled as 'Treat-as-withdraw'. An
+  implementation SHOULD log an error (subject to rate-limiting) for further analysis.
+</t>
+<t>
+  When a BGP SPF speaker receives a BGP Update containing any malformed BGP-LS Attribute TE and IGP Metric TLV,
+  then the spreaker MUST drop an entire BGP-LS Attribute. In such cases, a BGP SPF speaker MUST NOT
+  pass the dropped BGP-LS Attribute to other BGP peers as specified in
+  <xref target="RFC7606" format="default"/>. The corresponding NLRI is considered as a malformed
+  and MUST be handled as 'Treat-as-withdraw'. An
+  implementation SHOULD log an error (subject to rate-limiting) for further analysis.
+</t>
+<t>
+  The BGP-LS Attribute consists of Node attribute TLVs, Link attribute TLVs, and the Prefix
+  attribute TLVs. Node attribute TLVs and their error handling rules are either defined in
+  <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>
+  or derived from xref target="RFC5305" format="default"/> and xref target="RFC6119" format="default"/>.
+</t>
+<t>
+  Link Attribute TLVs and their error handling rules are either defined in
+  <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>
+  or derived from xref target="RFC5305" format="default"/> and xref target="RFC6119" format="default"/>.
+</t>
+<t>
+  Prefix Attribute TLVs and their error handling rules are either defined in
+  <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>
+  or derived from xref target="RFC5130" format="default"/> and xref target="RFC2328" format="default"/>.
+</t>
+<t>
+  When a BGP SPF speaker receives a BGP Update that does not contain any BGP-LS Attribute,
+  then a BGP SPF speaker MUST consider the corresponding NLRI as a malformed
+  and MUST handle it as 'Treat-as-withdraw' <xref target="RFC7606" format="default"/>. An
+  implementation SHOULD log and error (subject to rate-limiting) for further analysis.
 </t>
 </section>
 <section anchor="bgpspf-nlri" numbered="true" toc="default">
@@ -1405,19 +1432,6 @@ SPF Status Values: 0 - Reserved
   in <xref target="BGP-LS-TLV" format="default"/>?
 </li>
 </ol>
-<t>
-  When the error determined allows for the router to skip the malformed
-  NLRI(s) and continue processing of the rest of the update message
-  (e.g., when the TLV ordering rule is violated), then it MUST handle
-  such malformed NLRIs as 'Treat-as-withdraw'.  In other cases, where
-  the error in the NLRI encoding results in the inability to process
-  the BGP update message (e.g., length related encoding errors), then
-  the router SHOULD handle such malformed NLRIs as 'AFI/SAFI disable'
-  when other AFI/SAFI besides BGP-LS are being advertised over the same
-  session.  Alternately, the router MUST perform 'session reset' when
-  the session is only being used for BGP-LS-SPF or when its 'AFI/SAFI
-  disable' action is not possible.
-</t>
 <t>
   In common deployment scenarios, the unicast routes installed during
   BGP-LS-SPF AFI/SAFI SPF computation serve as the
@@ -1484,14 +1498,6 @@ its sub-TLVs in the BGP-LS Attribute valid?
 <t>
   An implementation SHOULD log an error for further analysis for problems
   detected during syntax validation.
-</t>
-<t>
-  When a BGP SPF speaker receives a BGP Update containing a malformed IGP metric TLV
-  in the Link NLRI BGP-LS Attribute <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>,
-  it MUST ignore the received TLV and the Link NLRI and MUST NOT pass it to other
-  BGP peers as specified in <xref target="RFC7606" format="default"/>.
-  When discarding a Link NLRI with a malformed TLV, a BGP SPF speaker SHOULD log
-  an error for further analysis.
 </t>
 </section>
 </section>
