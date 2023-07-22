@@ -1603,6 +1603,10 @@ cornercase.
         The rfc7607 approach to "discarding" NLRI is to treat-as-withdraw.  Is
         this the action?
 
+We have changed the processing to treat all malformed NLRI as withdrawal. 
+
+
+
 
         ** These comments apply to all the other entries in this section
         related to the Status TLV.
@@ -1652,6 +1656,9 @@ cornercase.
         What do you mean?  The text above requires the Node NLRI to be
         ignored, but it also hints at discarding it.  In my mind discarding is
         different than ignoring...  ??
+
+
+It should be consistent now. 
 
 
 
@@ -1707,6 +1714,9 @@ cornercase.
         below.
 
 
+This is now the intent.
+
+
 
         1313	   A Link-State NLRI MUST NOT be considered as malformed or invalid
         1314	   based on the inclusion/exclusion of TLVs or contents of the TLV
@@ -1758,6 +1768,8 @@ cornercase.
         BGP-LS nodes are not checking the contents of the updates.  But that
         approach doesn't work with BGP SPF.
 
+Removed.
+
 
 
         1351	7.3.  Processing of BGP-LS Attribute
@@ -1794,6 +1806,9 @@ cornercase.
         on route selection and installation.
 
 
+Removed.
+
+
 
         1380	   Note that the 'Attribute Discard' action results in the loss of all
         1381	   TLVs in the BGP-LS Attribute and not the removal of a specific
@@ -1802,6 +1817,8 @@ cornercase.
         1384	   is being deleted or is not available.
 
         [] ...but that is what is written above.
+
+Removed.
 
 
 
@@ -1821,6 +1838,7 @@ cornercase.
 
         [major] Nothing in this paragraph applies.
 
+Removed.
 
 
         ...
@@ -1831,6 +1849,9 @@ cornercase.
         1405	   SPF speaker SHOULD log an error for further analysis.
 
         [] This paragraph seems to be out of place.  Also, see the comments in §7.1.
+
+
+Removed.
 
 
 
@@ -1916,6 +1937,8 @@ Fixed although I don't see the requirement to keep the IANA information the same
 
         [nit] Move the rfc6811/rfc8205 considerations into their own paragraph.
 
+Fixed.
+
 
         [major] "[RFC6811] and [RFC8205] are somewhat constricted as they are
         meant to apply for inter-domain BGP where multiple BGP Routing
@@ -1933,7 +1956,7 @@ Fixed although I don't see the requirement to keep the IANA information the same
 
         Maybe declaring its use out of scope is better.
 
-
+Fine.
 
         1454	   The BGP SPF protocol and the BGP-LS-SPF SAFI inherit the encoding
         1455	   from BGP-LS [I-D.ietf-idr-rfc7752bis], and consequently, inherit the
@@ -1950,6 +1973,8 @@ Fixed although I don't see the requirement to keep the IANA information the same
         No.  Except for the first paragraph (already considered above), the
         security considerations in rfc7752bis are all about the BGP Consumer
         -- which doesn't exist in the BGP SPF model.
+
+Limited inheritance to encoding. 
 
 
 
@@ -1983,6 +2008,8 @@ Fixed although I don't see the requirement to keep the IANA information the same
         Also, "SHOUD be aware" is in normative conflict with the requirement
         of not accepting updates.
 
+Removed.
+
 
 
         1471	   In order to mitigate the risk of peering with BGP speakers
@@ -2003,6 +2030,8 @@ Fixed although I don't see the requirement to keep the IANA information the same
         rfc4271 already required authentication, so there's no need to
         re-specify here.  Also, the language above is not the same as in (and
         some would say in normative conflict with) rfc4271.
+
+This is the best way to avoid a BGP-LS SPF peer from being compromised.
 
 
         [minor] There are several other vectors: advertise an incorrect SPF
@@ -2039,7 +2068,7 @@ Fixed although I don't see the requirement to keep the IANA information the same
         In this case, it looks like this sentence is just part of the example
         and a statement of fact.  s/SHOULD/should
 
-
+Fixed. 
 
         ...
         1513	10.1.3.  backoff-config
@@ -2055,3 +2084,5 @@ Fixed although I don't see the requirement to keep the IANA information the same
 
         [major] Even if consistent with rfc8405, the second sentence is not
         needed because it re-specifies what rfc8405 already specifies.
+
+I can't see how this is a major comment. There is no harm in mentioning it here. 

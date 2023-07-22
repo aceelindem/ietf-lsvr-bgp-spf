@@ -33,7 +33,7 @@ most I-Ds might want to use.
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-25"
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-26"
      ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" tocInclude="true"
      tocDepth="4" symRefs="true" sortRefs="true" version="3" consensus="true">
   <!-- xml2rfc v2v3 conversion 3.12.1 -->
@@ -1647,11 +1647,14 @@ and <xref target="prefix-status-tlv"/></td>
   The analysis of the security issues for BGP mentioned
   in <xref target="RFC4272" format="default"/> and <xref target="RFC6952" format="default"/> also applies to this document.
   The analysis of Generic Threats to Routing Protocols done in <xref target="RFC4593" format="default"/>
-  is also worth noting. As the modifications described in this document for
+  is also worth noting.
+</t>
+<t>
+  As the modifications described in this document for
   BGP SPF apply to IPv4 Unicast and IPv6 Unicast as underlay SAFIs in a single
   BGP SPF Routing Domain, the BGP
   security solutions described in <xref target="RFC6811" format="default"/> and <xref target="RFC8205" format="default"/>
-  are somewhat constricted as they are meant to apply for inter-domain BGP where
+  are somewhat out of scope as they are meant to apply for inter-domain BGP where
   multiple BGP Routing Domains are typically involved. The BGP-LS-SPF SAFI NLRI described
   in this document are typically advertised between EBGP or IBGP speakers under a single
   administrative domain.
@@ -1659,20 +1662,13 @@ and <xref target="prefix-status-tlv"/></td>
 <t>
   The BGP SPF protocol and the BGP-LS-SPF SAFI inherit the encoding from BGP-LS
   <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>, and consequently, inherit
-  the security considerations for BGP-LS. Additionally, given that the BGP SPF protocol
+  the security considerations for BGP-LS associated with encoding. Additionally,
+  given that the BGP SPF protocol
   is used to install IPv4 and IPv6 Unicast routes, the BGP SPF protocol is vulnerable to
   attacks to the routing control plane that aren't applicable to BGP-LS. One notable
   Denial-of-Service attack, would be to include malformed BGP attributes in a replicated
   BGP Update, causing the receiving peer to treat the advertised BGP-LS-SPF to a
   withdrawal <xref target="RFC7606" format="default"/>.
-</t>
-<t>
-  In the context of the BGP peering associated with this document, a
-  BGP speaker MUST NOT accept updates from a peer that is not within
-  any administrative control of an operator. That is, a participating
-  BGP speaker SHOULD be aware of the nature of its peering relationships.
-  Such protection can be achieved by manual configuration of peers
-  at the BGP speaker.
 </t>
 <t>
   In order to mitigate the risk of peering with BGP speakers masquerading
@@ -1683,7 +1679,8 @@ and <xref target="prefix-status-tlv"/></td>
   in misrouting, repeating origination of NLRI, and/or excessive SPF
   calculations. When a BGP speaker detects that its self-originated NLRI
   is being originated by another BGP speaker, an appropriate error should
-  be logged so that the operator can take corrective action.
+  be logged so that the operator can take corrective action. This exposure is similar
+  to other BGP AFI/SAFIs. 
 </t>
 </section>
 <section anchor="Management" numbered="true" toc="default">
@@ -1723,7 +1720,7 @@ and <xref target="prefix-status-tlv"/></td>
    defaulted consistently. For example, if a default metric is used for one router's links, then a
    similar metric should be used for all router's links. Similarly, if the link metric is
    derived from using the inverse of the link bandwidth on one router, then this SHOULD
-   be done for all routers and the same reference bandwidth should be used to derive the
+   be done for all routers and the same reference bandwidth SHOULD be used to derive the
    inversely proportional metric. Failure to do so will result in incorrect routing based on
    link metric.
  </t>
