@@ -33,7 +33,7 @@ most I-Ds might want to use.
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-26"
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-27"
      ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" tocInclude="true"
      tocDepth="4" symRefs="true" sortRefs="true" version="3" consensus="true">
   <!-- xml2rfc v2v3 conversion 3.12.1 -->
@@ -58,7 +58,7 @@ most I-Ds might want to use.
       </address>
     </author>
     <author fullname="Acee Lindem" initials="A" surname="Lindem">
-      <organization></organization>
+      <organization>LabN Consulting, LLC</organization>
       <address>
         <postal>
           <street>301 Midenhall Way</street>
@@ -110,7 +110,7 @@ most I-Ds might want to use.
       <t>
         Many Massively Scaled Data Centers (MSDCs) have converged on simplified
         layer 3 routing. Furthermore, requirements for operational simplicity
-        have led many of these MSDCs to converge on BGP as their single routing
+        has led many of these MSDCs to converge on BGP as their single routing
         protocol for both their fabric routing and their Data Center Interconnect
         (DCI) routing. This document describes extensions to BGP to use BGP
         Link-State distribution and the Shortest Path First (SPF) algorithm.
@@ -126,7 +126,7 @@ most I-Ds might want to use.
       <t>
         Many Massively Scaled Data Centers (MSDCs) have converged on simplified
         layer 3 routing. Furthermore, requirements for operational simplicity
-        have led many of these MSDCs to converge on BGP <xref target="RFC4271" format="default"/>
+        has led many of these MSDCs to converge on BGP <xref target="RFC4271" format="default"/>
         as their single routing protocol for both their fabric routing and
         their Data Center Interconnect (DCI) routing <xref target="RFC7938" format="default"/>.
         This document describes an alternative solution which leverages
@@ -135,7 +135,7 @@ most I-Ds might want to use.
       </t>
       <t>This document leverages both the BGP protocol <xref target="RFC4271" format="default"/> and
       the BGP-LS <xref target="I-D.ietf-idr-rfc7752bis" format="default"/> protocols. The relationship, as well as
-      the scope of changes are described respectively in <xref target="BGP-base" format="default"/>
+      the scope of changes is described respectively in <xref target="BGP-base" format="default"/>
       and <xref target="BGP-LS" format="default"/>. The modifications to <xref target="RFC4271" format="default"/>
       for BGP SPF described herein only apply to IPv4 and IPv6 as underlay unicast
       Subsequent Address Families Identifiers (SAFIs).
@@ -250,7 +250,7 @@ most I-Ds might want to use.
             The document begins with sections defining the precise relationship that BGP SPF has
             with both the base BGP protocol <xref target="RFC4271" format="default"/>  (<xref target="BGP-base" format="default"/>) and the
             BGP Link-State (BGP-LS)  extensions <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>
-            (<xref target="BGP-LS" format="default"/>). The BGP peering models, as well as the
+            (<xref target="BGP-LS" format="default"/>). The BGP peering models, as well as
             their respective trade-offs are then discussed in
             <xref target="peering-models" format="default"/>. The remaining sections, which make up the bulk of the
             document, define the protocol enhancements necessary to support BGP SPF including BGP-LS Extensions
@@ -265,7 +265,7 @@ most I-Ds might want to use.
             NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED",
             "MAY", and "OPTIONAL" in this document are to be interpreted as
             described in BCP 14 <xref target="RFC2119" format="default"/> <xref target="RFC8174" format="default"/>
-when, and only when, they appear in all capitals, as shown here.</t>
+            when, and only when, they appear in all capitals, as shown here.</t>
 </section>
 </section>
 <!-- for Introductions section -->
@@ -468,7 +468,7 @@ when, and only when, they appear in all capitals, as shown here.</t>
   and prefixes comprising IGP link-state information.
 </t>
 <t>
-  The NLRI and conprising TLVs MUST be processed as specified in
+  The NLRI and comprising TLVs MUST be processed as specified in
   section 5.1 <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>. TLVs specified as
   mandatory in <xref target="I-D.ietf-idr-rfc7752bis" format="default"/> are
   considered mandatory for the BGP-LS-SPF SAFI as
@@ -695,7 +695,7 @@ SPF Status Values: 0 - Reserved
   <t>
     The maximum prefix-length is 32 bits for an IPv4 Prefix-Length TLV and  128 bits
     for an IPv6 Prefix-Length TLV. A prefix-length field
-    indicating a larger value is in error and the the corresponding Link NLRI is
+    indicating a larger value is in error and the corresponding Link NLRI is
     considered as malformed and MUST be handled as 'Treat-as-withdraw'
     <xref target="RFC7606" format="default"/>. An implementation MAY log. An
     implementation MAY log an error for further analysis.
@@ -1141,8 +1141,8 @@ SPF Status Values: 0 - Reserved
   Local-RIB using the same rules as were used for Prefix NLRI in the previous steps. Optionally,
   in deployments where BGP-SPF routers have limited routing table capacity, installation of
   these subnets can be suppressed. Suppression has an operational impact as the
-  IPv4/IPv6 link prefixes and link endpoint addresses are not be reachable resulting in tools such
-  as traceroute will display addresses that are not reachable.
+  IPv4/IPv6 link prefixes and link endpoint addresses are not reachable, resulting in tools such
+  as traceroute displaying addresses that are not reachable.
 </li>
 <li>
   If the Current-Node NLRI attributes includes the SPF Status TLV
@@ -1366,7 +1366,7 @@ SPF Status Values: 0 - Reserved
 </t>
 <t>
   When a BGP SPF speaker receives a BGP Update containing any malformed BGP-LS Attribute TE and IGP Metric TLV,
-  then the spreaker MUST drop an entire BGP-LS Attribute. In such cases, a BGP SPF speaker MUST NOT
+  then the speaker MUST drop an entire BGP-LS Attribute. In such cases, a BGP SPF speaker MUST NOT
   pass the dropped BGP-LS Attribute to other BGP peers as specified in
   <xref target="RFC7606" format="default"/>. The corresponding NLRI is considered as a malformed
   and MUST be handled as 'Treat-as-withdraw'. An
@@ -1376,17 +1376,29 @@ SPF Status Values: 0 - Reserved
   The BGP-LS Attribute consists of Node attribute TLVs, Link attribute TLVs, and the Prefix
   attribute TLVs. Node attribute TLVs and their error handling rules are either defined in
   <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>
-  or derived from xref target="RFC5305" format="default"/> and xref target="RFC6119" format="default"/>.
+  or derived from <xref target="RFC5305" format="default"/> and <xref target="RFC6119" format="default"/>.
 </t>
 <t>
+  Node Descriptor TLVs and their error handling rules are either defined in
+  section 5.2.1 of <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>.
+  Node Attribute TLVs and their error handling rules are either defined in
+  <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>
+  or derived from <xref target="RFC5305" format="default"/> and <xref target="RFC6119" format="default"/>.
+</t>
+<t>
+  Link Descriptor TLVs and their error handling rules are either defined in
+  section 5.2.2 of <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>.
   Link Attribute TLVs and their error handling rules are either defined in
   <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>
-  or derived from xref target="RFC5305" format="default"/> and xref target="RFC6119" format="default"/>.
+  or derived from <xref target="RFC5305" format="default"/> and <xref target="RFC6119" format="default"/>.
 </t>
 <t>
+  Prefix Descriptor TLVs and their error handling rules are either defined in
+  section 5.2.3 of <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>.
   Prefix Attribute TLVs and their error handling rules are either defined in
   <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>
-  or derived from xref target="RFC5130" format="default"/> and xref target="RFC2328" format="default"/>.
+  or derived from <xref target="RFC5130" format="default"/> and
+  <xref target="RFC2328" format="default"/>.
 </t>
 <t>
   When a BGP SPF speaker receives a BGP Update that does not contain any BGP-LS Attribute,
@@ -1470,6 +1482,15 @@ its sub-TLVs in the BGP-LS Attribute valid?
   detected during syntax validation.
 </t>
 </section>
+<section anchor="bgp-sync" numbered="true" toc="default">
+  <name>BGP-LS-SPF Link State NLRI Database Synchronization</name>
+  <t>
+    While uncommon, there may be situations where the LSNDBs of two
+    BGP-LS-SPF speakers lose synchronization. In these situations, the BGP
+    session MUST be reset. The mechanisms to detect loss of synchronization
+    are beyond the scope of this document.
+  </t>
+</section>  
 </section>
 <section anchor="IANA" numbered="true" toc="default">
 <name>IANA Considerations</name>
@@ -1555,7 +1576,7 @@ and <xref target="prefix-status-tlv"/></td>
      </tr>
      <tr>
        <td align="left">2</td>
-       <td align="left">Node does not supprot transit traffic with respect to BGP SPF</td>
+       <td align="left">Node does not support transit traffic with respect to BGP SPF</td>
      </tr>
      <tr>
        <td align="left">3-254</td>
@@ -1728,8 +1749,8 @@ and <xref target="prefix-status-tlv"/></td>
 <section anchor="Adjacency-EoR-Required" numbered="true" toc="default">
 <name>Adjacency End-of-RIB (EOR) Marker Requirement</name>
 <t>
-  Depending of the peering model, topology, and convergence requirements, an
-  End-of-RIB (EoR) Marker marker <xref target="RFC4724"/> for the BGP-LS-SPF
+  Depending on the peering model, topology, and convergence requirements, an
+  End-of-RIB (EoR) Marker <xref target="RFC4724"/> for the BGP-LS-SPF
   SAFI MAY be required from the peer prior to advertising a BGP-LS Link NLRI
   for the peer. If configuration is supported, this SHOULD be configurable at
   the BGP SPF instance level and SHOULD be configured consistently throughout
@@ -1757,7 +1778,7 @@ and <xref target="prefix-status-tlv"/></td>
   SHOULD also maintain counters for the total number of SPF computations and the
   total number of SPF triggering events. Additionally, to troubleshoot SPF scheduling and
   back-off <xref target="RFC8405" format="default"/>, the current SPF back-off state, remaining time-to-learn,
-  remaining holddown, last trigger event time, last SPF time, and next SPF time should be
+  remaining hold-down interval, last trigger event time, last SPF time, and next SPF time should be
   available.
 </t>
 </section>
@@ -1835,11 +1856,15 @@ cy098d@att.com
 <references><name>References</name>
 <references><name>Normative References</name>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.2119.xml"/>
+<xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.2328.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.4271.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.4760.xml"/>
+<xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.5305.xml"/>
+<xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.5130.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.5925.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.6793.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.6811.xml"/>
+<xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.6119.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.7606.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8174.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8205.xml"/>
