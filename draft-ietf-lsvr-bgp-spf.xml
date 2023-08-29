@@ -33,7 +33,7 @@ most I-Ds might want to use.
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-27"
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-28"
      ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" tocInclude="true"
      tocDepth="4" symRefs="true" sortRefs="true" version="3" consensus="true">
   <!-- xml2rfc v2v3 conversion 3.12.1 -->
@@ -130,7 +130,8 @@ most I-Ds might want to use.
         as their single routing protocol for both their fabric routing and
         their Data Center Interconnect (DCI) routing <xref target="RFC7938" format="default"/>.
         This document describes an alternative solution which leverages
-        BGP-LS <xref target="I-D.ietf-idr-rfc7752bis" format="default"/> and the Shortest Path First algorithm used by
+        BGP-LS <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>
+        and the Shortest Path First algorithm used by
         Internal Gateway Protocols (IGPs).
       </t>
       <t>This document leverages both the BGP protocol <xref target="RFC4271" format="default"/> and
@@ -278,19 +279,16 @@ most I-Ds might want to use.
   protocol <xref target="RFC4271" format="default"/>  without change. This includes the BGP protocol
   Finite State Machine, BGP messages and their encodings, processing of BGP messages,
   BGP attributes and path attributes, BGP NLRI encodings, and any error handling
-  defined in the <xref target="RFC4271" format="default"/> and
+  defined in <xref target="RFC4271" format="default"/> and
   <xref target="RFC7606" format="default"/>.
 </t>
 <t>
   Due to the changes to the decision
   process, there are mechanisms and encodings that are no longer applicable.
-  While not necessarily required for computation, the ORIGIN, AS_PATH,
-  LOCAL_PREF (IBGP), and NEXT_HOP path attributes are mandatory
-  <xref target="RFC4271" format="default"/> and are validated. Unless explicitly
-  specified in the context of BGP SPF, all other
-  attributes SHOULD NOT be advertised. However, if they are
-  advertised, they will be accepted, validated, and propagated
-  consistent with the BGP protocol.
+  Unless explicitly specified in the context of BGP SPF, all optional path
+  attributes SHOULD NOT be advertised.  If received, all path attributes MUST
+  be accepted, validated, and propagated consistent with the BGP protocol
+  <xref target="RFC4271"/>, even if not needed by BGP SPF.
 </t>
 <t>
   Section 9 of <xref target="RFC4271" format="default"/> defines the decision process that
@@ -344,10 +342,6 @@ most I-Ds might want to use.
   extensions is not precluded and is, in fact, expected. However, the
   details are beyond the scope of this document and may be specified
   in future documents.
-</t>
-<t>
-  The rules for setting the NLRI next-hop path attribute for the BGP-LS-SPF SAFI follow
-  the BGP-LS SAFI as specified in section 3.4 of <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>.
 </t>
 </section>
 <!-- for BGP-LS relationship section -->
@@ -472,7 +466,7 @@ most I-Ds might want to use.
   section 5.1 <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>. TLVs specified as
   mandatory in <xref target="I-D.ietf-idr-rfc7752bis" format="default"/> are
   considered mandatory for the BGP-LS-SPF SAFI as
-  well. If a mandatory TLV is not specified, the NLRI is not used in the
+  well. If a mandatory TLV is not present, the NLRI MUST NOT be used in the
   BGP SPF route calculation. All the other TLVs are considered as an optional TLVs.
 </t>
 </section>
@@ -485,6 +479,11 @@ most I-Ds might want to use.
   and used for the BGP-LS attribute of the BGP-LS-SPF SAFI. This attribute is an optional,
   non-transitive BGP attribute that is used to carry link, node, and prefix
   properties and attributes. The BGP-LS attribute is a set of TLVs.
+</t>
+<t>
+  All the TLVs defined for the BGP-LS Attribute  <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>
+  are applicable and can be used with the BGP-LS-SPF SAFI to carry link, node, and prefix
+  properties and attributes.
 </t>
 <t>
   The BGP-LS attribute may potentially grow large in size depending on
@@ -527,11 +526,11 @@ most I-Ds might want to use.
   this MUST be the direct protocol (4). Node or Link NLRI with a Protocol-ID other than
   the direct protocol is considered malformed. For Prefix NLRI, the specified Protocol-ID
   MUST be the origin of the prefix. The local and remote node descriptors for all NLRI MUST
-  include the BGP Identifier (TLV 516) and the AS Number (TLV 512)
+  include the BGP Identifier (TLV 516) <xref target="RFC9086"/>
+  and the AS Number (TLV 512)
   <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>.
   The BGP Confederation Member (TLV 517)
-  <xref target="I-D.ietf-idr-rfc7752bis" format="default"/> is currently not
-  applicable.
+  <xref target="RFC9086" format="default"/> is currently not applicable.
 </t>
 <section numbered="true" toc="default">
 <name>Node NLRI Usage</name>
@@ -616,15 +615,9 @@ SPF Status Values: 0 - Reserved
   considered as implicitly withdrawn and the update is propagated to other BGP SPF speakers.
   A BGP SPF speaker receiving a BGP Update containing
   a SPF Status TLV in the BGP-LS attribute <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>
-  with a value that is undefined values SHOULD be advertised to other
+  with a value that is undefined SHOULD be advertised to other
   BGP SPF speakers. However, a BGP SPF speaker MUST NOT use the Status TLV in its SPF computation.
   An implementation MAY log this condition for further analysis.
-</t>
-<t>
-  If the BGP-LS-SPF Status TLV is advertised and the advertised value is not defined,
-  then the SPF Status TLV is ignored
-  and not used in SPF computation but is still advertised to other BGP SPF speakers.
-  An implementation MAY log an error for further analysis.
 </t>
 </section>
 </section>
@@ -639,9 +632,23 @@ SPF Status Values: 0 - Reserved
   dependent on the IP addressing. For IPv4 links, the
   link's local IPv4 (TLV 259) and remote IPv4 (TLV 260) addresses are used.
   For IPv6 links, the local IPv6 (TLV 261) and remote IPv6 (TLV 262) addresses
-  are used. For unnumbered links, the link local/remote identifiers (TLV 258)
-  are used. For links supporting having both IPv4 and IPv6 addresses, both sets
-  of descriptors MAY be included in the same Link NLRI. The link descriptors are
+  are used.  For links supporting having both IPv4 and IPv6 addresses, both sets
+  of descriptors MAY be included in the same Link NLRI.
+</t>
+<t>
+  For unnumbered links, the Link Local/Remote Identifiers (TLV 258)
+  are used. The Link Remote Identifier isn't normally exchanged in BGP
+  and discovering the Link Remote Identifier is beyond the scope of this
+  document. If the Link Remote Identifier is unknown, a Link Remote Identifier of
+  0 MUST be advertised. When 0 is advertised and there parallel unnumbered links
+  between a pair of BGP SPF speakers, there may be transient intervals where the
+  BGP SPF speakers don't agree on which of the parallel unnumbered links are operational.
+  For this reason, it is RECOMMENDED that the Link Remote Identifiers be
+  known (e.g., discovered using alternate mechanisms or configured) in the presence
+  of parallel unnumbered links.
+</t>
+<t>
+  The link descriptors are
   described in table 4 of <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>.
 </t>
 <t>
@@ -697,7 +704,7 @@ SPF Status Values: 0 - Reserved
     for an IPv6 Prefix-Length TLV. A prefix-length field
     indicating a larger value is in error and the corresponding Link NLRI is
     considered as malformed and MUST be handled as 'Treat-as-withdraw'
-    <xref target="RFC7606" format="default"/>. An implementation MAY log. An
+    <xref target="RFC7606" format="default"/>. An
     implementation MAY log an error for further analysis.
   </t>
 </section>
@@ -742,12 +749,6 @@ SPF Status Values: 0 - Reserved
     that is undefined SHOULD be advertised to other
     BGP SPF speakers. However, a BGP SPF speaker MUST NOT use the Status TLV in its SPF computation.
     An implementation MAY log this information for further analysis.
-  </t>
-  <t>
-    If the BGP-LS-SPF Status TLV is advertised and the advertised value is not defined,
-    then the SPF Status TLV is ignored
-    and not used in SPF computation but is still advertised to other BGP SPF speakers.
-    An implementation MAY log an error for further analysis.
   </t>
 </section>
 </section>
@@ -854,20 +855,10 @@ SPF Status Values: 0 - Reserved
 <section anchor="NEXT-HOP" numbered="true" toc="default">
   <name>NEXT_HOP Attribute Manipulation</name>
   <t>
+    The rules for setting the next hop information for the BGP-LS-SPF SAFI
+    follow the specification in section 5.5 of <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>.
     All BGP peers that support SPF extensions will locally compute the Local-RIB Next-Hop
-    as a result of the SPF process. Consequently, the Next Hop Attribute is always ignored on
-    receipt. The Next Hop address MUST be encoded as described in <xref target="RFC4760" format="default"/>.
-    BGP SPF speakers MUST interpret the Next Hop address of
-    MP_REACH_NLRI attribute as an IPv4 address whenever the length of the Next Hop address
-    is 4 octets, and as a IPv6 address whenever the length of the Next Hop address is
-    16 octets.
-  </t>
-  <t>
-    <xref target="RFC4760" format="default"/> modifies the rules of NEXT_HOP attribute whenever the
-    multiprotocol extensions for BGP-4 are enabled. BGP SPF speakers MUST set the
-    NEXT_HOP attribute according to the rules specified in <xref target="RFC4760" format="default"/> as
-    the BGP-LS-SPF routing information is carried within the multiprotocol extensions for
-    BGP-4.
+    as a result of the SPF process.
   </t>
 </section>
 </section>
@@ -1114,7 +1105,7 @@ SPF Status Values: 0 - Reserved
     ECMP routes that can be supported.  The setting or identification
     of any limitations is outside the scope if this document.
     Nonetheless, step 4 (below) includes a set of recommendations in
-    case such as limit is encountered.  Weighted Unequal Cost Multi-Path
+    case such a limit is encountered.  Weighted Unequal Cost Multi-Path
     routes are out of scope as well.
   </li>
 </ul>
@@ -1169,7 +1160,9 @@ SPF Status Values: 0 - Reserved
   common IPv4 or IPv6 subnet. For unnumbered links to match, the Current Link's
   Local Identifier MUST match the Remote Node Link's Remote Identifier and the
   Current Link's Remote Identifier MUST the Remote Node Link's Local
-  Identifier (see TLV 258 <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>).
+  Identifier. Since the Link Remote Identifier may not be known, a value of 0
+  is considered a wildcard and will match any Link Local Identifier
+  (see TLV 258 <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>).
   If these conditions are satisfied for one of the Remote-Node's links,
   the bi-directional connectivity
   check succeeds and the Remote-Node may be processed further. The
@@ -1365,18 +1358,19 @@ SPF Status Values: 0 - Reserved
   implementation SHOULD log an error (subject to rate-limiting) for further analysis.
 </t>
 <t>
-  When a BGP SPF speaker receives a BGP Update containing any malformed BGP-LS Attribute TE and IGP Metric TLV,
-  then the speaker MUST drop an entire BGP-LS Attribute. In such cases, a BGP SPF speaker MUST NOT
-  pass the dropped BGP-LS Attribute to other BGP peers as specified in
-  <xref target="RFC7606" format="default"/>. The corresponding NLRI is considered as a malformed
-  and MUST be handled as 'Treat-as-withdraw'. An
-  implementation SHOULD log an error (subject to rate-limiting) for further analysis.
+  When a BGP SPF speaker receives a BGP Update containing any malformed BGP-LS Attribute TE
+  and IGP Metric TLV, the corresponding NLRI is considered as a malformed
+  and MUST be handled as 'Treat-as-withdraw' <xref target="RFC7606" format="default"/>. 
+  An implementation SHOULD log an error (subject to rate-limiting) for further analysis.
 </t>
 <t>
   The BGP-LS Attribute consists of Node attribute TLVs, Link attribute TLVs, and the Prefix
   attribute TLVs. Node attribute TLVs and their error handling rules are either defined in
   <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>
   or derived from <xref target="RFC5305" format="default"/> and <xref target="RFC6119" format="default"/>.
+  If a BGP SPF speaker receives a BGP-LS Attribute which is considered malformed based on these
+  error handling rules, then it MUST consider the received NLRI as a malformed and the receiving
+  BGP SPF speaker MUST handle such malformed NLRI as 'Treat-as-withdraw' <xref target="RFC7606" format="default"/>.
 </t>
 <t>
   Node Descriptor TLVs and their error handling rules are either defined in
@@ -1401,6 +1395,12 @@ SPF Status Values: 0 - Reserved
   <xref target="RFC2328" format="default"/>.
 </t>
 <t>
+  If a BGP SPF speaker receives NLRI with a Node Descriptor TLV, Link Descriptor TLV, or Prefix Descriptor 
+  TLV that is considered malformed based on error handling rules defined in the above references, 
+  then it MUST consider the received NLRI as a malformed and the receiving
+  BGP SPF speaker MUST handle such malformed NLRI as 'Treat-as-withdraw' <xref target="RFC7606" format="default"/>.
+</t>
+<t>
   When a BGP SPF speaker receives a BGP Update that does not contain any BGP-LS Attribute,
   then a BGP SPF speaker MUST consider the corresponding NLRI as a malformed
   and MUST handle it as 'Treat-as-withdraw' <xref target="RFC7606" format="default"/>. An
@@ -1410,40 +1410,11 @@ SPF Status Values: 0 - Reserved
 <section anchor="bgpspf-nlri" numbered="true" toc="default">
 <name>Processing of BGP-LS-SPF NLRIs</name>
 <t>
-  A Link-State NLRI MUST NOT be considered as malformed or invalid
-  based on the inclusion/exclusion of TLVs or contents of the TLV
-  fields (i.e., semantic errors), as described in <xref target="SAFI" format="default"/>
-  and <xref target="BGP-LS-TLV" format="default"/>.
+  A BGP-LS-SPF Speaker MUST perform the syntactic validation checks of the
+  BGP-LS-SPF NLRI listed in Section 8.2.2 of
+  <xref target="I-D.ietf-idr-rfc7752bis" format="default"/> to determine if
+  it is malformed.
 </t>
-<t>
-  A BGP-LS-SPF Speaker MUST perform the following syntactic validation of
-  the BGP-LS-SPF NLRI to determine if it is malformed.
-</t>
-<ol spacing="normal" type="1"><li>
-  Does the sum of all TLVs found in the BGP MP_REACH_NLRI attribute
-  correspond to the BGP MP_REACH_NLRI length?
-</li>
-<li>
-  Does the sum of all TLVs found in the BGP MP_UNREACH_NLRI
-  attribute correspond to the BGP MP_UNREACH_NLRI length?
-</li>
-<li>
-  Does the sum of all TLVs found in a BGP-LS-SPF NLRI correspond to
-  the Total NLRI Length field of all its Descriptors?
-</li>
-<li>
-  When an NLRI TLV is recognized, is the length of the TLV and
-  its sub-TLVs valid?
-</li>
-<li>
-  Has the syntactic correctness of the NLRI fields been verified as
-  per <xref target="RFC7606" format="default"/>?
-</li>
-<li>
-  Has the rule regarding ordering of TLVs been followed as described
-  in <xref target="BGP-LS-TLV" format="default"/>?
-</li>
-</ol>
 <t>
   In common deployment scenarios, the unicast routes installed during
   BGP-LS-SPF AFI/SAFI SPF computation serve as the
@@ -1458,26 +1429,12 @@ SPF Status Values: 0 - Reserved
 <section anchor="bgpspf-attribute" numbered="true" toc="default">
 <name>Processing of BGP-LS Attribute</name>
 <t>
-  A BGP-LS Attribute MUST NOT be considered as malformed or invalid
-  based on the inclusion/exclusion of TLVs or contents of the TLV
-  fields (i.e., semantic errors), as described in <xref target="SAFI" format="default"/>
-  and <xref target="BGP-LS-TLV" format="default"/>.
-</t>
-<t>
-  A BGP-LS-SPF Speaker MUST perform the following syntactic validation of
-  the BGP-LS Attribute to determine if it is malformed.
-</t>
-<ol spacing="normal" type="1"><li>  Does the sum of all TLVs found in the BGP-LS-SPF Attribute correspond
-to the BGP-LS Attribute length?
-</li>
-<li>  Has the syntactic correctness of the Attributes (including BGP-LS
-Attribute) been verified as per <xref target="RFC7606" format="default"/>?
-</li>
-<li>  Is the length of each TLV and, when the TLV is recognized then,
-its sub-TLVs in the BGP-LS Attribute valid?
-</li>
-</ol>
-<t>
+ A BGP-LS-SPF Speaker MUST perform the syntactic validation checks of the
+ BGP-LS Attribute listed in Section 8.2.2 of
+ <xref target="I-D.ietf-idr-rfc7752bis" format="default"/> to determine if
+ it is malformed.
+ </t>
+ <t>
   An implementation SHOULD log an error for further analysis for problems
   detected during syntax validation.
 </t>
@@ -1525,28 +1482,28 @@ its sub-TLVs in the BGP-LS Attribute valid?
   <tr>
 <td align="left">1180</td>
 <td align="left">SPF Capability</td>
-<td align="left"><xref target="node-spf-cap-tlv"/></td>
+<td align="left">RFCXXXX ([this document]), <xref target="node-spf-cap-tlv"/></td>
 </tr>
 <tr>
 <td align="left">1184</td>
 <td align="left">SPF Status</td>
-<td align="left"><xref target="node-status-tlv"/>, <xref target="link-status-tlv"/>,
-and <xref target="prefix-status-tlv"/></td>
+<td align="left"><xref target="node-status-tlv"/>, RFCXXXX ([this document]),
+<xref target="link-status-tlv"/> and <xref target="prefix-status-tlv"/></td>
 </tr>
 <tr>
 <td align="left">1182</td>
 <td align="left">IPv4 Link Prefix Length</td>
-<td align="left"><xref target="prefix-length-tlvs"/></td>
+<td align="left">RFCXXXX ([this document]), <xref target="prefix-length-tlvs"/></td>
 </tr>
 <tr>
 <td align="left">1183</td>
 <td align="left">IPv6 Link Prefix Length</td>
-<td align="left"><xref target="prefix-length-tlvs"/></td>
+<td align="left">RFCXXXX ([this document]), <xref target="prefix-length-tlvs"/></td>
 </tr>
 <tr>
 <td align="left">1181</td>
 <td align="left">Sequence Number</td>
-<td align="left"><xref target="sequence-number-tlv"/></td>
+<td align="left">RFCXXXX ([this document]), <xref target="sequence-number-tlv"/></td>
 </tr>
 </tbody>
 </table>
@@ -1554,21 +1511,23 @@ and <xref target="prefix-status-tlv"/></td>
 <section numbered="true" toc="default">
   <name>BGP-LS-SPF Node NLRI Attribute SPF Status TLV Status Registry</name>
   <t>
-    IANA is requested to create the "BGP-LS-SPF Node NLRI Attribute SPF Status TLV Status" Registry
-    for status values. The allocation of the unsigned 8-bit status are defined in the table below:
+    IANA is requested to create the "BGP-LS-SPF Node NLRI Attribute SPF
+    Status TLV Status" Registry for status values in a new BGP SPF group.
+    Initial values for this registry are provided below.  Future assignments
+    are to be made using the IETF Review registration policy <xref target="RFC8126"/>.
   </t>
 <table anchor="tab.iana-node-status" align="center">
    <name>BGP-LS-SPF Node NLRI Attribute SPF Status TLV Status Registry Assignments</name>
    <thead>
      <tr>
-       <th align="left">Range</th>
-       <th align="left">Assignment Policy</th>
+       <th align="left">Values</th>
+       <th align="left">Description</th>
       </tr>
      </thead>
     <tbody>
      <tr>
        <td align="left">0</td>
-       <td align="left">Reserved (Not to be assigned)</td>
+       <td align="left">Reserved</td>
      </tr>
      <tr>
        <td align="left">1</td>
@@ -1580,11 +1539,11 @@ and <xref target="prefix-status-tlv"/></td>
      </tr>
      <tr>
        <td align="left">3-254</td>
-       <td align="left">Unassigned (IETF Review)</td>
+       <td align="left">Unassigned</td>
      </tr>
      <tr>
        <td align="left">255</td>
-       <td align="left">Reserved (Not to be assigned)</td>
+       <td align="left">Reserved</td>
      </tr>
    </tbody>
 </table>
@@ -1592,21 +1551,23 @@ and <xref target="prefix-status-tlv"/></td>
 <section numbered="true" toc="default">
   <name>BGP-LS-SPF Link NLRI Attribute SPF Status TLV Status Registry</name>
   <t>
-    IANA is requested to create the "BGP-LS-SPF Link NLRI Attribute SPF Status TLV Status" Registry
-    for status values. The allocation of the unsigned 8-bit status are defined in the table below:
+    IANA is requested to create the "BGP-LS-SPF Link NLRI Attribute SPF
+    Status TLV Status" Registry for status values in a new BGP SPF group.
+    Initial values for this registry are provided below.  Future assignments
+    are to be made using the IETF Review registration policy <xref target="RFC8126"/>.
   </t>
 <table anchor="tab.iana-link-status" align="center">
    <name>BGP-LS-SPF Link NLRI Attribute SPF Status TLV Status Registry Assignments</name>
    <thead>
      <tr>
-       <th align="left">Range</th>
-       <th align="left">Assignment Policy</th>
+       <th align="left">Value</th>
+       <th align="left">Description</th>
       </tr>
      </thead>
     <tbody>
      <tr>
        <td align="left">0</td>
-       <td align="left">Reserved (Not to be assigned)</td>
+       <td align="left">Reserved</td>
      </tr>
      <tr>
        <td align="left">1</td>
@@ -1614,11 +1575,11 @@ and <xref target="prefix-status-tlv"/></td>
      </tr>
      <tr>
        <td align="left">3-254</td>
-       <td align="left">Unassigned (IETF Review)</td>
+       <td align="left">Unassigned</td>
      </tr>
      <tr>
        <td align="left">255</td>
-       <td align="left">Reserved (Not to be assigned)</td>
+       <td align="left">Reserved</td>
      </tr>
    </tbody>
 </table>
@@ -1626,21 +1587,23 @@ and <xref target="prefix-status-tlv"/></td>
 <section numbered="true" toc="default">
   <name>BGP-LS-SPF Prefix NLRI Attribute SPF Status TLV Status Registry</name>
   <t>
-    IANA is requested to create the "BGP-LS-SPF Prefix NLRI Attribute SPF Status TLV Status" Registry
-    for status values. The allocation of the unsigned 8-bit status are defined in the table below:
+    IANA is requested to create the "BGP-LS-SPF Prefix NLRI Attribute SPF
+    Status TLV Status" Registry for status values in a new BGP SPF group.
+    Initial values for this registry are provided below.  Future assignments
+    are to be made using the IETF Review registration policy <xref target="RFC8126"/>.
   </t>
 <table anchor="tab.iana-prefix-status" align="center">
    <name>BGP-LS-SPF Prefix NLRI Attribute SPF Status TLV Status Registry Assignments</name>
    <thead>
      <tr>
-       <th align="left">Range</th>
-       <th align="left">Assignment Policy</th>
+       <th align="left">Value</th>
+       <th align="left">Description</th>
       </tr>
      </thead>
     <tbody>
      <tr>
        <td align="left">0</td>
-       <td align="left">Reserved (Not to be assigned)</td>
+       <td align="left">Reserved</td>
      </tr>
      <tr>
        <td align="left">1</td>
@@ -1648,11 +1611,11 @@ and <xref target="prefix-status-tlv"/></td>
      </tr>
      <tr>
        <td align="left">3-254</td>
-       <td align="left">Unassigned (IETF Review)</td>
+       <td align="left">Unassigned</td>
      </tr>
      <tr>
        <td align="left">255</td>
-       <td align="left">Reserved (Not to be assigned)</td>
+       <td align="left">Reserved</td>
      </tr>
    </tbody>
 </table>
@@ -1675,7 +1638,7 @@ and <xref target="prefix-status-tlv"/></td>
   BGP SPF apply to IPv4 Unicast and IPv6 Unicast as underlay SAFIs in a single
   BGP SPF Routing Domain, the BGP
   security solutions described in <xref target="RFC6811" format="default"/> and <xref target="RFC8205" format="default"/>
-  are somewhat out of scope as they are meant to apply for inter-domain BGP where
+  are out of scope as they are meant to apply for inter-domain BGP where
   multiple BGP Routing Domains are typically involved. The BGP-LS-SPF SAFI NLRI described
   in this document are typically advertised between EBGP or IBGP speakers under a single
   administrative domain.
@@ -1721,7 +1684,9 @@ and <xref target="prefix-status-tlv"/></td>
 <t>
   Within a BGP SPF Routing Domain, all routers MUST use the same SPF algorithm
   (refer to <xref target="node-spf-cap-tlv"/>). This is the responsibility of the
-  administration for the routing domain.
+  administrator for the routing domain. Misconfiguration of the SPF
+  algorithm (including omission) will result in the misconfigured routers not being
+  included in the BGP SPF routing topology and missing routes.
 </t>
 </section>
 <section anchor="link-metric-config" numbered="true" toc="default">
@@ -1866,11 +1831,13 @@ cy098d@att.com
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.6811.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.6119.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.7606.xml"/>
+<xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8126.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8174.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8205.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8405.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8654.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8665.xml"/>
+<xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.9086.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-idr-rfc7752bis.xml"/>
 </references>
 <references><name>Informational References</name>
