@@ -1736,6 +1736,14 @@ SPF Status Values: 0 - Reserved
    link metric.
  </t>
 </section>
+<section anchor="neighbor-config" numbered="true" toc="default">
+  <name>Unnumbered Link Configuration</name>
+  <t>
+    When parallel unnumbered links between BGP-SPF routers are included in the BGP SPF routing
+    domain and the Remote Link Identifiers aren't readily discovered, it is RECOMMENDED that these
+    the Remote Link Identifiers be configured so that precise NLRI Link matching can be done.
+  </t>
+</section>
 <section anchor="Adjacency-EoR-Required" numbered="true" toc="default">
 <name>Adjacency End-of-RIB (EOR) Marker Requirement</name>
 <t>
