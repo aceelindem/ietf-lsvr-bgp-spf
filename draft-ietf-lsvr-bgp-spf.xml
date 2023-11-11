@@ -386,10 +386,10 @@ most I-Ds might want to use.
   nodes but the sessions may be between loopback addresses (i.e.,
   two-hop sessions) and the direct connection
   discovery and liveliness detection for the interconnecting links are
-  independent of the BGP protocol.
-  For example, liveliness detection could be
-  done using the BFD protocol <xref target="RFC5880" format="default"/>. Precisely how discovery
-  and liveliness detection is accomplished is outside the scope of this document.
+  independent of the BGP protocol. However, the BFD protocol
+  <xref target="RFC5880" format="default"/>
+  is RECOMMENDED for liveliness detection. Usage of other liveliness connection mechanisms
+  is outside the scope of this document.
   Consequently, there is a single BGP session even if there are multiple
   direct connections between BGP SPF speakers. The BGP-LS-SPF Link NLRI is advertised
   as long as a BGP session has been established, the BGP-LS-SPF AFI/SAFI
@@ -1851,6 +1851,7 @@ cy098d@att.com
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.4760.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.5305.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.5130.xml"/>
+<xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.5880.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.5925.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.6793.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.6811.xml"/>
@@ -1871,7 +1872,6 @@ cy098d@att.com
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.4593.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.4724.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.5286.xml"/>
-<xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.5880.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.6952.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.7911.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.7938.xml"/>
