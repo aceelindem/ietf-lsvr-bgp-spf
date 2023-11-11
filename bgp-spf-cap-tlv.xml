@@ -1,0 +1,52 @@
+<section anchor="node-spf-cap-tlv" numbered="true" toc="default">
+<name>BGP-LS-SPF Node NLRI Attribute SPF Capability TLV</name>
+<t>
+  The SPF capability is an additional Node Attribute TLV.
+  This attribute TLV MUST be included with the
+  BGP-LS-SPF SAFI and SHOULD NOT be used for other SAFIs.
+  The TLV type is 1180. The Node
+  Attribute TLV contains a single-octet SPF algorithm as defined
+  in <xref target="RFC8665" format="default"/>.
+</t>
+<artwork align="left" name="" type="" alt=""><![CDATA[
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|              Type (1180)      |     Length - (1 Octet)        |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| SPF Algorithm |
++-+-+-+-+-+-+-+-+
+
+]]></artwork>
+<t>
+  The SPF Algorithm field is used to advertise the algorithm used by
+  the router to calculate the paths to other routers in the BGP SPF
+  routing domain.
+  The SPF algorithm inherits the values from the IGP Algorithm Types
+  registry <xref target="RFC8665" format="default"/>. Algorithm 0, (Shortest Path Algorithm (SPF)
+  based on link metric, is supported and described in <xref target="BGP-SPF" format="default"/>.
+  Support for other algorithm types is beyond the scope of this specification.
+</t>
+<t>
+  When computing the SPF for a given BGP routing domain, only BGP nodes
+  advertising the SPF capability TLV with same SPF algorithm
+  are included in the SPF computation as described in <xref target="BGP-SPF" format="default"/>.
+  An implementation MAY optionally
+  log detection of a BGP node that has either not advertised the SPF capability TLV
+  or is advertising the SPF capability TLV with an algorithm type other than 0.
+</t>
+</section>
+    This process starts with selecting only those Node NLRI whose
+    SPF capability TLV matches with the local BGP SPF speaker's SPF capability TLV value.
+<section anchor="spf-algo" numbered="true" toc="default">
+<name>SPF Algorithm Consistency</name>
+<t>
+  Within a BGP SPF Routing Domain, all routers MUST use the same SPF algorithm
+  (refer to <xref target="node-spf-cap-tlv"/>). This is the responsibility of the
+  administrator for the routing domain. Misconfiguration of the SPF
+  algorithm (including omission) will result in the misconfigured routers not being
+  included in the BGP SPF routing topology and missing routes.
+</t>
+</section>
+<xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8665.xml"/>
+

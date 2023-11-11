@@ -539,44 +539,6 @@ most I-Ds might want to use.
   The Node NLRI MUST be advertised unconditionally by all routers in
   the BGP SPF routing domain.
 </t>
-<section anchor="node-spf-cap-tlv" numbered="true" toc="default">
-<name>BGP-LS-SPF Node NLRI Attribute SPF Capability TLV</name>
-<t>
-  The SPF capability is an additional Node Attribute TLV.
-  This attribute TLV MUST be included with the
-  BGP-LS-SPF SAFI and SHOULD NOT be used for other SAFIs.
-  The TLV type is 1180. The Node
-  Attribute TLV contains a single-octet SPF algorithm as defined
-  in <xref target="RFC8665" format="default"/>.
-</t>
-<artwork align="left" name="" type="" alt=""><![CDATA[
- 0                   1                   2                   3
- 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|              Type (1180)      |     Length - (1 Octet)        |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-| SPF Algorithm |
-+-+-+-+-+-+-+-+-+
-
-]]></artwork>
-<t>
-  The SPF Algorithm field is used to advertise the algorithm used by
-  the router to calculate the paths to other routers in the BGP SPF
-  routing domain.
-  The SPF algorithm inherits the values from the IGP Algorithm Types
-  registry <xref target="RFC8665" format="default"/>. Algorithm 0, (Shortest Path Algorithm (SPF)
-  based on link metric, is supported and described in <xref target="BGP-SPF" format="default"/>.
-  Support for other algorithm types is beyond the scope of this specification.
-</t>
-<t>
-  When computing the SPF for a given BGP routing domain, only BGP nodes
-  advertising the SPF capability TLV with same SPF algorithm
-  are included in the SPF computation as described in <xref target="BGP-SPF" format="default"/>.
-  An implementation MAY optionally
-  log detection of a BGP node that has either not advertised the SPF capability TLV
-  or is advertising the SPF capability TLV with an algorithm type other than 0.
-</t>
-</section>
 <section anchor="node-status-tlv" numbered="true" toc="default">
 <name>BGP-LS-SPF Node NLRI Attribute SPF Status TLV</name>
 <t>
@@ -1488,9 +1450,9 @@ SPF Status Values: 0 - Reserved
 <section numbered="true" toc="default">
   <name>BGP-LS-SPF Assignments to BGP-LS NLRI and Attribute TLV Registry</name>
 <t>
-  IANA has assigned five TLVs for BGP-LS-SPF NLRI in the "BGP-LS NLRI and Attribute
+  IANA has assigned four TLVs for BGP-LS-SPF NLRI in the "BGP-LS NLRI and Attribute
   TLV" registry. 
-  These TLV types include the SPF capability TLV,
+  These TLV types include the
   Sequence Number TLV, IPv4 Link Prefix-Length TLV, IPv6 Link Prefix-Length TLV,
   and SPF Status TLV.
 </t>
@@ -1504,11 +1466,6 @@ SPF Status Values: 0 - Reserved
 </tr>
 </thead>
 <tbody>
-  <tr>
-<td align="left">1180</td>
-<td align="left">SPF Capability</td>
-<td align="left">RFCXXXX ([this document]), <xref target="node-spf-cap-tlv"/></td>
-</tr>
 <tr>
 <td align="left">1184</td>
 <td align="left">SPF Status</td>
@@ -1704,16 +1661,6 @@ SPF Status Values: 0 - Reserved
   allowing for consistent configuration.
 </t>
 </section>
-<section anchor="spf-algo" numbered="true" toc="default">
-<name>SPF Algorithm Consistency</name>
-<t>
-  Within a BGP SPF Routing Domain, all routers MUST use the same SPF algorithm
-  (refer to <xref target="node-spf-cap-tlv"/>). This is the responsibility of the
-  administrator for the routing domain. Misconfiguration of the SPF
-  algorithm (including omission) will result in the misconfigured routers not being
-  included in the BGP SPF routing topology and missing routes.
-</t>
-</section>
 <section anchor="link-metric-config" numbered="true" toc="default">
   <name>Link Metric Configuration</name>
   <t>
@@ -1870,7 +1817,6 @@ cy098d@att.com
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8205.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8405.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8654.xml"/>
-<xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8665.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.9086.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-idr-rfc7752bis.xml"/>
 </references>
