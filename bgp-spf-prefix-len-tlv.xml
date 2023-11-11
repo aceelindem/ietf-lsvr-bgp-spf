@@ -1,0 +1,67 @@
+<section anchor="prefix-length-tlvs" numbered="true" toc="default">
+  <name>BGP-LS-SPF Link NLRI Attribute Prefix-Length TLVs</name>
+  <t>
+    Two BGP-LS Attribute TLVs of the BGP-LS-SPF Link NLRI are defined to advertise the prefix length
+    associated with the IPv4 and IPv6 link prefixes derived from the link descriptor addresses.
+    The prefix length is used for the optional installation of prefixes corresponding to
+    Link NLRI as defined in <xref target="BGP-SPF" format="default"/>.
+  </t>
+  <artwork align="left" name="" type="" alt=""><![CDATA[
+   0                   1                   2                   3
+   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |IPv4 (1182) or IPv6 Type (1183)|          Length (1 Octet)     |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  | Prefix-Length |
+  +-+-+-+-+-+-+-+-+
+
+  Prefix-length - A one-octet length restricted to 1-32 for IPv4
+                  Link NLRI endpoint prefixes and 1-128 for IPv6
+                  Link NLRI endpoint prefixes.
+  ]]></artwork>
+  <t>
+    The Prefix-Length TLV is only relevant to Link NLRIs. When received with any NLRIs other
+    than Link NRLIs, the corresponding Link NLRI is considered as malformed and MUST be handled as
+    'Treat-as-withdraw' <xref target="RFC7606" format="default"/>. An implementation MAY log
+    an error for further analysis.
+  </t>
+  <t>
+    The maximum prefix-length is 32 bits for an IPv4 Prefix-Length TLV and  128 bits
+    for an IPv6 Prefix-Length TLV. A prefix-length field
+    indicating a larger value is an error and the corresponding Link NLRI is
+    considered as malformed and MUST be handled as 'Treat-as-withdraw'
+    <xref target="RFC7606" format="default"/>. An
+    implementation MAY log an error for further analysis.
+  </t>
+</section>
+<li>
+  The prefix(es) associated with the Current-Link are installed into the
+  Local-RIB using the same rules as were used for Prefix NLRI in the previous steps. Optionally,
+  in deployments where BGP-SPF routers have limited routing table capacity, installation of
+  these subnets can be suppressed. Suppression has an operational impact as the
+  IPv4/IPv6 link prefixes and link endpoint addresses are not reachable, resulting in tools such
+  as traceroute displaying addresses that are not reachable.
+</li>
+<t>
+  When a BGP SPF speaker receives a BGP Update containing a malformed IPv4 Prefix-Length TLV
+  in the Link NLRI BGP-LS Attribute <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>,
+  the corresponding Link NLRI is
+  considered as malformed and MUST be handled as 'Treat-as-withdraw'. An
+  implementation SHOULD log an error (subject to rate-limiting) for further analysis.
+</t>
+<t>
+  When a BGP SPF speaker receives a BGP Update containing a malformed IPv6 Prefix-Length TLV
+  in the Link NLRI BGP-LS Attribute <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>,
+  the corresponding Link NLRI is considered as malformed and MUST be handled as 'Treat-as-withdraw'. An
+  implementation SHOULD log an error (subject to rate-limiting) for further analysis.
+</t>
+<tr>
+<td align="left">1182</td>
+<td align="left">IPv4 Link Prefix Length</td>
+<td align="left">RFCXXXX ([this document]), <xref target="prefix-length-tlvs"/></td>
+</tr>
+<tr>
+<td align="left">1183</td>
+<td align="left">IPv6 Link Prefix Length</td>
+<td align="left">RFCXXXX ([this document]), <xref target="prefix-length-tlvs"/></td>
+</tr>
