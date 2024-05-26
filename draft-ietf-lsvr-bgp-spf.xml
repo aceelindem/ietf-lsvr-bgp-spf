@@ -33,7 +33,7 @@ most I-Ds might want to use.
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-28"
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-30"
      ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" tocInclude="true"
      tocDepth="4" symRefs="true" sortRefs="true" version="3" consensus="true">
   <!-- xml2rfc v2v3 conversion 3.12.1 -->
@@ -613,13 +613,14 @@ SPF Status Values: 0 - Reserved
 <t>
   The link descriptors are
   described in table 4 of <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>.
+  Additionally, an address family link descriptor is defined to determine whether an
+  unnumbered link can be used in the IPv4 SPF, the IPv6, or both (refer to section
+  <xref target="af-link-descriptor-tlv"/>).
 </t>
 <t>
   For a link to be used in SPF computation for a given address family,
-  i.e., IPv4 or IPv6, both routers connecting the link MUST have an address in the
-  same subnet for that address family. However, an IPv4 or IPv6 prefix associated
-  with the link MAY be installed without the corresponding address on the other
-  side of the link.
+  i.e., IPv4 or IPv6, both routers connecting the link MUST have matching addresses (i.e.,
+  interface addresses must match the neighbor addresses).
 </t>
 <t>
   The IGP metric attribute TLV (TLV 1095) MUST be advertised. If a BGP SPF speaker
@@ -635,6 +636,35 @@ SPF Status Values: 0 - Reserved
 <t>
   The usage of other link attribute TLVs is beyond the scope of this document.
 </t>
+<section anchor="af-link-descriptor-tlv" numbered="true" toc="default">
+  <name>BGP-LS Link NLRI Adddress Family Link Descriptor TLV</name>
+  <t>
+    For unnumberred links, the address family cannot be ascertained from the
+    endpoint link descriptors. Hence, the Address Family (AF) Link Descriptor SHOULD
+    be included with the Link Local/Remote Identifiers TLV so that the link can
+    be used in the respective address family SPF. If the Address Family Link
+    Descriptor is not present for an unnumbered link, the link will not be
+    used in the SPF computation for either address family. If the Address Family Link
+    Descriptor is present for a numbered link, the link descriptor
+    will be ignored.
+  </t>
+  <artwork align="left" name="" type="" alt=""><![CDATA[
+   0                   1                   2                   3
+   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  |   Type (266)                  |      Length (1 Octet)         |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  | Address Family|
+  +-+-+-+-+-+-+-+-+
+
+  Addres Family Values: 0 - Reserved
+                        1 - IPv4 SPF Computation
+                        2 - IPv6 SPF Computation
+                        3-254 - Undefined
+                        255 - Reserved
+
+  ]]></artwork>
+</section>
 <section anchor="link-status-tlv" numbered="true" toc="default">
   <name>BGP-LS-SPF Link NLRI Attribute SPF Status TLV</name>
   <t>
@@ -804,8 +834,7 @@ SPF Status Values: 0 - Reserved
   </t>
   <t>
     The SPF-based Decision process replaces the BGP Decision process described in
-    <xref target="RFC4271" format="default"/>. This process starts with selecting only those Node NLRI whose
-    SPF capability TLV matches with the local BGP SPF speaker's SPF capability TLV value.
+    <xref target="RFC4271" format="default"/>.
     Since Link-State NLRI always contains the local node descriptor as described in
     <xref target="NLRI-Use" format="default"/>, each NLRI is uniquely originated by a single
     BGP SPF speaker in the BGP SPF routing domain (the BGP node matching the NLRI's Node
@@ -1076,32 +1105,26 @@ SPF Status Values: 0 - Reserved
 <li>
   <t>
   All the Link NLRI corresponding the Remote-Node are searched for a Link
-  NLRI pointing to the Current-Node. Each Link NLRI is examined for Remote
-  Node Descriptors matching the Current-Node and Link Descriptors matching the
-  Current-Link.
+  NLRI pointing to the Current-Node. Each Remote-Node's Link NLRI (referred to as the
+  Remote-Link) is examined for Remote Node Descriptors matching the Current-Node and
+  Link Descriptors matching the Current-Link.
   </t>
   <ul spacing = "normal">
     <li>
-      For IPv4 numbered links to match during the IPv4 SPF computation, the Link
-      Descriptors MUST share a common IPv4 subnet. This implies that the Remote-Node
-      MUST have a Link NLRI with a remote-node descriptor corresponding to the current
-      node and a link descriptor address that is included in the IPv4 subnet for the
-      the Current-Link.
-    </li>
-    <li>
-      For IPv6 numbered links to match during the IPv6 SPF computation, the Link
-      Descriptors MUST share a common IPv6 subnet. This implies that the Remote-Node
-      MUST have a Link NLRI with a remote-node descriptor corresponding to the current
-      node and a link descriptor address that is included in the IPv6 subnet for the
-      the Current-Link.
+      For IPv4/IPv6 numbered Link Descriptors to match during the IPv4 SPF computation, the
+      Current-Link's IP4/IPv6 interface address link descriptor MUST match the Remote-Link
+      IPv4/IPv6 neighbor address link descriptor and the Current-Link's IPv4/IPv6 neighbor
+      address MUST match the Remode-Link's IPv4/IPv6 interface address.
     </li>
     <li>
       For unnumbered links to match during the IPv4 or IPv6 SPF computation,
-      the Current Link's Local Identifier MUST match the Remote Node Link's Remote Identifier and the
-      Current Link's Remote Identifier MUST the Remote Node Link's Local
-      Identifier. Since the Link Remote Identifier may not be known, a value of 0
-      is considered a wildcard and will match any Link Local Identifier
-      (see TLV 258 <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>).
+      Current-Link and Remote-Link's Address Family link descriptor must match
+      address family of the IPv4 or IPv6 SPF computation,
+      the Current--Link's Local Identifier MUST match the Remote-Link's Remote
+      Identifier, and the Current-Link's Remote Identifier MUST the Remote-Link's Local
+      Identifier. Since the Link's Remote Identifier may not be known, a value of 0
+      is considered a wildcard and will match any Current or Remote Link's Local
+      Identifier (see TLV 258 <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>).
     </li>
   </ul>
   <t>
@@ -1281,13 +1304,6 @@ SPF Status Values: 0 - Reserved
   implementation SHOULD log an error (subject to rate-limiting) for further analysis.
 </t>
 <t>
-  When a BGP SPF speaker receives a BGP Update containing a malformed SPF Capability TLV
-  in the Node NLRI BGP-LS Attribute <xref target="I-D.ietf-idr-rfc7752bis" format="default"/>,
-  the corresponding Node NLRI is
-  considered as malformed and MUST be handled as 'Treat-as-withdraw'. An
-  implementation SHOULD log an error (subject to rate-limiting) for further analysis.
-</t>
-<t>
   When a BGP SPF speaker receives a BGP Update containing any malformed BGP-LS Attribute TE
   and IGP Metric TLV, the corresponding NLRI is considered as malformed
   and MUST be handled as 'Treat-as-withdraw' <xref target="RFC7606" format="default"/>. 
@@ -1388,6 +1404,15 @@ SPF Status Values: 0 - Reserved
   Served range in the "Subsequent Address Family Identifiers (SAFI)
   Parameters" registry.  IANA is requested to update the registration
   to reference only to this document.
+</t>
+</section>
+<section numbered="true" toc="default">
+  <name>BGP-LS Address Family Link Descriptor</name>
+<t>
+  IANA is requested to assign the value TBD (266 suggested) to the BGP-LS
+  BGP-LS TLVs Registry for the BGP-LS Address Family Link Descriptor TLV
+  (refer to section  <xref target="af-link-descriptor-tlv"/>.
+
 </t>
 </section>
 <section numbered="true" toc="default">
