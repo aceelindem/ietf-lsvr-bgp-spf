@@ -33,7 +33,7 @@ most I-Ds might want to use.
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-32"
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-33"
      ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" tocInclude="true"
      tocDepth="4" symRefs="true" sortRefs="true" version="3" consensus="true">
   <!-- xml2rfc v2v3 conversion 3.12.1 -->
@@ -575,7 +575,7 @@ SPF Status Values: 0 - Reserved
 </t>
 <t>
   If a BGP SPF speaker received the Node NLRI but
-  the SPF Status TLV is not received, then any previously received information is
+  the SPF Status TLV is not received, then any previously received SPF status information is
   considered as implicitly withdrawn and the update is propagated to other BGP SPF speakers.
   A BGP SPF speaker receiving a BGP Update containing
   a SPF Status TLV in the BGP-LS attribute <xref target="RFC9552" format="default"/>
@@ -643,18 +643,23 @@ SPF Status Values: 0 - Reserved
   <t>
     For unnumberred links, the address family cannot be ascertained from the
     endpoint link descriptors. Hence, the Address Family (AF) Link Descriptor SHOULD
-    be included with the Link Local/Remote Identifiers TLV so that the link can
-    be used in the respective address family SPF. If the Address Family Link
+    be included with the Link Local/Remote Identifiers TLV for unnumbered links,
+    so that the link can be used in the respective address family SPF. If the
+    Address Family Link
     Descriptor is not present for an unnumbered link, the link will not be
     used in the SPF computation for either address family. If the Address Family Link
     Descriptor is present for a numbered link, the link descriptor
-    will be ignored.
+    will be ignored. If the Address Family Link Descriptor TLV contains an
+    undefined value (3-254), the link descriptor will be ignored.
+    If the Address Family Link Descriptior TLV contains a
+    reserved value (0 or 255) the TLV is considered malformed and
+    is handled as described in <xref target="new-TLVs"/>.
   </t>
   <artwork align="left" name="" type="" alt=""><![CDATA[
    0                   1                   2                   3
    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-  |   Type (266)                  |      Length (1 Octet)         |
+  |   Type (TBD)                  |      Length (1 Octet)         |
   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
   | Address Family|
   +-+-+-+-+-+-+-+-+
@@ -701,7 +706,7 @@ SPF Status Values: 0 - Reserved
   </t>
   <t>
     If a BGP SPF speaker received the Link NLRI but
-    the SPF Status TLV is not received, then any previously received information is
+    the SPF Status TLV is not received, then any previously received SPF status information is
     considered as implicitly withdrawn and the update is propagated to other BGP SPF speakers.
     A BGP SPF speaker receiving a BGP Update containing
     a SPF Status TLV in the BGP-LS attribute <xref target="RFC9552" format="default"/>
@@ -755,7 +760,7 @@ SPF Status Values: 0 - Reserved
     </t>
     <t>
       If a BGP SPF speaker received the Prefix NLRI but
-      the SPF Status TLV is not received, then any previously received information is
+      the SPF Status TLV is not received, then any previously received SPF status information is
       considered as implicitly withdrawn and the update is propagated to other BGP SPF speakers.
       A BGP SPF speaker receiving a BGP Update containing
       a SPF Status TLV in the BGP-LS attribute <xref target="RFC9552" format="default"/>
@@ -810,7 +815,7 @@ SPF Status Values: 0 - Reserved
   <t>
     If the Sequence-Number TLV
     is not received, then the corresponding NLRI is considered as malformed and
-    MUST be handled as 'Treat-as-withdraw'. An implementation MAY log an error for
+    MUST be handled as 'Treat-as-withdraw'. An implementation SHOULD log an error for
     further analysis.
   </t>
 </section>
@@ -881,7 +886,7 @@ SPF Status Values: 0 - Reserved
   decision process, section 9.1.1 <xref target="RFC4271" format="default"/>, no longer apply.
 </t>
 <ol spacing="normal" type="1"><li>
-  NLRI originated by directly connected BGP SPF peers are preferred.
+  NLRI self-originated from directly-connected BGP SPF peers are preferred.
   This condition can be determined by comparing the BGP Identifiers in
   the received Local Node Descriptor and the BGP OPEN message for an active
   BGP session. This rule assures that stale NLRI is updated even if a BGP-LS router
@@ -1306,6 +1311,13 @@ SPF Status Values: 0 - Reserved
   implementation SHOULD log an error (subject to rate-limiting) for further analysis.
 </t>
 <t>
+  When a BGP SPF speaker receives a BGP Update containing a malformed Address Family 
+  Link Descriptor TLV in the BGP-LS Attribute <xref target="RFC9552" format="default"/>,
+  the corresponding Link NLRI is
+  considered as malformed and MUST be handled as 'Treat-as-withdraw'. An
+  implementation SHOULD log an error (subject to rate-limiting) for further analysis.
+</t>
+<t>
   When a BGP SPF speaker receives a BGP Update containing a malformed Prefix NLRI
   SPF Status TLV in the BGP-LS Attribute <xref target="RFC9552" format="default"/>,
   the corresponding Prefix NLRI is
@@ -1408,9 +1420,10 @@ SPF Status Values: 0 - Reserved
 <section numbered="true" toc="default">
   <name>BGP-LS Address Family Link Descriptor</name>
 <t>
-  IANA is requested to assign the value TBD (266 suggested) to the BGP-LS
-  BGP-LS TLVs Registry for the BGP-LS Address Family Link Descriptor TLV
-  (refer to section  <xref target="af-link-descriptor-tlv"/>.
+  IANA is requested to assign the value TBD to the
+  BGP-LS NLRI and Attribute TLVs Registry for the
+  BGP-LS Address Family Link Descriptor TLV
+  (refer to section  <xref target="af-link-descriptor-tlv"/>).
 
 </t>
 </section>
@@ -1451,7 +1464,8 @@ SPF Status Values: 0 - Reserved
     IANA is requested to create the "BGP-LS-SPF Node NLRI Attribute SPF
     Status TLV Status" Registry for status values in a new BGP SPF group.
     Initial values for this registry are provided below.  Future assignments
-    are to be made using the IETF Review registration policy <xref target="RFC8126"/>.
+    are to be made using the Expert Review registration policy <xref target="RFC8126"/>.
+    Ketan Talaulikar and Keyur Patel are suggested as the Designated Experts.
   </t>
 <table anchor="tab.iana-node-status" align="center">
    <name>BGP-LS-SPF Node NLRI Attribute SPF Status TLV Status Registry Assignments</name>
@@ -1593,13 +1607,13 @@ SPF Status Values: 0 - Reserved
 </t>
 <t>
   In order to mitigate the risk of peering with BGP speakers masquerading
-  as legitimate authorized BGP speakers, it is recommended that
+  as legitimate authorized BGP speakers, it is RECOMMENDED that
   the TCP Authentication Option (TCP-AO) <xref target="RFC5925" format="default"/> be used to
   authenticate BGP sessions. If an authorized BGP peer is compromised, that
   BGP peer could advertise modified Node, Link, or Prefix NLRI which result
   in misrouting, repeating origination of NLRI, and/or excessive SPF
   calculations. When a BGP speaker detects that its self-originated NLRI
-  is being originated by another BGP speaker, an appropriate error should
+  is being originated by another BGP speaker, an appropriate error SHOULD
   be logged so that the operator can take corrective action. This exposure is similar
   to other BGP AFI/SAFIs. 
 </t>
@@ -1726,8 +1740,6 @@ benefit of running code, which may serve as evidence of valuable
 experimentation and feedback that have made the implemented
 protocols more mature.  It is up to the individual working groups
 to use this information as they see fit".</t>
-<t>The BGP-LS-SPF implementation status is documented in
-<xref target="I-D.psarkar-lsvr-bgp-spf-impl" format="default"/>.</t>
 </section>
 <section anchor="Acknowledgements" numbered="true" toc="default">
 <name>Acknowledgements</name>
@@ -1749,7 +1761,7 @@ to use this information as they see fit".</t>
   The authors would to thank Ketan Talaulikar for an extensive shepherd review.
 </t>
 <t>
-  The authors would like to thank Li Zhang for last call review comments. 
+  The authors would like to thank Adrian Ferral and Li Zhang for last call review comments. 
 </t>
 </section>
 <section anchor="Contributors" numbered="true" toc="default">
@@ -1818,7 +1830,6 @@ cy098d@att.com
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.7938.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.7942.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-lsvr-applicability.xml"/>
-<xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.psarkar-lsvr-bgp-spf-impl.xml"/>
 </references>
 </references>
 </back>
