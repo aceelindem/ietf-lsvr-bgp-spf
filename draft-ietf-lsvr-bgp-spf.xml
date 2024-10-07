@@ -1654,7 +1654,7 @@ SPF Status Values: 0 - Reserved
 <section anchor="link-metric-config" numbered="true" toc="default">
   <name>Link Metric Configuration</name>
   <t>
-    For loopback prefixes, it is RECOMMMENDED that the metric be 0.
+    For loopback prefixes, it is RECOMMENDED that the metric be 0.
     For non-loopback prefixes, the setting of the
     metric is a local matter and beyond the scope of this document.
   </t>
