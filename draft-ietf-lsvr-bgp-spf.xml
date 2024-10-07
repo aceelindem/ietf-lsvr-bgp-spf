@@ -647,9 +647,9 @@ SPF Status Values: 0 - Reserved
   The usage of other link attribute TLVs is beyond the scope of this document.
 </t>
 <section anchor="af-link-descriptor-tlv" numbered="true" toc="default">
-  <name>BGP-LS Link NLRI Adddress Family Link Descriptor TLV</name>
+  <name>BGP-LS Link NLRI Address Family Link Descriptor TLV</name>
   <t>
-    For unnumberred links, the address family cannot be ascertained from the
+    For unnumbered links, the address family cannot be ascertained from the
     endpoint link descriptors. Hence, the Address Family (AF) Link Descriptor SHOULD
     be included with the Link Local/Remote Identifiers TLV for unnumbered links,
     so that the link can be used in the respective address family SPF. If the
@@ -659,7 +659,7 @@ SPF Status Values: 0 - Reserved
     Descriptor is present for a numbered link, the link descriptor
     will be ignored. If the Address Family Link Descriptor TLV contains an
     undefined value (3-254), the link descriptor will be ignored.
-    If the Address Family Link Descriptior TLV contains a
+    If the Address Family Link Descriptor TLV contains a
     reserved value (0 or 255) the TLV is considered malformed and
     is handled as described in <xref target="new-TLVs"/>.
   </t>
@@ -672,11 +672,11 @@ SPF Status Values: 0 - Reserved
   | Address Family|
   +-+-+-+-+-+-+-+-+
 
-  Addres Family Values: 0 - Reserved
-                        1 - IPv4 SPF Computation
-                        2 - IPv6 SPF Computation
-                        3-254 - Undefined
-                        255 - Reserved
+  Address Family Values: 0 - Reserved
+                         1 - IPv4 SPF Computation
+                         2 - IPv6 SPF Computation
+                         3-254 - Undefined
+                         255 - Reserved
 
   ]]></artwork>
 </section>
@@ -964,7 +964,7 @@ SPF Status Values: 0 - Reserved
   <li>
     If self-originated Link or Prefix NLRI is received and the Link or Prefix NLRI is no longer
     being advertised by the local node, the NLRI is considered stale and is withdrawn using the
-    standard BGP Update messsage Withdrawn Routes encodings <xref target="RFC4271"/>.
+    standard BGP Update message Withdrawn Routes encodings <xref target="RFC4271"/>.
   </li>
 </ul>
 <t>
@@ -1146,7 +1146,7 @@ SPF Status Values: 0 - Reserved
       For IPv4/IPv6 numbered Link Descriptors to match during the IPv4 SPF computation, the
       Current-Link's IP4/IPv6 interface address link descriptor MUST match the Remote-Link
       IPv4/IPv6 neighbor address link descriptor and the Current-Link's IPv4/IPv6 neighbor
-      address MUST match the Remode-Link's IPv4/IPv6 interface address.
+      address MUST match the Remote-Link's IPv4/IPv6 interface address.
     </li>
     <li>
       For unnumbered links to match during the IPv4 or IPv6 SPF computation,
@@ -1442,7 +1442,7 @@ SPF Status Values: 0 - Reserved
   IANA is requested to assign the value TBD to the
   BGP-LS NLRI and Attribute TLVs Registry for the
   BGP-LS Address Family Link Descriptor TLV
-  (refer to section  <xref target="af-link-descriptor-tlv"/>).
+  (refer to <xref target="af-link-descriptor-tlv"/>).
 
 </t>
 </section>
@@ -1703,8 +1703,8 @@ SPF Status Values: 0 - Reserved
   throughout the IGP routing domain and this also applies to the BGP SPF Routing Domain.
 </t>
 </section>
-<section anchor="bgp-ls-spf-readvertisemnt-delay" numbered="true" toc="default">
-<name>BGP-LS-SPF NLRI Readvertisemnt Delay</name>
+<section anchor="bgp-ls-spf-readvertisement-delay" numbered="true" toc="default">
+<name>BGP-LS-SPF NLRI Readvertisement Delay</name>
 <t>
   The configuration parameter specifies the delay for readvertising a more recent
   instance of a self-originated NLRI when received more than once in succession
