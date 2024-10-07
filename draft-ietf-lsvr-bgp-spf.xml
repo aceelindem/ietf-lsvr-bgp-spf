@@ -1422,7 +1422,7 @@ SPF Status Values: 0 - Reserved
     While uncommon, there may be situations where the LSNDBs of two
     BGP-LS-SPF speakers lose synchronization. In these situations, the BGP
     session MUST be reset with the BGP-SPF speaker sending an NOTIFICATION
-    message with the error code "Loss of LSDB Synchronization" as described
+    message with the BGP error code "Loss of LSDB Synchronization" as described
     in section 3 of <xref target="RFC4271"/>. The mechanisms to detect loss of
     synchronization are beyond the scope of this document.
   </t>
@@ -1594,7 +1594,7 @@ SPF Status Values: 0 - Reserved
 </table>
 </section>
 <section numbered="true" toc="default">
-  <name>BGP Error (Notification) Code Assignmenty</name>
+  <name>BGP Error (Notification) Code Assignment</name>
   <t>
     IANA is requested to assign a code for “Loss of LSDB synchronization" in the "BGP
     Error (Notification) Codes" registry in the "Border Gateway Protocol
