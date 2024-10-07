@@ -1666,8 +1666,8 @@ SPF Status Values: 0 - Reserved
   Depending on the peering model, topology, and convergence requirements, an
   End-of-RIB (EoR) Marker <xref target="RFC4724"/> for the BGP-LS-SPF
   SAFI MAY be required from the peer prior to advertising a BGP-LS Link NLRI
-  for the peer. If configuration is supported, this SHOULD be configurable at
-  the BGP SPF instance level and SHOULD be configured consistently throughout
+  for the peer. If configuration is supported, this MUST be configurable at
+  the BGP SPF instance level and MUST be configured consistently throughout
   the BGP SPF routing domain.
 </t>
 </section>
