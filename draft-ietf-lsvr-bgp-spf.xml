@@ -33,7 +33,7 @@ most I-Ds might want to use.
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-34"
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-35"
      ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" tocInclude="true"
      tocDepth="4" symRefs="true" sortRefs="true" version="3" consensus="true">
   <!-- xml2rfc v2v3 conversion 3.12.1 -->
@@ -1440,21 +1440,12 @@ SPF Status Values: 0 - Reserved
 </t>
 </section>
 <section numbered="true" toc="default">
-  <name>BGP-LS Address Family Link Descriptor</name>
-<t>
-  IANA is requested to assign the value TBD to the
-  BGP-LS NLRI and Attribute TLVs Registry for the
-  BGP-LS Address Family Link Descriptor TLV
-  (refer to <xref target="af-link-descriptor-tlv"/>).
-
-</t>
-</section>
-<section numbered="true" toc="default">
   <name>BGP-LS-SPF Assignments to BGP-LS NLRI and Attribute TLV Registry</name>
 <t>
-  IANA has assigned four TLVs for BGP-LS-SPF NLRI in the "BGP-LS NLRI and Attribute
+  IANA has assigned five TLVs for BGP-LS-SPF NLRI in the "BGP-LS NLRI and Attribute
   TLV" registry.
-  These TLV types include the SPF Status TLV and Sequence Number TLV.
+  These TLV types include the SPF Status TLV types, Address Famliy Link
+  Descriptor TLV type, and Sequence Number TLV type.
 </t>
 <table anchor="tab.iana-attr" align="center">
 <name>NLRI Attribute TLVs</name>
@@ -1467,18 +1458,28 @@ SPF Status Values: 0 - Reserved
 </thead>
 <tbody>
 <tr>
-<td align="left">1184</td>
-<td align="left">SPF Status</td>
-<td align="left"><xref target="node-status-tlv"/>, RFCXXXX ([this document]),
-<xref target="link-status-tlv"/> and <xref target="prefix-status-tlv"/></td>
+<td align="left">TBD</td>
+<td align="left">Address Family Link Descriptor</td>
+<td align="left"><xref target="af-link-descriptor-tlv"/>, RFCXXXX ([this document]).</td>
 </tr>
 <tr>
 <td align="left">1181</td>
 <td align="left">Sequence Number</td>
 <td align="left">RFCXXXX ([this document]), <xref target="sequence-number-tlv"/></td>
 </tr>
+<tr>
+<td align="left">1184</td>
+<td align="left">SPF Status</td>
+<td align="left"><xref target="node-status-tlv"/>, RFCXXXX ([this document]),
+<xref target="link-status-tlv"/> and <xref target="prefix-status-tlv"/></td>
+</tr>
 </tbody>
 </table>
+<t>
+  The early allocation assignments for the TLV types SPF Capability (1180),
+  IPv4 Prefix Length (1182), and IPv6 Prefix Length (1183) are no longer required
+  and can be removed.
+</t>
 </section>
 <section numbered="true" toc="default">
   <name>BGP-LS-SPF Node NLRI Attribute SPF Status TLV Status Registry</name>
@@ -1487,7 +1488,6 @@ SPF Status Values: 0 - Reserved
     Status TLV Status" Registry for status values in a new BGP SPF group.
     Initial values for this registry are provided below.  Future assignments
     are to be made using the Expert Review registration policy <xref target="RFC8126"/>.
-    Ketan Talaulikar and Keyur Patel are suggested as the Designated Experts.
   </t>
 <table anchor="tab.iana-node-status" align="center">
    <name>BGP-LS-SPF Node NLRI Attribute SPF Status TLV Status Registry Assignments</name>
@@ -1596,9 +1596,9 @@ SPF Status Values: 0 - Reserved
 <section numbered="true" toc="default">
   <name>BGP Error (Notification) Code Assignment</name>
   <t>
-    IANA is requested to assign a code for “Loss of LSDB synchronization" in the "BGP
-    Error (Notification) Codes" registry in the "Border Gateway Protocol
-    (BGP) Parameters" registry group.
+    IANA is requested to assign a TBD code for "Loss of LSDB Synchronization" in the
+    BGP Error (Notification) Codes" registry in the
+    "Border Gateway Protocol (BGP) Parameters" registry group.
  </t>
 </section>
 </section>
