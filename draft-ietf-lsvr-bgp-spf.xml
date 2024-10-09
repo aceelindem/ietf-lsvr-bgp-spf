@@ -33,7 +33,7 @@ most I-Ds might want to use.
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-36"
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-37"
      ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" tocInclude="true"
      tocDepth="4" symRefs="true" sortRefs="true" version="3" consensus="true">
   <!-- xml2rfc v2v3 conversion 3.12.1 -->
@@ -1486,7 +1486,8 @@ SPF Status Values: 0 - Reserved
     IANA is requested to create the "BGP-LS-SPF Node NLRI Attribute SPF
     Status TLV Status" Registry for status values in a new BGP SPF group.
     Initial values for this registry are provided below.  Future assignments
-    are to be made using the Expert Review registration policy <xref target="RFC8126"/>.
+    are to be made using the Expert Review registration policy <xref target="RFC8126"/>
+    with guidance for Designated Experts as per section 7.2 of <xref target="RFC9552"/>.
   </t>
 <table anchor="tab.iana-node-status" align="center">
    <name>BGP-LS-SPF Node NLRI Attribute SPF Status TLV Status Registry Assignments</name>
