@@ -33,7 +33,7 @@ most I-Ds might want to use.
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-37"
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-38"
      ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" tocInclude="true"
      tocDepth="4" symRefs="true" sortRefs="true" version="3" consensus="true">
   <!-- xml2rfc v2v3 conversion 3.12.1 -->
@@ -1752,26 +1752,37 @@ SPF Status Values: 0 - Reserved
 </section>
 <section anchor="implementation" numbered="true" toc="default">
 <name>Implementation Status</name>
-<t>Note RFC Editor: Please remove this section and the associated references
-prior to publication.</t>
-<t>This section records the status of known implementations of the
-protocol defined by this specification at the time of posting of
-this Internet-Draft and is based on a proposal described in
-<xref target="RFC7942" format="default"/>.  The description of implementations in this section is
-intended to assist the IETF in its decision processes in
-progressing drafts to RFCs.  Please note that the listing of any
-individual implementation here does not imply endorsement by the
-IETF.  Furthermore, no effort has been spent to verify the
-information presented here that was supplied by IETF contributors.
-This is not intended as, and must not be construed to be, a
-catalog of available implementations or their features.  Readers
-are advised to note that other implementations may exist.</t>
-<t>According to RFC 7942, "this will allow reviewers and working
-groups to assign due consideration to documents that have the
-benefit of running code, which may serve as evidence of valuable
-experimentation and feedback that have made the implemented
-protocols more mature.  It is up to the individual working groups
-to use this information as they see fit".</t>
+<t>
+ Note RFC Editor: Please remove this section and the associated references
+ prior to publication.
+</t>
+<t>
+  This section records the status of known implementations of the
+  protocol defined by this specification at the time of posting of
+  this Internet-Draft and is based on a proposal described in
+  <xref target="RFC7942" format="default"/>.  The description of implementations in this section is
+  intended to assist the IETF in its decision processes in
+  progressing drafts to RFCs.  Please note that the listing of any
+  individual implementation here does not imply endorsement by the
+  IETF.  Furthermore, no effort has been spent to verify the
+  information presented here that was supplied by IETF contributors.
+  This is not intended as, and must not be construed to be, a
+  catalog of available implementations or their features.  Readers
+  are advised to note that other implementations may exist.
+</t>
+<t>
+  According to RFC 7942, "this will allow reviewers and working
+  groups to assign due consideration to documents that have the
+  benefit of running code, which may serve as evidence of valuable
+  experimentation and feedback that have made the implemented
+  protocols more mature.  It is up to the individual working groups
+  to use this information as they see fit".
+</t>
+<t>
+  The document <xref target="I-D.psarkar-lsvr-bgp-spf-impl" format="default"/>
+  contains an implementation roport documenting implementations of
+  BGP Link-State Short Path First (SPF) routing, i.e., this specification.
+</t>
 </section>
 <section anchor="Acknowledgements" numbered="true" toc="default">
 <name>Acknowledgements</name>
@@ -1863,6 +1874,7 @@ cy098d@att.com
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.7938.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.7942.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-lsvr-applicability.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.psarkar-lsvr-bgp-spf-impl.xml"/>
 </references>
 </references>
 </back>
