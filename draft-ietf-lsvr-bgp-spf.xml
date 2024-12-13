@@ -33,7 +33,7 @@ most I-Ds might want to use.
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-39"
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-40"
      ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" tocInclude="true"
      tocDepth="4" symRefs="true" sortRefs="true" version="3" consensus="true">
   <!-- xml2rfc v2v3 conversion 3.12.1 -->
@@ -504,8 +504,8 @@ most I-Ds might want to use.
 </t>
 <t>
   The BGP-LS attribute may potentially be quite large depending on
-  the amount of link-state information associated with a single Link-
-  State NLRI.  The BGP specification <xref target="RFC4271" format="default"/> mandates a maximum BGP
+  the amount of link-state information associated with a single Link-State NLRI.
+  The BGP specification <xref target="RFC4271" format="default"/> mandates a maximum BGP
   message size of 4096 octets.  It is RECOMMENDED that an
   implementation support <xref target="RFC8654" format="default"/> in order to accommodate a greater
   amount of information within the BGP-LS Attribute.  BGP SPF speakers MUST
@@ -559,7 +559,7 @@ most I-Ds might want to use.
 <section anchor="node-status-tlv" numbered="true" toc="default">
 <name>BGP-LS-SPF Node NLRI Attribute SPF Status TLV</name>
 <t>
-  A BGP-LS Attribute TLV of the BGP-LS-SPF Node NLRI is defined to indicate the status of
+  A BGP-LS Attribute SPF Status TLV of the BGP-LS-SPF Node NLRI is defined to indicate the status of
   the node with respect to the BGP SPF calculation. This is used to rapidly take a
   node out of service (refer to <xref target="node-failure" format="default"/>)
   or to indicate the node is not to be
@@ -596,7 +596,8 @@ SPF Status Values: 0 - Reserved
   A BGP SPF speaker receiving a BGP Update containing
   a SPF Status TLV in the BGP-LS attribute <xref target="RFC9552" format="default"/>
   with a non-reserved value (3-254) that is unknown SHOULD be advertised to other
-  BGP SPF speakers. However, a BGP SPF speaker MUST NOT use the Status TLV in its SPF computation.
+  BGP SPF speakers and MUST ignore the Status TLV with an unknown value in
+  the SPF computation.
   An implementation MAY log this condition for further analysis.
   If the SPF Status TLV contains a reserved value (0 or 255) the TLV is considered malformed and
   is handled as described in <xref target="new-TLVs"/>.
@@ -671,6 +672,11 @@ SPF Status Values: 0 - Reserved
     reserved value (0 or 255) the TLV is considered malformed and
     is handled as described in <xref target="new-TLVs"/>.
   </t>
+  <t>
+    Note that an unnumbered link can be used for both the IPv4 and IPv6
+    SPF computation by advertising separate Address Family Link Descriptor
+    TLVs for IPv4 and IPv6.
+  </t>
   <artwork align="left" name="" type="" alt=""><![CDATA[
    0                   1                   2                   3
    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -726,8 +732,9 @@ SPF Status Values: 0 - Reserved
     considered as implicitly withdrawn and the update is propagated to other BGP SPF speakers.
     A BGP SPF speaker receiving a BGP Update containing
     a SPF Status TLV in the BGP-LS attribute <xref target="RFC9552" format="default"/>
-    with a non-reserved value (3-254) that is unknown SHOULD be advertised to other
-    BGP SPF speakers. However, a BGP SPF speaker MUST NOT use the Status TLV in its SPF computation.
+    with a non-reserved value (2-254) that is unknown SHOULD be advertised to other
+    BGP SPF speakers and MUST ignore the Status TLV with an unknown value in
+    the SPF computation.
     An implementation MAY log this information for further analysis.
     If the SPF Status TLV contains a reserved value (0 or 255) the TLV is considered malformed and
     is handled as described in <xref target="new-TLVs"/>.
@@ -747,7 +754,7 @@ SPF Status Values: 0 - Reserved
   <section anchor="prefix-status-tlv" numbered="true" toc="default">
     <name>BGP-LS-SPF Prefix NLRI Attribute SPF Status TLV</name>
     <t>
-      A BGP-LS Attribute TLV to BGP-LS-SPF Prefix NLRI is defined to indicate the status of
+      A BGP-LS Attribute SPF Status TLV of the BGP-LS-SPF Prefix NLRI is defined to indicate the status of
       the prefix with respect to the BGP SPF calculation. This is used to expedite
       convergence for prefix unreachability as discussed in <xref target="failure-converge" format="default"/>.
       If the SPF Status TLV is not included with the Prefix NLRI, the prefix is considered
@@ -780,8 +787,9 @@ SPF Status Values: 0 - Reserved
       considered as implicitly withdrawn and the update is propagated to other BGP SPF speakers.
       A BGP SPF speaker receiving a BGP Update containing
       a SPF Status TLV in the BGP-LS attribute <xref target="RFC9552" format="default"/>
-      with a non-reserved value (3-254) that is unknown SHOULD be advertised to other
-      BGP SPF speakers. However, a BGP SPF speaker MUST NOT use the Status TLV in its SPF computation.
+      with a non-reserved value (2-254) that is unknown SHOULD be advertised to other
+      BGP SPF speakers and MUST ignore the Status TLV with an unknown value in
+      the SPF computation.
       An implementation MAY log this information for further analysis.
       If the SPF Status TLV contains a reserved value (0 or 255) the TLV is considered malformed and
       is handled as described in <xref target="new-TLVs"/>.
@@ -791,7 +799,7 @@ SPF Status Values: 0 - Reserved
 <section anchor="sequence-number-tlv" numbered="true" toc="default">
   <name>BGP-LS Attribute Sequence Number TLV</name>
   <t>
-    A BGP-LS Attribute TLV of the BGP-LS-SPF NLRI types is defined to assure the most
+    A BGP-LS Attribute Sequence Number TLV of the BGP-LS-SPF NLRI types is defined to assure the most
     recent version of a given NLRI is used in the SPF computation. The Sequence Number TLV is
     mandatory for BGP-LS-SPF NLRI.
     The TLV type 1181 has been assigned by IANA. The BGP-LS
@@ -1368,21 +1376,21 @@ SPF Status Values: 0 - Reserved
   BGP SPF speaker MUST handle such malformed NLRI as 'Treat-as-withdraw' <xref target="RFC7606" format="default"/>.
 </t>
 <t>
-  Node Descriptor TLVs and their error handling rules are either defined in
+  Node Descriptor TLVs and their error handling rules are defined in
   section 5.2.1 of <xref target="RFC9552" format="default"/>.
   Node Attribute TLVs and their error handling rules are either defined in
   <xref target="RFC9552" format="default"/>
   or derived from <xref target="RFC5305" format="default"/> and <xref target="RFC6119" format="default"/>.
 </t>
 <t>
-  Link Descriptor TLVs and their error handling rules are either defined in
+  Link Descriptor TLVs and their error handling rules are defined in
   section 5.2.2 of <xref target="RFC9552" format="default"/>.
   Link Attribute TLVs and their error handling rules are either defined in
   <xref target="RFC9552" format="default"/>
   or derived from <xref target="RFC5305" format="default"/> and <xref target="RFC6119" format="default"/>.
 </t>
 <t>
-  Prefix Descriptor TLVs and their error handling rules are either defined in
+  Prefix Descriptor TLVs and their error handling rules are defined in
   section 5.2.3 of <xref target="RFC9552" format="default"/>.
   Prefix Attribute TLVs and their error handling rules are either defined in
   <xref target="RFC9552" format="default"/>
@@ -1486,7 +1494,7 @@ SPF Status Values: 0 - Reserved
 <t>
   The early allocation assignments for the TLV types SPF Capability (1180),
   IPv4 Prefix Length (1182), and IPv6 Prefix Length (1183) are no longer required
-  and can be removed.
+  and are to be deprecated.
 </t>
 </section>
 <section numbered="true" toc="default">
@@ -1556,7 +1564,7 @@ SPF Status Values: 0 - Reserved
        <td align="left">Link unreachable with respect to BGP SPF</td>
      </tr>
      <tr>
-       <td align="left">3-254</td>
+       <td align="left">2-254</td>
        <td align="left">Unassigned</td>
      </tr>
      <tr>
@@ -1592,7 +1600,7 @@ SPF Status Values: 0 - Reserved
        <td align="left">Prefix unreachable with respect to BGP SPF</td>
      </tr>
      <tr>
-       <td align="left">3-254</td>
+       <td align="left">2-254</td>
        <td align="left">Unassigned</td>
      </tr>
      <tr>
@@ -1817,7 +1825,13 @@ SPF Status Values: 0 - Reserved
   call review comments.
 </t>
 <t>
-  The authors would to thank Jim Guichard for his AD review and discussion.
+  The authors would to like to thank Jim Guichard for his AD review and discussion.
+</t>
+<t>
+  The authors would to like to thank David Dong for his IANA review.
+</t>
+<t>
+  The authors would to like to thank Joel Halpren for his GENART review.
 </t>
 </section>
 <section anchor="Contributors" numbered="true" toc="default">
