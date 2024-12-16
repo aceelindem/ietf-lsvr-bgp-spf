@@ -33,7 +33,7 @@ most I-Ds might want to use.
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-40"
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-41"
      ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" tocInclude="true"
      tocDepth="4" symRefs="true" sortRefs="true" version="3" consensus="true">
   <!-- xml2rfc v2v3 conversion 3.12.1 -->
@@ -225,7 +225,7 @@ most I-Ds might want to use.
             With controller and route-reflector peering models, BGP SPF advertisement
             and distributed computation require a minimal number of sessions and
             copies of the NLRI since only the latest version of the NLRI from the
-            originator is required (sed <xref target="peering-models"/>).
+            originator is required (see <xref target="peering-models"/>).
             Given that verification of the whether or not to advertise a link (with a
             BGP-LS-SPF Link NLRI) is done outside of BGP, each BGP
             SPF speaker only needs as many sessions and copies of the NLRI as required for
@@ -345,9 +345,11 @@ most I-Ds might want to use.
 </t>
 <t>
   The "BGP-LS NLRI and Attribute TLVs" registry <xref target="RFC9552"/> is shared between
-  the BGP-LS SAFI and the BGP-LS-SPF SAFI. However, the TLVs defined in this document are
-  not applicable to the BGP-LS SAFI and BGP-LS SAFI consumers <xref target="RFC9552"/> MUST
-  NOT result in the NLRI or the BGP-LS Attribute being considered
+  the BGP-LS SAFI and the BGP-LS-SPF SAFI.
+  However, the TLVs defined in this document may not be applicable to
+  the BGP-LS SAFI.  As specified in Section 5.1 of <xref target="RFC9552"/>, the presence
+  of unknown or unexpected TLVs is required to not result in the NLRI or
+  the BGP-LS Attribute being considered
   malformed (section 5.2 of <xref target="RFC9552"/>).  The list of BGP-LS TLVs applicable
   to the BGP-LS-SPF SAFI are described in
   <xref target="NLRI-Use"/>. By default, the usage of other BGP-LS TLVs or
@@ -380,8 +382,8 @@ most I-Ds might want to use.
   a BGP SPF perspective and the corresponding BGP-LS-SPF Link NLRI is advertised.
 </t>
 <t>
-  An End-of-RIB (EoR) Marker <xref target="BGP-LS-SPF-EOR"/> for the BGP-LS-SPF
-  SAFI MAY be required from a peer prior to advertising the BGP-LS Link NLRI
+  An End-of-RIB (EoR) Marker (<xref target="BGP-LS-SPF-EOR"/>) for the BGP-LS-SPF
+  SAFI MAY be expected from a peer prior to advertising the BGP-LS Link NLRI
   for the corresponding link to that peer.
 </t>
 <t>
@@ -595,7 +597,7 @@ SPF Status Values: 0 - Reserved
   considered as implicitly withdrawn and the update is propagated to other BGP SPF speakers.
   A BGP SPF speaker receiving a BGP Update containing
   a SPF Status TLV in the BGP-LS attribute <xref target="RFC9552" format="default"/>
-  with a non-reserved value (3-254) that is unknown SHOULD be advertised to other
+  with an unknown value SHOULD be advertised to other
   BGP SPF speakers and MUST ignore the Status TLV with an unknown value in
   the SPF computation.
   An implementation MAY log this condition for further analysis.
@@ -633,14 +635,16 @@ SPF Status Values: 0 - Reserved
 <t>
   The link descriptors are
   described in table 4 of <xref target="RFC9552" format="default"/>.
-  Additionally, an address family link descriptor is defined to determine whether an
+  Additionally, the Address Family Link Descriptor TLV is defined to determine whether an
   unnumbered link can be used in the IPv4 SPF, the IPv6, or both (refer to
   <xref target="af-link-descriptor-tlv"/>).
 </t>
 <t>
   For a link to be used in SPF computation for a given address family,
   i.e., IPv4 or IPv6, both routers connecting the link MUST have matching addresses (i.e.,
-  interface addresses must match the neighbor addresses).
+  router interface addresses must be on the same subnet for numbered interfaces and the
+  local/remote link identifiers (<xref target="BGP-SPF"/>) must match for unnumbered
+  interfaces).
 </t>
 <t>
   The IGP metric attribute TLV (TLV 1095) MUST be advertised. If a BGP SPF speaker
@@ -687,8 +691,8 @@ SPF Status Values: 0 - Reserved
   +-+-+-+-+-+-+-+-+
 
   Address Family Values: 0 - Reserved
-                         1 - IPv4 SPF Computation
-                         2 - IPv6 SPF Computation
+                         1 - IPv4 Address Family
+                         2 - IPv6 Address Family
                          3-254 - Undefined
                          255 - Reserved
 
@@ -732,7 +736,7 @@ SPF Status Values: 0 - Reserved
     considered as implicitly withdrawn and the update is propagated to other BGP SPF speakers.
     A BGP SPF speaker receiving a BGP Update containing
     a SPF Status TLV in the BGP-LS attribute <xref target="RFC9552" format="default"/>
-    with a non-reserved value (2-254) that is unknown SHOULD be advertised to other
+    with an unknow value SHOULD be advertised to other
     BGP SPF speakers and MUST ignore the Status TLV with an unknown value in
     the SPF computation.
     An implementation MAY log this information for further analysis.
@@ -787,7 +791,7 @@ SPF Status Values: 0 - Reserved
       considered as implicitly withdrawn and the update is propagated to other BGP SPF speakers.
       A BGP SPF speaker receiving a BGP Update containing
       a SPF Status TLV in the BGP-LS attribute <xref target="RFC9552" format="default"/>
-      with a non-reserved value (2-254) that is unknown SHOULD be advertised to other
+      with an unknown value SHOULD be advertised to other
       BGP SPF speakers and MUST ignore the Status TLV with an unknown value in
       the SPF computation.
       An implementation MAY log this information for further analysis.
@@ -848,10 +852,8 @@ SPF Status Values: 0 - Reserved
  <name>BGP-LS-SPF End of RIB (EoR) Marker</name>
  <t>
    The usage of the End-of-RIB (EoR) Marker <xref target="RFC4724"/> with the BGP-LS-SPF
-   SAFI is somewhat different than the other BGP SAFIs. Optionally, reception of the EoR
-   marker MAY be required prior to advertising an LINK-NLRI for a given peer.
-   This is similar to OSPF's <xref target="RFC2328"/> requirement to not advertise an adjacency until
-   database synchronization has completed.
+   SAFI is somewhat different than the other BGP SAFIs. Reception of the EoR
+   marker MAY optionally be expected prior to advertising an LINK-NLRI for a given peer.
  </t>
 </section>
 <section anchor="NEXT-HOP" numbered="true" toc="default">
@@ -923,7 +925,7 @@ SPF Status Values: 0 - Reserved
   NLRI self-originated from directly-connected BGP SPF peers are preferred.
   This condition can be determined by comparing the BGP Identifiers in
   the received Local Node Descriptor and the BGP OPEN message for an active
-  BGP session. This rule assures that stale NLRI is updated even if a BGP-LS router
+  BGP session. This rule assures that stale NLRI is updated even if a BGP SPF router
   loses its sequence number state due to a cold-start. Note that once the BGP session
   goes down, the NLRI received is no longer considered as being from a directly
   connected BGP SPF peer.
@@ -1167,13 +1169,17 @@ SPF Status Values: 0 - Reserved
     </li>
     <li>
       For unnumbered links to match during the IPv4 or IPv6 SPF computation,
-      Current-Link and Remote-Link's Address Family link descriptor must match
-      address family of the IPv4 or IPv6 SPF computation,
-      the Current--Link's Local Identifier MUST match the Remote-Link's Remote
-      Identifier, and the Current-Link's Remote Identifier MUST the Remote-Link's Local
-      Identifier. Since the Link's Remote Identifier may not be known, a value of 0
+      Current-Link and Remote-Link's Address Family Link Descriptor TLV must match
+      the address family of the IPv4 or IPv6 SPF computation,
+      the Current-Link's Remote Identifier MUST the Remote-Link's Local
+      Identifier/the Current-Link's Remote Identifier MUST match the
+      Remote-Link's Local Identifier.
+      Since the Link's Remote Identifier may not be known, a value of 0
       is considered a wildcard and will match any Current or Remote Link's Local
       Identifier (see TLV 258 <xref target="RFC9552" format="default"/>).
+      Address Family Link Descriptor TLVs for multiple address families may be
+      advertised so that an unnumbered link can used in the SPF computation for
+      multiple address families. 
     </li>
   </ul>
   <t>
