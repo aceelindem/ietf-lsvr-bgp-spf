@@ -33,7 +33,7 @@ most I-Ds might want to use.
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-41"
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-42"
      ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" tocInclude="true"
      tocDepth="4" symRefs="true" sortRefs="true" version="3" consensus="true">
   <!-- xml2rfc v2v3 conversion 3.12.1 -->
@@ -367,7 +367,7 @@ most I-Ds might want to use.
   SPF speakers in the BGP SPF routing domain adhere to this specification.
 </t>
 <t>
-  The choice of the deployment model is up the operator and their requirements and policies.
+  The choice of the deployment model is up to the operator and their requirements and policies.
   Deployment model choice is out of scope for this document and is discussed in
   <xref target="I-D.ietf-lsvr-applicability" format="default"/>.
 </t>
