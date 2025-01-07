@@ -33,7 +33,7 @@ most I-Ds might want to use.
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-42"
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-43"
      ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" tocInclude="true"
      tocDepth="4" symRefs="true" sortRefs="true" version="3" consensus="true">
   <!-- xml2rfc v2v3 conversion 3.12.1 -->
@@ -1464,10 +1464,12 @@ SPF Status Values: 0 - Reserved
 <section numbered="true" toc="default">
   <name>BGP-LS-SPF Assignments to BGP-LS NLRI and Attribute TLV Registry</name>
 <t>
-  IANA has assigned five TLVs for BGP-LS-SPF NLRI in the "BGP-LS NLRI and Attribute
-  TLV" registry.
-  These TLV types include the SPF Status TLV types, Address Famliy Link
-  Descriptor TLV type, and Sequence Number TLV type.
+  IANA has assigned six TLVs for BGP-LS-SPF NLRI in the "BGP-LS NLRI and Attribute
+  TLV" registry. 
+  Supported TLV types include the SPF Status TLV type, Address Family Link
+  Descriptor TLV type, and Sequence Number TLV type.  Deprecated TLV types
+  include the SPF Capability TLV type, IPv4 Prefix Length TLV type, and IPv6
+  Prefix Length TLV type.
 </t>
 <table anchor="tab.iana-attr" align="center">
 <name>NLRI Attribute TLVs</name>
@@ -1838,6 +1840,9 @@ SPF Status Values: 0 - Reserved
 </t>
 <t>
   The authors would to like to thank Joel Halpren for his GENART review.
+</t>
+<t>
+  The authors would to like to thank Erik Kline for IESG review comments.
 </t>
 </section>
 <section anchor="Contributors" numbered="true" toc="default">
