@@ -33,7 +33,7 @@ most I-Ds might want to use.
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-44"
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-45"
      ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" tocInclude="true"
      tocDepth="4" symRefs="true" sortRefs="true" version="3" consensus="true">
   <!-- xml2rfc v2v3 conversion 3.12.1 -->
@@ -598,7 +598,7 @@ SPF Status Values: 0 - Reserved
   the SPF Status TLV is not received, then any previously received SPF status information is
   considered as implicitly withdrawn and the update is propagated to other BGP SPF speakers.
   A BGP SPF speaker receiving a BGP Update containing
-  a SPF Status TLV in the BGP-LS attribute <xref target="RFC9552" format="default"/>
+  an SPF Status TLV in the BGP-LS attribute <xref target="RFC9552" format="default"/>
   with an unknown value SHOULD be advertised to other
   BGP SPF speakers and MUST ignore the Status TLV with an unknown value in
   the SPF computation.
@@ -740,7 +740,7 @@ SPF Status Values: 0 - Reserved
     the SPF Status TLV is not received, then any previously received SPF status information is
     considered as implicitly withdrawn and the update is propagated to other BGP SPF speakers.
     A BGP SPF speaker receiving a BGP Update containing
-    a SPF Status TLV in the BGP-LS attribute <xref target="RFC9552" format="default"/>
+    an SPF Status TLV in the BGP-LS attribute <xref target="RFC9552" format="default"/>
     with an unknow value SHOULD be advertised to other
     BGP SPF speakers and MUST ignore the Status TLV with an unknown value in
     the SPF computation.
@@ -795,7 +795,7 @@ SPF Status Values: 0 - Reserved
       the SPF Status TLV is not received, then any previously received SPF status information is
       considered as implicitly withdrawn and the update is propagated to other BGP SPF speakers.
       A BGP SPF speaker receiving a BGP Update containing
-      a SPF Status TLV in the BGP-LS attribute <xref target="RFC9552" format="default"/>
+      an SPF Status TLV in the BGP-LS attribute <xref target="RFC9552" format="default"/>
       with an unknown value SHOULD be advertised to other
       BGP SPF speakers and MUST ignore the Status TLV with an unknown value in
       the SPF computation.
@@ -1051,7 +1051,7 @@ SPF Status Values: 0 - Reserved
   The CAN-LIST is typically implemented as a heap but other data structures have been used.
 </li>
 </ul>
-<t>The algorithm is comprised of the steps below:
+<t>The algorithm is comprises the steps below:
 </t>
 <ol spacing="normal" type="1"><li>
   The current Local-RIB is invalidated, and the CAN-LIST is initialized to be empty.
@@ -1183,7 +1183,7 @@ SPF Status Values: 0 - Reserved
       is considered a wildcard and will match any Current or Remote Link's Local
       Identifier (see TLV 258 <xref target="RFC9552" format="default"/>).
       Address Family Link Descriptor TLVs for multiple address families may be
-      advertised so that an unnumbered link can used in the SPF computation for
+      advertised so that an unnumbered link can be used in the SPF computation for
       multiple address families. 
     </li>
   </ul>
@@ -1312,10 +1312,9 @@ SPF Status Values: 0 - Reserved
 <section anchor="node-failure" numbered="true" toc="default">
 <name>Node Failure Convergence</name>
 <t>
-  By default <xref target="RFC4271"/>, all the NLRI advertised
-  by a node are withdrawn when a session
-  failure is detected. If fast failure detection such as BFD <xref target="RFC5880"/>
-  is utilized, and the node is
+  By default, all the NLRI advertised by a node are withdrawn when a session
+  failure is detected <xref target="RFC4271"/>. If fast failure detection such as BFD
+  <xref target="RFC5880"/> is utilized, and the node is
   on the fastest converging path, the most recent versions of BGP-LS-SPF NLRI may be
   withdrawn. This results in an older version of the NLRI received on a different path
   being used until the new versions arrive and, potentially, unnecessary route flaps.
@@ -1473,8 +1472,8 @@ SPF Status Values: 0 - Reserved
   TLV" registry. 
   Supported TLV types include the SPF Status TLV type, Address Family Link
   Descriptor TLV type, and Sequence Number TLV type.  Deprecated TLV types
-  include the SPF Capability TLV type, IPv4 Prefix Length TLV type, and IPv6
-  Prefix Length TLV type.
+  include the SPF Capability TLV type, IPv4 Link Prefix Length TLV type, and IPv6
+  Link Prefix Length TLV type.
 </t>
 <table anchor="tab.iana-attr" align="center">
 <name>NLRI Attribute TLVs</name>
@@ -1506,7 +1505,7 @@ SPF Status Values: 0 - Reserved
 </table>
 <t>
   The early allocation assignments for the TLV types SPF Capability (1180),
-  IPv4 Prefix Length (1182), and IPv6 Prefix Length (1183) are no longer required
+  IPv4 Link Prefix Length (1182), and IPv6 Link Prefix Length (1183) are no longer required
   and are to be deprecated.
 </t>
 </section>
@@ -1773,7 +1772,7 @@ SPF Status Values: 0 - Reserved
   BGP-LS-SPF AFI/SAFI SPF computation serve as the
   underlay for other BGP AFI/SAFIs.
   To avoid errors encountered in other AFI/SAFIs from impacting
-  the BGP-LS-SPF AFI/SAFI or vice-versa, isolation mechanisms such as
+  the BGP-LS-SPF AFI/SAFI or vice versa, isolation mechanisms such as
   separate BGP instances or separate BGP sessions (e.g., using different
   addresses for peering) for BGP SPF Link-State information distribution
   SHOULD be used.
@@ -1847,10 +1846,8 @@ SPF Status Values: 0 - Reserved
   The authors would to like to thank Joel Halpren for his GENART review.
 </t>
 <t>
-  The authors would to like to thank Erik Kline for IESG review comments.
-</t>
-<t>
-  The authors would to like to thank Eric Vyncke for IESG review comments.
+  The authors would to like to thank Erik Kline, Eric Vyncke, Mehesh
+  Jethanadani, and Roman Danyliw for IESG review comments.
 </t>
 </section>
 <section anchor="Contributors" numbered="true" toc="default">
