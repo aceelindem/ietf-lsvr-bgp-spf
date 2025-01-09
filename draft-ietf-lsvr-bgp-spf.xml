@@ -33,7 +33,7 @@ most I-Ds might want to use.
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-43"
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-44"
      ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" tocInclude="true"
      tocDepth="4" symRefs="true" sortRefs="true" version="3" consensus="true">
   <!-- xml2rfc v2v3 conversion 3.12.1 -->
@@ -109,7 +109,7 @@ most I-Ds might want to use.
     <abstract>
       <t>
         Many Massively Scaled Data Centers (MSDCs) have converged on simplified
-        L3 routing. Furthermore, requirements for operational simplicity
+        L3 (Layer 3) routing. Furthermore, requirements for operational simplicity
         has led many of these MSDCs to converge on BGP as their single routing
         protocol for both their fabric routing and their Data Center Interconnect
         (DCI) routing. This document describes extensions to BGP to use BGP
@@ -125,7 +125,7 @@ most I-Ds might want to use.
       <name>Introduction</name>
       <t>
         Many Massively Scaled Data Centers (MSDCs) have converged on simplified
-        L3 routing. Furthermore, requirements for operational simplicity
+        L3 (Layer 3) routing. Furthermore, requirements for operational simplicity
         has led many of these MSDCs to converge on BGP <xref target="RFC4271" format="default"/>
         as their single routing protocol for both their fabric routing and
         their Data Center Interconnect (DCI) routing <xref target="RFC7938" format="default"/>.
@@ -149,7 +149,7 @@ most I-Ds might want to use.
         These include TCP-based flow-control, no periodic link-state refresh, and
         completely incremental NLRI advertisement. These advantages can reduce the
         overhead in MSDCs where there is a high degree of Equal Cost Multi-Path
-        (ECMPs).
+        (ECMP) load-balancing.
         Additionally, using an SPF-based computation can support fast convergence and
         the computation of Loop-Free Alternatives (LFAs). The SPF LFA extensions defined
         in <xref target="RFC5286" format="default"/> can be similarly applied to BGP SPF calculations.
@@ -369,7 +369,9 @@ most I-Ds might want to use.
 <t>
   The choice of the deployment model is up to the operator and their requirements and policies.
   Deployment model choice is out of scope for this document and is discussed in
-  <xref target="I-D.ietf-lsvr-applicability" format="default"/>.
+  <xref target="I-D.ietf-lsvr-applicability" format="default"/>. The sub-sections below
+  describe several BGP SPF deployment models. However, this doesn't preclude other
+  deployment models.
 </t>
 <section anchor="single-hop-peering" numbered="true" toc="default">
 <name>BGP Single-Hop Peering on Network Node Connections</name>
@@ -617,7 +619,10 @@ SPF Status Values: 0 - Reserved
   dependent on the IP addressing. For IPv4 links, the
   link's local IPv4 (TLV 259) and remote IPv4 (TLV 260) addresses are used.
   For IPv6 links, the local IPv6 (TLV 261) and remote IPv6 (TLV 262) addresses
-  are used.  For links supporting having both IPv4 and IPv6 addresses, both sets
+  are used (Section 5.2.2 of <xref target="RFC9552"/>). IPv6 links without
+  global IPv6 addresses are considered unnumbered links and are handled as
+  described below. 
+  For links supporting having both IPv4 and IPv6 addresses, both sets
   of descriptors MAY be included in the same Link NLRI.
 </t>
 <t>
@@ -685,7 +690,7 @@ SPF Status Values: 0 - Reserved
    0                   1                   2                   3
    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-  |   Type (TBD)                  |      Length (1 Octet)         |
+  |   Type (TBD1)                 |      Length (1 Octet)         |
   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
   | Address Family|
   +-+-+-+-+-+-+-+-+
@@ -1482,7 +1487,7 @@ SPF Status Values: 0 - Reserved
 </thead>
 <tbody>
 <tr>
-<td align="left">TBD</td>
+<td align="left">TBD1</td>
 <td align="left">Address Family Link Descriptor</td>
 <td align="left"><xref target="af-link-descriptor-tlv"/>, RFCXXXX ([this document]).</td>
 </tr>
@@ -1621,7 +1626,7 @@ SPF Status Values: 0 - Reserved
 <section numbered="true" toc="default">
   <name>BGP Error (Notification) Code Assignment</name>
   <t>
-    IANA is requested to assign a TBD code for "Loss of LSDB Synchronization" in the
+    IANA is requested to assign a TBD2 code for "Loss of LSDB Synchronization" in the
     BGP Error (Notification) Codes" registry in the
     "Border Gateway Protocol (BGP) Parameters" registry group.
  </t>
@@ -1843,6 +1848,9 @@ SPF Status Values: 0 - Reserved
 </t>
 <t>
   The authors would to like to thank Erik Kline for IESG review comments.
+</t>
+<t>
+  The authors would to like to thank Eric Vyncke for IESG review comments.
 </t>
 </section>
 <section anchor="Contributors" numbered="true" toc="default">
