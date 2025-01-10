@@ -33,7 +33,7 @@ most I-Ds might want to use.
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-45"
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-46"
      ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" tocInclude="true"
      tocDepth="4" symRefs="true" sortRefs="true" version="3" consensus="true">
   <!-- xml2rfc v2v3 conversion 3.12.1 -->
@@ -136,7 +136,7 @@ most I-Ds might want to use.
       </t>
       <t>
         This document leverages both the BGP protocol <xref target="RFC4271" format="default"/> and
-        the BGP-LS <xref target="RFC9552" format="default"/> protocols. The relationship, as well as
+        the BGP-LS <xref target="RFC9552" format="default"/> extensions. The relationship, as well as
         the scope of changes is described respectively in <xref target="BGP-base" format="default"/>
         and <xref target="BGP-LS" format="default"/>. The modifications to
         <xref target="RFC4271" format="default"/>
@@ -181,6 +181,11 @@ most I-Ds might want to use.
             An algorithm for computing the shortest path from a given node in a graph
             to every other node in the graph.
           </dd>
+          <dt>Prefix NLRI:</dt>
+          <dd>
+            In the context of BGP SPF, this term refers to both or either the IPv4 Topology Prefix NLRI
+            and/or the IPv6 Topology Prefix NLRI.
+          </dd>
         </dl>
       </section>
       <section numbered="true" toc="default">
@@ -192,7 +197,7 @@ most I-Ds might want to use.
           For both alternatives, BGP offers the operational benefits of a single
           routing protocol as opposed to the combination of an IGP for the underlay
           and BGP as an overlay. However, BGP SPF offers some unique advantages above
-          and beyond standard BGP distance-vector routing. With BGP SPF, the
+          and beyond standard BGP path-vector routing. With BGP SPF, the
           simple single-hop peering model recommended in section 5.2.1 of <xref target="RFC7938"/>
           is augmented with peering models requiring fewer BGP sessions.
         </t>
@@ -212,7 +217,7 @@ most I-Ds might want to use.
           </t>
           <t>
             Another primary advantage is a potential reduction in NLRI advertisement.
-            With standard BGP distance-vector routing, a single link failure may impact
+            With standard BGP path-vector routing, a single link failure may impact
             100s or 1000s of prefixes and result in the withdrawal or re-advertisement of
             the attendant NLRI. With BGP SPF, only the BGP SPF speakers originating
             the link NLRI need to withdraw the corresponding BGP-LS-SPF Link NLRI. Additionally,
@@ -303,8 +308,8 @@ most I-Ds might want to use.
   is used to select routes for subsequent advertisement
   by applying the policies in the local Policy Information Base (PIB) to the
   routes stored in its Adj-RIBs-In. The output of the Decision Process is the
-  set of routes that are announced by a BGP speaker to its peers. These
-  selected routes are stored by a BGP speaker in the speaker's Adj-RIBs-Out
+  set of routes that are announced by a BGP SPF speaker to its peers. These
+  selected routes are stored by a BGP SPF speaker in the speaker's Adj-RIBs-Out
   according to policy.
 </t>
 <t>
@@ -385,8 +390,10 @@ most I-Ds might want to use.
 </t>
 <t>
   An End-of-RIB (EoR) Marker (<xref target="BGP-LS-SPF-EOR"/>) for the BGP-LS-SPF
-  SAFI MAY be expected from a peer prior to advertising the BGP-LS Link NLRI
-  for the corresponding link to that peer.
+  SAFI MAY be required from a peer prior to advertising the BGP-LS-SPF Link NLRI
+  for the corresponding link to that peer.  When required, the default
+  wait indefinitely for the EoR Marker prior to advertising the BGP-LS-SPF Link NLRI.
+  Refer to <xref target="Adjacency-EoR-Required"/>.
 </t>
 <t>
   A failure to consistently configure the use of the EoR marker can
@@ -424,11 +431,6 @@ most I-Ds might want to use.
   are parallel links between nodes. Hence, this peering model is RECOMMENDED
   over the single-hop peering model <xref target="single-hop-peering"/>.
 </t>
-<t>
-  An End-of-RIB (EoR) Marker <xref target="BGP-LS-SPF-EOR"/> for the BGP-LS-SPF
-  SAFI MAY be required from a peer prior to advertising the BGP-LS Link NLRI
-  for the corresponding link(s) to that peer.
-</t>
 </section>
 <section numbered="true" toc="default">
 <name>BGP Peering in Route-Reflector or Controller Topology</name>
@@ -438,21 +440,22 @@ most I-Ds might want to use.
   connection discovery and liveness detection for those links in the BGP
   SPF routing domain are done outside of the BGP protocol.
   BGP-LS-SPF Link NLRI is advertised as long as the corresponding link is
-  considered up as per the chosen liveness detection mechanism.
+  considered up as per the chosen liveness detection mechanism (The BFD protocol
+  <xref target="RFC5880" format="default"/> is RECOMMENDED).
 </t>
 <t>
   This peering model, known as sparse peering, allows for fewer BGP sessions
   and, consequently, fewer instances of the same NLRI received from multiple peers.
-  Normally, the route-reflectors or controller BGP sessions would be on directly-connected
+  Ideally, the route-reflectors or controller BGP sessions would be on directly-connected
   links to avoid dependence on another routing protocol for session connectivity. However,
   multi-hop peering is not precluded. The number of BGP sessions is dependent
-  on the redundancy requirements and the stability of the BGP sessions. This is
-  discussed in greater detail in <xref target="I-D.ietf-lsvr-applicability" format="default"/>.
+  on the redundancy requirements and the stability of the BGP sessions.
 </t>
 <t>
   The controller may use constraints to determine
   when to advertise BGP-LS-SPF NLRI for BGP-LS peers. For example, a controller
-  may delay advertisement until the EoR marker <xref target="BGP-LS-SPF-EOR"/> has been
+  may delay advertisement of a link between two peers the until EoR
+   marker <xref target="BGP-LS-SPF-EOR"/> has been
   received from both BGP peers and the BGP-LS Link NLRI for the link(s) between the two nodes
   have been received from both BGP peers.
 </t>
@@ -508,13 +511,13 @@ most I-Ds might want to use.
 </t>
 <t>
   The BGP-LS attribute may potentially be quite large depending on
-  the amount of link-state information associated with a single Link-State NLRI.
+  the amount of link-state information associated with a single BGP-LS-SPF NLRI.
   The BGP specification <xref target="RFC4271" format="default"/> mandates a maximum BGP
   message size of 4096 octets.  It is RECOMMENDED that an
   implementation support <xref target="RFC8654" format="default"/> in order to accommodate a greater
   amount of information within the BGP-LS Attribute.  BGP SPF speakers MUST
   ensure that they limit the TLVs included in the BGP-LS Attribute to
-  ensure that a BGP update message for a single Link-State NLRI does
+  ensure that a BGP update message for a single BGP-LS-SPF NLRI does
   not cross the maximum limit for a BGP message.  The determination of
   the types of TLVs to be included by the BGP SPF speaker
   originating the attribute is outside the scope of this document.
@@ -569,7 +572,8 @@ most I-Ds might want to use.
   or to indicate the node is not to be
   used for transit (i.e., non-local) traffic (refer to <xref target="BGP-SPF" format="default"/>).
   If the SPF Status TLV is not included with the Node NLRI, the node is considered to be up
-  and is available for transit traffic.
+  and is available for transit traffic. A single TLV type is shared by the Node, Link, and
+   Prefix NLRI.  The TLV type is 1184.
 </t>
 <artwork align="left" name="" type="" alt=""><![CDATA[
  0                   1                   2                   3
@@ -589,14 +593,9 @@ SPF Status Values: 0 - Reserved
 
 ]]></artwork>
 <t>
-  The BGP-LS-SPF Node NLRI Attribute SPF Status TLV, Link NLRI Attribute SPF Status TLV,
-  and Prefix NLRI Attribute SPF Status TLV use the same TLV Type (1184). This implies
-  that a BGP Update will include a single NLRI.
-</t>
-<t>
   If a BGP SPF speaker received the Node NLRI but
   the SPF Status TLV is not received, then any previously received SPF status information is
-  considered as implicitly withdrawn and the update is propagated to other BGP SPF speakers.
+  considered as implicitly withdrawn and the NLRI is propagated to other BGP SPF speakers.
   A BGP SPF speaker receiving a BGP Update containing
   an SPF Status TLV in the BGP-LS attribute <xref target="RFC9552" format="default"/>
   with an unknown value SHOULD be advertised to other
@@ -690,7 +689,7 @@ SPF Status Values: 0 - Reserved
    0                   1                   2                   3
    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-  |   Type (TBD1)                 |      Length (1 Octet)         |
+  |   Type (1185)                 |      Length (1 Octet)         |
   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
   | Address Family|
   +-+-+-+-+-+-+-+-+
@@ -731,17 +730,12 @@ SPF Status Values: 0 - Reserved
 
   ]]></artwork>
   <t>
-    The BGP-LS-SPF Node NLRI Attribute SPF Status TLV, Link NLRI Attribute SPF Status TLV,
-    and Prefix NLRI Attribute SPF Status TLV use the same TLV Type (1184). This implies
-    that a BGP Update will include a single NLRI.
-  </t>
-  <t>
     If a BGP SPF speaker received the Link NLRI but
     the SPF Status TLV is not received, then any previously received SPF status information is
-    considered as implicitly withdrawn and the update is propagated to other BGP SPF speakers.
+    considered as implicitly withdrawn and the NLRI is propagated to other BGP SPF speakers.
     A BGP SPF speaker receiving a BGP Update containing
     an SPF Status TLV in the BGP-LS attribute <xref target="RFC9552" format="default"/>
-    with an unknow value SHOULD be advertised to other
+    with an unknown value SHOULD be advertised to other
     BGP SPF speakers and MUST ignore the Status TLV with an unknown value in
     the SPF computation.
     An implementation MAY log this information for further analysis.
@@ -786,14 +780,9 @@ SPF Status Values: 0 - Reserved
                        255 - Reserved
     ]]></artwork>
     <t>
-      The BGP-LS-SPF Node NLRI Attribute SPF Status TLV, Link NLRI Attribute SPF Status TLV,
-      and Prefix NLRI Attribute SPF Status TLV use the same TLV Type (1184). This implies
-      that a BGP Update will include a single NLRI.
-    </t>
-    <t>
       If a BGP SPF speaker received the Prefix NLRI but
       the SPF Status TLV is not received, then any previously received SPF status information is
-      considered as implicitly withdrawn and the update is propagated to other BGP SPF speakers.
+      considered as implicitly withdrawn and the NLRI is propagated to other BGP SPF speakers.
       A BGP SPF speaker receiving a BGP Update containing
       an SPF Status TLV in the BGP-LS attribute <xref target="RFC9552" format="default"/>
       with an unknown value SHOULD be advertised to other
@@ -812,8 +801,8 @@ SPF Status Values: 0 - Reserved
     recent version of a given NLRI is used in the SPF computation. The Sequence Number TLV is
     mandatory for BGP-LS-SPF NLRI.
     The TLV type 1181 has been assigned by IANA. The BGP-LS
-    Attribute TLV contains an 8-octet sequence number. The usage of the Sequence Number TLV
-    is described in <xref target="Phase-1" format="default"/>.
+    Attribute Sequence Number TLV contains an 8-octet sequence number. The usage of the
+    Sequence Number TLV is described in <xref target="Phase-1" format="default"/>.
   </t>
   <artwork align="left" name="" type="" alt=""><![CDATA[
    0                   1                   2                   3
@@ -887,7 +876,7 @@ SPF Status Values: 0 - Reserved
   <t>
     The SPF-based Decision process replaces the BGP Decision process described in
     <xref target="RFC4271" format="default"/>.
-    Since Link-State NLRI always contains the local node descriptor as described in
+    Since BGP-LS-SPF NLRI always contains the local node descriptor as described in
     <xref target="NLRI-Use" format="default"/>, each NLRI is uniquely originated by a single
     BGP SPF speaker in the BGP SPF routing domain (the BGP node matching the NLRI's Node
     Descriptors). Instances of the same NLRI originated by multiple BGP SPF speakers would be
@@ -923,8 +912,8 @@ SPF Status Values: 0 - Reserved
 <section anchor="Phase-1" numbered="true" toc="default">
 <name>BGP SPF NLRI Selection</name>
 <t>
-  The rules for all BGP-LS-SPF NLRIs selection for phase 1 of the BGP
-  decision process, section 9.1.1 <xref target="RFC4271" format="default"/>, no longer apply.
+   For all BGP-LS-SPF NLRIs, the selection rules for phase 1 of the BGP
+   decision process, section 9.1.1 <xref target="RFC4271" format="default"/>, no longer apply.
 </t>
 <ol spacing="normal" type="1"><li>
   NLRI self-originated from directly-connected BGP SPF peers are preferred.
@@ -944,7 +933,7 @@ SPF Status Values: 0 - Reserved
 </li>
 </ol>
 <t>
-  When a BGP SPF speaker completely loses its sequence number state, i.e., due to a cold start, or
+  When a BGP SPF speaker completely loses its sequence number state, e.g., due to a cold start, or
   in the unlikely possibility that 64-bit sequence number wraps, the BGP routing domain will
   still converge. This is due to the fact that BGP SPF speakers adjacent to the router
   always accept self-originated NLRI from the associated speaker as more recent (rule # 1). When a
@@ -987,7 +976,7 @@ SPF Status Values: 0 - Reserved
   <li>
     If self-originated Link or Prefix NLRI is received and the Link or Prefix NLRI is no longer
     being advertised by the local node, the NLRI is considered stale and is withdrawn using the
-    standard BGP Update message Withdrawn Routes encodings <xref target="RFC4271"/>.
+    standard BGP Update message Withdrawn Routes encodings <xref target="RFC4760"/>.
   </li>
 </ul>
 <t>
@@ -1051,7 +1040,7 @@ SPF Status Values: 0 - Reserved
   The CAN-LIST is typically implemented as a heap but other data structures have been used.
 </li>
 </ul>
-<t>The algorithm is comprises the steps below:
+<t>The algorithm consists of the steps below:
 </t>
 <ol spacing="normal" type="1"><li>
   The current Local-RIB is invalidated, and the CAN-LIST is initialized to be empty.
@@ -1118,9 +1107,7 @@ SPF Status Values: 0 - Reserved
     Some platforms or implementations may have limits on the number of
     ECMP routes that can be supported.  The setting or identification
     of any limitations is outside the scope if this document.
-    Nonetheless, step 4 (below) includes a set of recommendations in
-    case such a limit is encountered.  Weighted Unequal Cost Multi-Path
-    routes are out of scope as well.
+    Weighted Unequal Cost Multi-Path routes are out of scope as well.
   </li>
 </ul>
 </li>
@@ -1176,7 +1163,7 @@ SPF Status Values: 0 - Reserved
       For unnumbered links to match during the IPv4 or IPv6 SPF computation,
       Current-Link and Remote-Link's Address Family Link Descriptor TLV must match
       the address family of the IPv4 or IPv6 SPF computation,
-      the Current-Link's Remote Identifier MUST the Remote-Link's Local
+      the Current-Link's Remote Identifier MUST match the Remote-Link's Local
       Identifier/the Current-Link's Remote Identifier MUST match the
       Remote-Link's Local Identifier.
       Since the Link's Remote Identifier may not be known, a value of 0
@@ -1272,14 +1259,14 @@ SPF Status Values: 0 - Reserved
 <t>
   A local failure prevents a link from being used in the SPF calculation
   due to the IGP bi-directional connectivity requirement. Consequently, local link
-  failures SHOULD always be given priority over updates
-  in order to ensure the highest priority propagation
+  failures SHOULD always be communicated as quickly as possible and given priority
+  over other categories of changes to ensure expeditious propagation
   and optimal convergence.
 </t>
 <t>
-  With a BGP advertisement,
-  the link would continue to be used until the last copy of the BGP-LS-SPF Link NLRI
-  is withdrawn. In order to avoid this delay, the originator of the Link NLRI SHOULD
+  According to standard BGP procedures, the link would continue
+  to be used until the last copy of the BGP-LS-SPF Link NLRI is
+  withdrawn. In order to avoid this delay, the originator of the Link NLRI SHOULD
   advertise a more recent version with an increased Sequence Number TLV for
   the BGP-LS-SPF Link NLRI including the SPF Status TLV
   (refer to <xref target="link-status-tlv" format="default"/>) indicating the link
@@ -1415,9 +1402,12 @@ SPF Status Values: 0 - Reserved
 </t>
 <t>
   When a BGP SPF speaker receives a BGP Update that does not contain any BGP-LS Attribute,
-  then a BGP SPF speaker MUST consider the corresponding NLRI as malformed
-  and MUST handle it as 'Treat-as-withdraw' <xref target="RFC7606" format="default"/>. An
-  implementation SHOULD log an error (subject to rate-limiting) for further analysis.
+  it is most likely an indication of 'Attribute Discard' fault handling and the
+  BGP SPF speaker SHOULD preserve and propagate the BGP-LS-SPF NLRI as described in
+  Section 8.2.2 of <xref target="RFC9552"/>. However, NLRI without the BGP-LS attribute
+  MUST NOT be used in the SPF Calculation <xref target="BGP-SPF"/>. How this is accomplished
+  is an implementation matter but one way would be for these NLRI not to returned in
+  LSNDB lookups.
 </t>
 </section>
 <section anchor="bgpspf-nlri" numbered="true" toc="default">
@@ -1486,7 +1476,7 @@ SPF Status Values: 0 - Reserved
 </thead>
 <tbody>
 <tr>
-<td align="left">TBD1</td>
+<td align="left">1185</td>
 <td align="left">Address Family Link Descriptor</td>
 <td align="left"><xref target="af-link-descriptor-tlv"/>, RFCXXXX ([this document]).</td>
 </tr>
@@ -1625,7 +1615,7 @@ SPF Status Values: 0 - Reserved
 <section numbered="true" toc="default">
   <name>BGP Error (Notification) Code Assignment</name>
   <t>
-    IANA is requested to assign a TBD2 code for "Loss of LSDB Synchronization" in the
+    IANA is requested to assign a TBD code for "Loss of LSDB Synchronization" in the
     BGP Error (Notification) Codes" registry in the
     "Border Gateway Protocol (BGP) Parameters" registry group.
  </t>
@@ -1730,6 +1720,12 @@ SPF Status Values: 0 - Reserved
   for the peer. If configuration is supported, this MUST be configurable at
   the BGP SPF instance level and MUST be configured consistently throughout
   the BGP SPF routing domain.
+</t>
+<t>
+  When this configuration is provided, the default MUST be to wait
+  indefinitely prior to advertising a BGP-LS link NLRI. Configuration of
+  a timer specifying the maximum time to wait prior to advertisement
+  MAY be provided. 
 </t>
 </section>
 <section anchor="spf-backoff-config" numbered="true" toc="default">
@@ -1843,11 +1839,15 @@ SPF Status Values: 0 - Reserved
   The authors would to like to thank David Dong for his IANA review.
 </t>
 <t>
-  The authors would to like to thank Joel Halpren for his GENART review.
+  The authors would to like to thank Joel Halpern for his GENART review.
 </t>
 <t>
-  The authors would to like to thank Erik Kline, Eric Vyncke, Mehesh
-  Jethanadani, and Roman Danyliw for IESG review comments.
+  The authors would to like to thank Erik Kline, Eric Vyncke, Mahesh
+  Jethanandani, and Roman Danyliw for IESG review comments.
+</t>
+<t>
+  The authors would to like to thank John Scudder for his detailed IESG
+  review and specifically for helping align the document with BGP documents.
 </t>
 </section>
 <section anchor="Contributors" numbered="true" toc="default">
