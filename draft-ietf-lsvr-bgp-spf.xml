@@ -33,7 +33,7 @@ most I-Ds might want to use.
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-46"
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-48"
      ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" tocInclude="true"
      tocDepth="4" symRefs="true" sortRefs="true" version="3" consensus="true">
   <!-- xml2rfc v2v3 conversion 3.12.1 -->
@@ -233,7 +233,7 @@ most I-Ds might want to use.
             originator is required (see <xref target="peering-models"/>).
             Given that verification of whether or not to advertise a link (with a
             BGP-LS-SPF Link NLRI) is done outside of BGP, each BGP
-            SPF speaker only needs as many sessions and copies of the NLRI as required for
+            speaker only needs as many sessions and copies of the NLRI as required for
             redundancy. Additionally, a controller could inject topology (i.e., BGP-LS-SPF NLRI)
             that is learned outside the BGP SPF routing domain.
           </t>
@@ -308,8 +308,8 @@ most I-Ds might want to use.
   is used to select routes for subsequent advertisement
   by applying the policies in the local Policy Information Base (PIB) to the
   routes stored in its Adj-RIBs-In. The output of the Decision Process is the
-  set of routes that are announced by a BGP SPF speaker to its peers. These
-  selected routes are stored by a BGP SPF speaker in the speaker's Adj-RIBs-Out
+  set of routes that are announced by a BGP speaker to its peers. These
+  selected routes are stored by a BGP speaker in the speaker's Adj-RIBs-Out
   according to policy.
 </t>
 <t>
@@ -521,11 +521,9 @@ most I-Ds might want to use.
   not cross the maximum limit for a BGP message.  The determination of
   the types of TLVs to be included by the BGP SPF speaker
   originating the attribute is outside the scope of this document.
-  When a BGP SPF speaker finds that it
-  is exceeding the maximum BGP message size due to addition or update
-  of some other BGP Attribute (e.g.,  AS_PATH), it MUST consider the
-  BGP-LS Attribute to be malformed and the attribute discard handling of
-  <xref target="RFC7606" format="default"/> applies.
+  If, due to the liits on the maximum size of an UPDATE message, a single
+  route doesn't fit into the message, the BGP speaker MUST NOT advertise the
+  route to its peer and MAY choose to log an error locally <xref target="RFC4271"/>.
 </t>
 </section>
 </section>
@@ -593,10 +591,10 @@ SPF Status Values: 0 - Reserved
 
 ]]></artwork>
 <t>
-  If a BGP SPF speaker received the Node NLRI but
+  If a BGP speaker received the Node NLRI but
   the SPF Status TLV is not received, then any previously received SPF status information is
   considered as implicitly withdrawn and the NLRI is propagated to other BGP SPF speakers.
-  A BGP SPF speaker receiving a BGP Update containing
+  A BGP speaker receiving a BGP Update containing
   an SPF Status TLV in the BGP-LS attribute <xref target="RFC9552" format="default"/>
   with an unknown value SHOULD be advertised to other
   BGP SPF speakers and MUST ignore the Status TLV with an unknown value in
@@ -620,7 +618,7 @@ SPF Status Values: 0 - Reserved
   For IPv6 links, the local IPv6 (TLV 261) and remote IPv6 (TLV 262) addresses
   are used (Section 5.2.2 of <xref target="RFC9552"/>). IPv6 links without
   global IPv6 addresses are considered unnumbered links and are handled as
-  described below. 
+  described below.
   For links supporting having both IPv4 and IPv6 addresses, both sets
   of descriptors MAY be included in the same Link NLRI.
 </t>
@@ -730,10 +728,10 @@ SPF Status Values: 0 - Reserved
 
   ]]></artwork>
   <t>
-    If a BGP SPF speaker received the Link NLRI but
+    If a BGP speaker received the Link NLRI but
     the SPF Status TLV is not received, then any previously received SPF status information is
     considered as implicitly withdrawn and the NLRI is propagated to other BGP SPF speakers.
-    A BGP SPF speaker receiving a BGP Update containing
+    A BGP speaker receiving a BGP Update containing
     an SPF Status TLV in the BGP-LS attribute <xref target="RFC9552" format="default"/>
     with an unknown value SHOULD be advertised to other
     BGP SPF speakers and MUST ignore the Status TLV with an unknown value in
@@ -780,10 +778,10 @@ SPF Status Values: 0 - Reserved
                        255 - Reserved
     ]]></artwork>
     <t>
-      If a BGP SPF speaker received the Prefix NLRI but
+      If a BGP speaker received the Prefix NLRI but
       the SPF Status TLV is not received, then any previously received SPF status information is
       considered as implicitly withdrawn and the NLRI is propagated to other BGP SPF speakers.
-      A BGP SPF speaker receiving a BGP Update containing
+      A BGP speaker receiving a BGP Update containing
       an SPF Status TLV in the BGP-LS attribute <xref target="RFC9552" format="default"/>
       with an unknown value SHOULD be advertised to other
       BGP SPF speakers and MUST ignore the Status TLV with an unknown value in
@@ -820,7 +818,7 @@ SPF Status Values: 0 - Reserved
     The 64-bit strictly-increasing sequence number MUST be incremented for every
     self-originated version of a BGP-LS-SPF NLRI. BGP SPF speakers implementing this specification
     MUST use available mechanisms to preserve the sequence number's strictly increasing property
-    for the deployed life of the BGP SPF speaker (including cold restarts).
+    for the deployed life of the BGP speaker (including cold restarts).
     One mechanism for accomplishing this would be to use the high-order 32 bits of the
     sequence number as a wrap/boot count that is incremented any time the BGP router
     loses its sequence number state or the low-order 32 bits wrap.
@@ -829,8 +827,8 @@ SPF Status Values: 0 - Reserved
     When incrementing the sequence number for each self-originated NLRI,
     the sequence number should be treated as an unsigned 64-bit
     value. If the lower-order 32-bit value wraps, the higher-order 32-bit value should
-    be incremented and saved in non-volatile storage. If a BGP SPF speaker completely
-    loses its sequence number state (e.g., the BGP SPF speaker hardware
+    be incremented and saved in non-volatile storage. If a BGP speaker completely
+    loses its sequence number state (e.g., the BGP speaker hardware
     is replaced or experiences a cold-start), the BGP NLRI selection rules
     (see <xref target="Phase-1" format="default"/>) ensure convergence, albeit not immediately.
   </t>
@@ -851,12 +849,13 @@ SPF Status Values: 0 - Reserved
  </t>
 </section>
 <section anchor="NEXT-HOP" numbered="true" toc="default">
-  <name>NEXT_HOP Attribute Manipulation</name>
+  <name>BGP Next-Hop Information</name>
   <t>
-    The rules for setting the next hop information for the BGP-LS-SPF SAFI
-    follow the specification in section 5.5 of <xref target="RFC9552" format="default"/>.
+    The rules for setting the BGP Next-Hop in the MP_REACH_NLRI attribute <xref target="RFC4760"/>
+    for the BGP-LS-SPF SAFI follow the rules in section 5.5 of <xref target="RFC9552" format="default"/>.
     All BGP peers that support SPF extensions will locally compute the Local-RIB Next-Hop
-    as a result of the SPF process.
+    as a result of the SPF process. Hence, the use of the MP_REACH_NLRI Next-Hop as a tiebreaker in the
+    standard BGP path decision processing is not applicable.
   </t>
 </section>
 </section>
@@ -878,7 +877,7 @@ SPF Status Values: 0 - Reserved
     <xref target="RFC4271" format="default"/>.
     Since BGP-LS-SPF NLRI always contains the local node descriptor as described in
     <xref target="NLRI-Use" format="default"/>, each NLRI is uniquely originated by a single
-    BGP SPF speaker in the BGP SPF routing domain (the BGP node matching the NLRI's Node
+    BGP speaker in the BGP SPF routing domain (the BGP node matching the NLRI's Node
     Descriptors). Instances of the same NLRI originated by multiple BGP SPF speakers would be
     indicative of a configuration error or a masquerading attack
     (refer to <xref target="Security" format="default"/>).
@@ -893,9 +892,10 @@ SPF Status Values: 0 - Reserved
   to other BGP-LS-SPF peers. If the attributes have changed (other than the sequence number),
   a BGP SPF calculation is triggered. However, a changed NLRI MAY be advertised immediately
   to other peers and prior to any SPF calculation. Note that the BGP
-  MinRouteAdvertisementIntervalTimer and
-  MinASOriginationIntervalTimer <xref target="RFC4271" format="default"/> timers are not applicable
-  to the BGP-LS-SPF SAFI. The scheduling of the SPF calculation, as described in
+  MinASOriginationIntervalTimer <xref target="RFC4271" format="default"/> timers is not applicable
+  to the BGP-LS-SPF SAFI. The MinRouteAdvertisementIntervalTimer is applicable with a suggested default
+  of 5 seconds consistent with Internal BGP (IBGP) (refer to section 10 of <xref target="RFC4271"/>).
+  The scheduling of the SPF calculation, as described in
   <xref target="BGP-SPF" format="default"/>, is an implementation and/or configuration matter.
   Scheduling MAY be dampened consistent with the SPF back-off algorithm
   specified in <xref target="RFC8405" format="default"/>.
@@ -903,7 +903,7 @@ SPF Status Values: 0 - Reserved
 <t>
   The Phase 3 decision function
   of the Decision Process <xref target="RFC4271" format="default"/> is also simplified since under
-  normal SPF operation, a BGP SPF speaker MUST advertise the changed NLRIs
+  normal SPF operation, a BGP speaker MUST advertise the changed NLRIs
   to all BGP peers with the BGP-LS-SPF AFI/SAFI and install the changed routes in
   the GLOBAL-RIB. The only exception are unchanged
   NLRIs or stale NLRIs, i.e., NLRI received with a less recent (numerically smaller)
@@ -928,29 +928,29 @@ SPF Status Values: 0 - Reserved
   The NLRI with the most recent Sequence Number TLV, i.e., highest sequence number is selected.
 </li>
 <li>
-  The NLRI received from the BGP SPF speaker with the numerically larger BGP
+  The NLRI received from the BGP speaker with the numerically larger BGP
   Identifier is preferred.
 </li>
 </ol>
 <t>
-  When a BGP SPF speaker completely loses its sequence number state, e.g., due to a cold start, or
+  When a BGP speaker completely loses its sequence number state, e.g., due to a cold start, or
   in the unlikely possibility that 64-bit sequence number wraps, the BGP routing domain will
   still converge. This is due to the fact that BGP SPF speakers adjacent to the router
   always accept self-originated NLRI from the associated speaker as more recent (rule # 1). When a
-  BGP SPF speaker reestablishes a connection with its peers, any existing sessions are taken
+  BGP speaker reestablishes a connection with its peers, any existing sessions are taken
   down and stale NLRI are replaced. The adjacent BGP SPF speakers update their NLRI
   advertisements and advertise to their neighbors until the BGP routing domain has converged.
 </t>
 <t>
-  The modified SPF Decision Process performs an SPF calculation rooted at the local BGP SPF
+  The modified SPF Decision Process performs an SPF calculation rooted at the local BGP
   speaker using the metrics from the Link Attribute IGP Metric TLV (1095) and
   the Prefix Attribute Prefix Metric TLV (1155) <xref target="RFC9552" format="default"/>.
   These metrics are considered consistently across the BGP SPF domain.
   As a result, any other BGP attributes that
   would influence the BGP decision process defined in <xref target="RFC4271" format="default"/> including
   ORIGIN, MULTI_EXIT_DISC, and
-  LOCAL_PREF attributes are ignored by the SPF algorithm. The NEXT_HOP attribute
-  is discussed in <xref target="NEXT-HOP" format="default"/>.
+  LOCAL_PREF attributes are ignored by the SPF algorithm. The Next Hop in the MP_REACH_NLRI attribute
+  <xref target="RFC4760"/> is discussed in <xref target="NEXT-HOP" format="default"/>.
   The AS_PATH and AS4_PATH <xref target="RFC6793" format="default"/> attributes
   are preserved and used for loop detection <xref target="RFC4271" format="default"/>. They are ignored
   during the SPF computation for BGP-LS-SPF NLRIs.
@@ -958,7 +958,7 @@ SPF Status Values: 0 - Reserved
 <section anchor="Self-Origin" numbered="true" toc="default">
 <name>BGP Self-Originated NLRI</name>
 <t>
-  Node, Link, or Prefix NLRI with Node Descriptors matching the local BGP SPF speaker are
+  Node, Link, or Prefix NLRI with Node Descriptors matching the local BGP speaker are
   considered self-originated. When self-originated NLRI is received and it doesn't match the
   local node's NLRI content (including sequence number), special processing is required.
 </t>
@@ -1171,7 +1171,7 @@ SPF Status Values: 0 - Reserved
       Identifier (see TLV 258 <xref target="RFC9552" format="default"/>).
       Address Family Link Descriptor TLVs for multiple address families may be
       advertised so that an unnumbered link can be used in the SPF computation for
-      multiple address families. 
+      multiple address families.
     </li>
   </ul>
   <t>
@@ -1309,7 +1309,7 @@ SPF Status Values: 0 - Reserved
   withdrawn immediately to prevent such unnecessary route flaps.
   The configurable NLRIImplicitWithdrawalDelay timer
   controls the interval that NLRI from the failed node is retained prior to implicit
-  withdrawal after a BGP SPF speaker has transitioned out of Established state.
+  withdrawal after a BGP speaker has transitioned out of Established state.
   This does not delay convergence since the adjacent nodes detect the
   link failure and advertise a more recent NLRI indicating the link is down with respect to
   BGP SPF (refer to <xref target="failure-converge" format="default"/>) and the
@@ -1330,35 +1330,35 @@ SPF Status Values: 0 - Reserved
 <section anchor="new-TLVs" numbered="true" toc="default">
 <name>Processing of BGP-LS-SPF TLVs</name>
 <t>
-  When a BGP SPF speaker receives a BGP Update containing a malformed Node NLRI
+  When a BGP speaker receives a BGP Update containing a malformed Node NLRI
   SPF Status TLV in the BGP-LS Attribute <xref target="RFC9552" format="default"/>,
   the corresponding Node NLRI is
   considered as malformed and MUST be handled as 'Treat-as-withdraw'. An
   implementation SHOULD log an error (subject to rate-limiting) for further analysis.
 </t>
 <t>
-  When a BGP SPF speaker receives a BGP Update containing a malformed Link NLRI
+  When a BGP speaker receives a BGP Update containing a malformed Link NLRI
   SPF Status TLV in the BGP-LS Attribute <xref target="RFC9552" format="default"/>,
   the corresponding Link NLRI is
   considered as malformed and MUST be handled as 'Treat-as-withdraw'. An
   implementation SHOULD log an error (subject to rate-limiting) for further analysis.
 </t>
 <t>
-  When a BGP SPF speaker receives a BGP Update containing a malformed Address Family
+  When a BGP speaker receives a BGP Update containing a malformed Address Family
   Link Descriptor TLV in the BGP-LS Attribute <xref target="RFC9552" format="default"/>,
   the corresponding Link NLRI is
   considered as malformed and MUST be handled as 'Treat-as-withdraw'. An
   implementation SHOULD log an error (subject to rate-limiting) for further analysis.
 </t>
 <t>
-  When a BGP SPF speaker receives a BGP Update containing a malformed Prefix NLRI
+  When a BGP speaker receives a BGP Update containing a malformed Prefix NLRI
   SPF Status TLV in the BGP-LS Attribute <xref target="RFC9552" format="default"/>,
   the corresponding Prefix NLRI is
   considered as malformed and MUST be handled as 'Treat-as-withdraw'. An
   implementation SHOULD log an error (subject to rate-limiting) for further analysis.
 </t>
 <t>
-  When a BGP SPF speaker receives a BGP Update containing any malformed BGP-LS Attribute TE
+  When a BGP speaker receives a BGP Update containing any malformed BGP-LS Attribute TE
   and IGP Metric TLV, the corresponding NLRI is considered as malformed
   and MUST be handled as 'Treat-as-withdraw' <xref target="RFC7606" format="default"/>.
   An implementation SHOULD log an error (subject to rate-limiting) for further analysis.
@@ -1368,9 +1368,9 @@ SPF Status Values: 0 - Reserved
   attribute TLVs. Node attribute TLVs and their error handling rules are either defined in
   <xref target="RFC9552" format="default"/>
   or derived from <xref target="RFC5305" format="default"/> and <xref target="RFC6119" format="default"/>.
-  If a BGP SPF speaker receives a BGP-LS Attribute which is considered malformed based on these
+  If a BGP speaker receives a BGP-LS Attribute which is considered malformed based on these
   error handling rules, then it MUST consider the received NLRI as malformed and the receiving
-  BGP SPF speaker MUST handle such malformed NLRI as 'Treat-as-withdraw' <xref target="RFC7606" format="default"/>.
+  BGP speaker MUST handle such malformed NLRI as 'Treat-as-withdraw' <xref target="RFC7606" format="default"/>.
 </t>
 <t>
   Node Descriptor TLVs and their error handling rules are defined in
@@ -1395,15 +1395,15 @@ SPF Status Values: 0 - Reserved
   <xref target="RFC2328" format="default"/>.
 </t>
 <t>
-  If a BGP SPF speaker receives NLRI with a Node Descriptor TLV, Link Descriptor TLV, or Prefix Descriptor
+  If a BGP speaker receives NLRI with a Node Descriptor TLV, Link Descriptor TLV, or Prefix Descriptor
   TLV that is considered malformed based on error handling rules defined in the above references,
   then it MUST consider the received NLRI as malformed and the receiving
-  BGP SPF speaker MUST handle such malformed NLRI as 'Treat-as-withdraw' <xref target="RFC7606" format="default"/>.
+  BGP speaker MUST handle such malformed NLRI as 'Treat-as-withdraw' <xref target="RFC7606" format="default"/>.
 </t>
 <t>
-  When a BGP SPF speaker receives a BGP Update that does not contain any BGP-LS Attribute,
+  When a BGP speaker receives a BGP Update that does not contain any BGP-LS Attribute,
   it is most likely an indication of 'Attribute Discard' fault handling and the
-  BGP SPF speaker SHOULD preserve and propagate the BGP-LS-SPF NLRI as described in
+  BGP speaker SHOULD preserve and propagate the BGP-LS-SPF NLRI as described in
   Section 8.2.2 of <xref target="RFC9552"/>. However, NLRI without the BGP-LS attribute
   MUST NOT be used in the SPF Calculation <xref target="BGP-SPF"/>. How this is accomplished
   is an implementation matter but one way would be for these NLRI not to returned in
@@ -1413,7 +1413,7 @@ SPF Status Values: 0 - Reserved
 <section anchor="bgpspf-nlri" numbered="true" toc="default">
 <name>Processing of BGP-LS-SPF NLRIs</name>
 <t>
-  A BGP-LS-SPF Speaker MUST perform the syntactic validation checks of the
+  A BGP speaker supporting the BGP-LS-SPF SAFI MUST perform the syntactic validation checks of the
   BGP-LS-SPF NLRI listed in Section 8.2.2 of
   <xref target="RFC9552" format="default"/> to determine if
   it is malformed.
@@ -1422,7 +1422,7 @@ SPF Status Values: 0 - Reserved
 <section anchor="bgpspf-attribute" numbered="true" toc="default">
 <name>Processing of BGP-LS Attribute</name>
 <t>
- A BGP-LS-SPF Speaker MUST perform the syntactic validation checks of the
+ A BGP speaker supporting the BGP-LS-SPF SAFI MUST perform the syntactic validation checks of the
  BGP-LS Attribute listed in Section 8.2.2 of
  <xref target="RFC9552" format="default"/> to determine if
  it is malformed.
@@ -1437,7 +1437,7 @@ SPF Status Values: 0 - Reserved
   <t>
     While uncommon, there may be situations where the LSNDBs of two
     BGP-LS-SPF speakers lose synchronization. In these situations, the BGP
-    session MUST be reset with the BGP-SPF speaker sending an NOTIFICATION
+    session MUST be reset with the BGP speaker sending an NOTIFICATION
     message with the BGP error code "Loss of LSDB Synchronization" as described
     in section 3 of <xref target="RFC4271"/>. The mechanisms to detect loss of
     synchronization are beyond the scope of this document.
@@ -1459,7 +1459,7 @@ SPF Status Values: 0 - Reserved
   <name>BGP-LS-SPF Assignments to BGP-LS NLRI and Attribute TLV Registry</name>
 <t>
   IANA has assigned six TLVs for BGP-LS-SPF NLRI in the "BGP-LS NLRI and Attribute
-  TLV" registry. 
+  TLV" registry.
   Supported TLV types include the SPF Status TLV type, Address Family Link
   Descriptor TLV type, and Sequence Number TLV type.  Deprecated TLV types
   include the SPF Capability TLV type, IPv4 Link Prefix Length TLV type, and IPv6
@@ -1642,8 +1642,8 @@ SPF Status Values: 0 - Reserved
   security solutions described in <xref target="RFC6811" format="default"/> and <xref target="RFC8205" format="default"/>
   are out of scope as they are meant to apply for inter-domain BGP where
   multiple BGP Routing Domains are typically involved. The BGP-LS-SPF SAFI NLRI described
-  in this document are typically advertised between EBGP or IBGP speakers under a single
-  administrative domain.
+  in this document are typically advertised between External BGP (EBGP) or
+  Internal BGP (IBGP) speakers under a single administrative domain.
 </t>
 <t>
   The BGP SPF protocol and the BGP-LS-SPF SAFI inherit the encoding from BGP-LS
@@ -1725,7 +1725,7 @@ SPF Status Values: 0 - Reserved
   When this configuration is provided, the default MUST be to wait
   indefinitely prior to advertising a BGP-LS link NLRI. Configuration of
   a timer specifying the maximum time to wait prior to advertisement
-  MAY be provided. 
+  MAY be provided.
 </t>
 </section>
 <section anchor="spf-backoff-config" numbered="true" toc="default">
