@@ -33,7 +33,7 @@ most I-Ds might want to use.
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-49"
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" docName="draft-ietf-lsvr-bgp-spf-50"
      ipr="trust200902" obsoletes="" updates="" submissionType="IETF" xml:lang="en" tocInclude="true"
      tocDepth="4" symRefs="true" sortRefs="true" version="3" consensus="true">
   <!-- xml2rfc v2v3 conversion 3.12.1 -->
@@ -973,11 +973,13 @@ SPF Status Values: 0 - Reserved
     sequence number but the attributes differ, the NLRI sequence number is advanced to
     one greater than the received sequence number and the NLRI is readvertised to all peers.
   </li>
+<!--
   <li>
     If self-originated Link or Prefix NLRI is received and the Link or Prefix NLRI is no longer
     being advertised by the local node, the NLRI is considered stale and is withdrawn using the
     standard BGP Update message Withdrawn Routes encodings <xref target="RFC4760"/>.
-  </li>
+   </li>
+-->
 </ul>
 <t>
   The above actions are performed immediately when the first instance of a newer self-originated NLRI is
@@ -1302,20 +1304,14 @@ SPF Status Values: 0 - Reserved
   By default, all the NLRI advertised by a node are withdrawn when a session
   failure is detected <xref target="RFC4271"/>. If fast failure detection such as BFD
   <xref target="RFC5880"/> is utilized, and the node is
-  on the fastest converging path, the most recent versions of BGP-LS-SPF NLRI may be
-  withdrawn. This results in an older version of the NLRI received on a different path
-  being used until the new versions arrive and, potentially, unnecessary route flaps.
-  For the BGP-LS-SPF SAFI, NLRI received from the failing node SHOULD NOT be implicitly
-  withdrawn immediately to prevent such unnecessary route flaps.
-  The configurable NLRIImplicitWithdrawalDelay timer
-  controls the interval that NLRI from the failed node is retained prior to implicit
-  withdrawal after a BGP speaker has transitioned out of Established state.
-  This does not delay convergence since the adjacent nodes detect the
+  on the fastest converging path, the most recent versions of BGP-LS-SPF NLRI will be
+  withdrawn. This may result in older versions of NLRI received from peer(s) on
+  different path(s) being in the LSNDB until they are withdrawn.
+  These stale NLRI will not delay convergence since the adjacent nodes detect the
   link failure and advertise a more recent NLRI indicating the link is down with respect to
   BGP SPF (refer to <xref target="failure-converge" format="default"/>) and the
   bi-directional connectivity check fails during the BGP SPF calculation
   (refer to <xref target="BGP-SPF" format="default"/>).
-  The suggested default value for the NLRIImplicitWithdrawalDelay timer is 2 seconds.
 </t>
 </section>
 </section>
