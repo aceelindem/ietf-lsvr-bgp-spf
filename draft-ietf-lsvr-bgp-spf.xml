@@ -521,7 +521,7 @@ most I-Ds might want to use.
   not cross the maximum limit for a BGP message.  The determination of
   the types of TLVs to be included by the BGP SPF speaker
   originating the attribute is outside the scope of this document.
-  If, due to the liits on the maximum size of an UPDATE message, a single
+  If, due to the limits on the maximum size of an UPDATE message, a single
   route doesn't fit into the message, the BGP speaker MUST NOT advertise the
   route to its peer and MAY choose to log an error locally <xref target="RFC4271"/>.
 </t>
